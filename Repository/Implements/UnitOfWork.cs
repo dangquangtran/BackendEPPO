@@ -13,6 +13,7 @@ namespace Repository.Implements
     {
         private readonly bef4qvhxkgrn0oa7ipg0Context context;
         private IGenericRepository<Rank> rankRepository;
+        private IGenericRepository<User> userRepository;
 
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
@@ -25,9 +26,15 @@ namespace Repository.Implements
                 return rankRepository ??= new GenericRepository<Rank>(context);
             }
         }
+        public IGenericRepository<User> UserRepository
+        {
+            get
+            {
+                return userRepository ??= new GenericRepository<User>(context);
+            }
+        }
 
 
-       
         public void Save()
         {
             context.SaveChanges();

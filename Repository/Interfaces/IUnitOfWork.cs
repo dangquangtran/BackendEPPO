@@ -11,6 +11,10 @@ namespace Repository.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<Rank> RankRepository { get; }
+
+        //Do Huu Thuan
+        IGenericRepository<User> UserRepository { get; }
+
         void Save();
     }
 }
