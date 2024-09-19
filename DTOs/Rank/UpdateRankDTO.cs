@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTOs.Rank
 {
-    public class UpdateRank
+    public class UpdateRankDTO
     {
         public int RankId { get; set; }
         public string Title { get; set; }

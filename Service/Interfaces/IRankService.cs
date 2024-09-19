@@ -12,8 +12,8 @@ namespace Service.Interfaces
     {
         IEnumerable<Rank> GetAllRanks();
         Rank GetRankById(int id);
-        void CreateRank(CreateRank createRank);
-        void UpdateRank(UpdateRank updateRank);
+        void CreateRank(CreateRankDTO createRank);
+        void UpdateRank(UpdateRankDTO updateRank);
         void DeleteRank(int id);
     }
 }

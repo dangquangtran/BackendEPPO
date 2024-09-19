@@ -31,14 +31,14 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpPost("Ranks")]
-        public IActionResult CreateRank([FromBody] CreateRank createRank)
+        public IActionResult CreateRank([FromBody] CreateRankDTO createRank)
         {
             _rankService.CreateRank(createRank);
             return Ok();
         }
 
         [HttpPut("Ranks")]
-        public IActionResult UpdateRank([FromBody] UpdateRank updateRank)
+        public IActionResult UpdateRank([FromBody] UpdateRankDTO updateRank)
         {
             _rankService.UpdateRank(updateRank);
             return Ok();
