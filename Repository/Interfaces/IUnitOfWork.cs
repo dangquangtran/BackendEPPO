@@ -10,7 +10,7 @@ namespace Repository.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IGenericRepository<Rank> EquipmentRepository { get; }
+        IGenericRepository<Rank> RankRepository { get; }
 
 
         void Save();
