@@ -44,8 +44,8 @@ namespace BackendEPPO.Controllers
             return Ok();
         }
 
-        [HttpDelete("Ranks")]
-        public IActionResult DeleteRank([FromQuery] int id)
+        [HttpDelete("Ranks/{id}")]
+        public IActionResult DeleteRank(int id)
         {
             _rankService.DeleteRank(id);
             return Ok();
