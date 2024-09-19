@@ -15,9 +15,9 @@ namespace Repository.Implements
         internal bef4qvhxkgrn0oa7ipg0Context context;
         internal DbSet<TEntity> dbSet;
 
-        public GenericRepository()
+        public GenericRepository(bef4qvhxkgrn0oa7ipg0Context context)
         {
-            context = new bef4qvhxkgrn0oa7ipg0Context();
+            this.context = context;
             this.dbSet = context.Set<TEntity>();
         }
 

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BusinessObjects.Models;
+using DTOs.Rank;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,8 @@ namespace Service.AutoMapper
     {
         public MappingProfile()
         {
-
+            CreateMap<CreateRank, Rank>();
+            CreateMap<UpdateRank, Rank>();
         }
 
     }

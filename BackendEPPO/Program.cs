@@ -1,7 +1,11 @@
 using AutoMapper;
+using BusinessObjects.Models;
+using Microsoft.EntityFrameworkCore;
 using Repository.Implements;
 using Repository.Interfaces;
 using Service;
+using Service.Implements;
+using Service.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<RankService>();
+builder.Services.AddScoped<IRankService, RankService>();
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -28,6 +32,10 @@ builder.Services.AddCors(options =>
                      .AllowAnyMethod();
     });
 });
+
+//DBContext
+builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>
+    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 

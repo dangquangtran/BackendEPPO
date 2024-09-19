@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using BusinessObjects.Models;
+using DTOs.Rank;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
 {
@@ -9,17 +12,44 @@ namespace BackendEPPO.Controllers
     [ApiController]
     public class RankController : ControllerBase
     {
-        private RankService _rankService;
-        public RankController(RankService rankService)
+        private IRankService _rankService;
+        public RankController(IRankService rankService)
         {
             _rankService = rankService;
         }
 
-        [HttpGet]
-        [Route("GetAllRanks")]
+        [HttpGet("Ranks")]
         public IActionResult GetAllRanks()
         {
             return Ok(_rankService.GetAllRanks());
         }
+
+        [HttpGet("Ranks/{id}")]
+        public IActionResult GetRankById(int id)
+        {
+            return Ok(_rankService.GetRankById(id));
+        }
+
+        [HttpPost("Ranks")]
+        public IActionResult CreateRank([FromBody] CreateRank createRank)
+        {
+            _rankService.CreateRank(createRank);
+            return Ok();
+        }
+
+        [HttpPut("Ranks")]
+        public IActionResult UpdateRank([FromBody] UpdateRank updateRank)
+        {
+            _rankService.UpdateRank(updateRank);
+            return Ok();
+        }
+
+        [HttpDelete("Ranks")]
+        public IActionResult DeleteRank([FromQuery] int id)
+        {
+            _rankService.DeleteRank(id);
+            return Ok();
+        }
+
     }
 }

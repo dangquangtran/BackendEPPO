@@ -50,22 +50,22 @@ namespace BusinessObjects.Models
         public virtual DbSet<UserVoucher> UserVouchers { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseMySQL(GetConnectionStrings());
-            }
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseMySQL(GetConnectionStrings());
+        //    }
+        //}
 
-        private string GetConnectionStrings()
-        {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-            return configuration.GetConnectionString("DefaultConnection");
-        }
+        //private string GetConnectionStrings()
+        //{
+        //    IConfiguration configuration = new ConfigurationBuilder()
+        //        .SetBasePath(Directory.GetCurrentDirectory())
+        //        .AddJsonFile("appsettings.json")
+        //        .Build();
+        //    return configuration.GetConnectionString("DefaultConnection");
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

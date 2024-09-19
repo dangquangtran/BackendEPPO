@@ -8,5 +8,8 @@ namespace DTOs.Rank
 {
     public class UpdateRank
     {
+        public int RankId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
     }
 }

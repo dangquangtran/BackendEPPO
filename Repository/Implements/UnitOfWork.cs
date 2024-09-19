@@ -14,15 +14,15 @@ namespace Repository.Implements
         private readonly bef4qvhxkgrn0oa7ipg0Context context;
         private IGenericRepository<Rank> rankRepository;
 
-        public UnitOfWork()
+        public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
-           context = new bef4qvhxkgrn0oa7ipg0Context();
+            this.context = context;
         }
         public IGenericRepository<Rank> RankRepository
         {
             get
             {
-                return rankRepository ??= new GenericRepository<Rank>();
+                return rankRepository ??= new GenericRepository<Rank>(context);
             }
         }
 
