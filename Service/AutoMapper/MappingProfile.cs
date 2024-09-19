@@ -13,8 +13,8 @@ namespace Service.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<CreateRank, Rank>();
-            CreateMap<UpdateRank, Rank>();
+            CreateMap<CreateRankDTO, Rank>();
+            CreateMap<UpdateRankDTO, Rank>();
         }
 
     }

@@ -30,14 +30,14 @@ namespace Service.Implements
             return _unitOfWork.RankRepository.GetByID(id);
         }
 
-        public void CreateRank(CreateRank createRank)
+        public void CreateRank(CreateRankDTO createRank)
         {
             Rank rank = _mapper.Map<Rank>(createRank);
             rank.CreationDate = DateTime.Now;
             _unitOfWork.RankRepository.Insert(rank);
             _unitOfWork.Save();
         }
-        public void UpdateRank(UpdateRank updateRank)
+        public void UpdateRank(UpdateRankDTO updateRank)
         {
             Rank rank = _mapper.Map<Rank>(updateRank);
             rank.UpdateDate = DateTime.Now;
