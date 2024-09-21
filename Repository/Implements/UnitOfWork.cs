@@ -13,6 +13,8 @@ namespace Repository.Implements
     {
         private readonly bef4qvhxkgrn0oa7ipg0Context context;
         private IGenericRepository<Rank> rankRepository;
+        private IGenericRepository<Conversation> conversationRepository;
+        private IGenericRepository<Message> messageRepository;
 
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
@@ -26,8 +28,22 @@ namespace Repository.Implements
             }
         }
 
+        public IGenericRepository<Conversation> ConversationRepository
+        {
+            get
+            {
+                return conversationRepository ??= new GenericRepository<Conversation>(context);
+            }
+        }
 
-       
+        public IGenericRepository<Message> MessageRepository
+        {
+            get
+            {
+                return messageRepository ??= new GenericRepository<Message>(context);
+            }
+        }
+
         public void Save()
         {
             context.SaveChanges();
