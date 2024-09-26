@@ -61,6 +61,9 @@ namespace Repository.Implements
             get
             {
                 return accessoryRepository ??= new GenericRepository<Accessory>(context);
+            }
+        }
+
         public IConversationRepository ConversationRepository
         {
             get
