@@ -17,6 +17,8 @@ namespace Repository.Interfaces
 
         Task SaveAsync();
 
+        IConversationRepository ConversationRepository { get; }
+        IGenericRepository<Message> MessageRepository { get; }
         void Save();
     }
 }

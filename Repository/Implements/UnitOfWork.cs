@@ -10,10 +10,13 @@ namespace Repository.Implements
         private readonly bef4qvhxkgrn0oa7ipg0Context context;
         private IGenericRepository<Rank> rankRepository;
         private IGenericRepository<User> userRepository;
+
         private IGenericRepository<Contract> contractRepository;
         private IGenericRepository<Plant> plantRepository;
         private IGenericRepository<Accessory> accessoryRepository;
-
+        
+        private IConversationRepository conversationRepository;
+        private IGenericRepository<Message> messageRepository;
 
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
@@ -58,6 +61,19 @@ namespace Repository.Implements
             get
             {
                 return accessoryRepository ??= new GenericRepository<Accessory>(context);
+        public IConversationRepository ConversationRepository
+        {
+            get
+            {
+                return conversationRepository ??= new ConversationRepository(context);
+            }
+        }
+
+        public IGenericRepository<Message> MessageRepository
+        {
+            get
+            {
+                return messageRepository ??= new GenericRepository<Message>(context);
             }
         }
 
