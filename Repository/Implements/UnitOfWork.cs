@@ -11,6 +11,10 @@ namespace Repository.Implements
         private IGenericRepository<Rank> rankRepository;
         private IGenericRepository<User> userRepository;
         private IGenericRepository<Contract> contractRepository;
+        private IGenericRepository<Plant> plantRepository;
+        private IGenericRepository<Accessory> accessoryRepository;
+
+
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
             this.context = context;
@@ -38,6 +42,22 @@ namespace Repository.Implements
             get
             {
                 return contractRepository ??= new GenericRepository<Contract>(context);
+            }
+        }    
+        //Do Huu Thuan
+        public IGenericRepository<Plant> PlantRepository
+        {
+            get
+            {
+                return plantRepository ??= new GenericRepository<Plant>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Accessory> AccessoryRepository
+        {
+            get
+            {
+                return accessoryRepository ??= new GenericRepository<Accessory>(context);
             }
         }
 

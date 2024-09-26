@@ -12,6 +12,9 @@ namespace Repository.Interfaces
         //Do Huu Thuan
         IGenericRepository<User> UserRepository { get; }
         IGenericRepository<Contract> ContractRepository { get; }
+        IGenericRepository<Plant> PlantRepository { get; }
+        IGenericRepository<Accessory> AccessoryRepository { get; }
+
         Task SaveAsync();
 
         void Save();
