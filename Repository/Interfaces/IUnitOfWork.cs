@@ -8,7 +8,10 @@ namespace Repository.Interfaces
     {
         IGenericRepository<Rank> RankRepository { get; }
 
+
+        //Do Huu Thuan
         IGenericRepository<User> UserRepository { get; }
+        IGenericRepository<Contract> ContractRepository { get; }
         Task SaveAsync();
 
         void Save();

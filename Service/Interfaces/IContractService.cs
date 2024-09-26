@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace Service.Interfaces
 {
-    public interface IUserService
+    public interface IContractService
     {
-        Task<IEnumerable<User>> GetListUsers();
+        Task<IEnumerable<Contract>> GetListContract();
     }
 }

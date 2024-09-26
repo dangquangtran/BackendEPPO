@@ -20,6 +20,8 @@ builder.Services.AddScoped<IRankService, RankService>();
 
 //Do Huu Thuan
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IContractService, ContractService>();
+
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
