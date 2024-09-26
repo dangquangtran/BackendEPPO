@@ -1,11 +1,14 @@
 ﻿using BusinessObjects.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Service.Interfaces
 {
-    public interface IUserService
+    public interface IPlantService
     {
-        Task<IEnumerable<User>> GetListUsers();
+        Task<IEnumerable<Plant>> GetListPlants();
     }
 }

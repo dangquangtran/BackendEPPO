@@ -8,7 +8,13 @@ namespace Repository.Interfaces
     {
         IGenericRepository<Rank> RankRepository { get; }
 
+
+        //Do Huu Thuan
         IGenericRepository<User> UserRepository { get; }
+        IGenericRepository<Contract> ContractRepository { get; }
+        IGenericRepository<Plant> PlantRepository { get; }
+        IGenericRepository<Accessory> AccessoryRepository { get; }
+
         Task SaveAsync();
 
         IConversationRepository ConversationRepository { get; }

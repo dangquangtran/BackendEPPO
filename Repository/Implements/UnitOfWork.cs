@@ -10,6 +10,11 @@ namespace Repository.Implements
         private readonly bef4qvhxkgrn0oa7ipg0Context context;
         private IGenericRepository<Rank> rankRepository;
         private IGenericRepository<User> userRepository;
+
+        private IGenericRepository<Contract> contractRepository;
+        private IGenericRepository<Plant> plantRepository;
+        private IGenericRepository<Accessory> accessoryRepository;
+        
         private IConversationRepository conversationRepository;
         private IGenericRepository<Message> messageRepository;
 
@@ -26,6 +31,7 @@ namespace Repository.Implements
             }
         }
 
+        //Do Huu Thuan
         public IGenericRepository<User> UserRepository
         {
             get
@@ -33,6 +39,28 @@ namespace Repository.Implements
                 return userRepository ??= new GenericRepository<User>(context);
             }
         }
+        //Do Huu Thuan
+        public IGenericRepository<Contract> ContractRepository
+        {
+            get
+            {
+                return contractRepository ??= new GenericRepository<Contract>(context);
+            }
+        }    
+        //Do Huu Thuan
+        public IGenericRepository<Plant> PlantRepository
+        {
+            get
+            {
+                return plantRepository ??= new GenericRepository<Plant>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Accessory> AccessoryRepository
+        {
+            get
+            {
+                return accessoryRepository ??= new GenericRepository<Accessory>(context);
         public IConversationRepository ConversationRepository
         {
             get

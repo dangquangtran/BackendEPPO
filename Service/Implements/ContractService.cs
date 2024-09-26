@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class UserService : IUserService
+    public class ContractService: IContractService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public ContractService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<User>> GetListUsers()
+        public async Task<IEnumerable<Contract>> GetListContract()
         {
-            return await _unitOfWork.UserRepository.GetAsync(); 
+            return await _unitOfWork.ContractRepository.GetAsync();
         }
+
+       
     }
 }

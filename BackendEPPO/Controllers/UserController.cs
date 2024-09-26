@@ -2,6 +2,7 @@
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Interfaces;
 using System.Threading.Tasks;
 
 namespace BackendEPPO.Controllers

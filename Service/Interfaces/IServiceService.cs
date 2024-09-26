@@ -1,11 +1,12 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Service.Interfaces
 {
-    public interface IUserService
+    public interface IServiceService
     {
-        Task<IEnumerable<User>> GetListUsers();
+     
     }
 }

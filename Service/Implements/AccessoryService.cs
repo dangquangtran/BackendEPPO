@@ -4,20 +4,20 @@ using Service.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Service.Implements
 {
-    public class UserService : IUserService
+    public class AccessoryService : IAccessoryService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public AccessoryService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<User>> GetListUsers()
+        public async Task<IEnumerable<Accessory>> GetListAccessory()
         {
-            return await _unitOfWork.UserRepository.GetAsync(); 
+            return await _unitOfWork.AccessoryRepository.GetAsync();
         }
     }
 }

@@ -24,6 +24,11 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 
 //Do Huu Thuan
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IContractService, ContractService>();
+builder.Services.AddScoped<IPlantService, PlantService>();
+builder.Services.AddScoped<IAccessoryService, AccessoryService>();
+
+
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
