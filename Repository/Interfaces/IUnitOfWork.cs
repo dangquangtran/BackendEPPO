@@ -11,6 +11,8 @@ namespace Repository.Interfaces
         IGenericRepository<User> UserRepository { get; }
         Task SaveAsync();
 
+        IConversationRepository ConversationRepository { get; }
+        IGenericRepository<Message> MessageRepository { get; }
         void Save();
     }
 }
