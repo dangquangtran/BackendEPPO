@@ -18,6 +18,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRankService, RankService>();
 
+//Do Huu Thuan
+builder.Services.AddScoped<IUserService, UserService>();
+
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
