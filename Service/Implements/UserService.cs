@@ -1,31 +1,22 @@
-﻿using AutoMapper;
-using BusinessObjects.Models;
-using DTOs.User;
+﻿using BusinessObjects.Models;
 using Repository.Interfaces;
-using Service.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Service
 {
     public class UserService : IUserService
     {
-        private IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public UserService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
-        public  IEnumerable<User> GetListUsers()
+        public async Task<IEnumerable<User>> GetListUsers()
         {
-            return  _unitOfWork.UserRepository.Get();
-      
-       
+            return await _unitOfWork.UserRepository.GetAsync(); 
         }
     }
 }

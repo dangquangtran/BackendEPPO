@@ -29,4 +29,5 @@ namespace DTOs.User
         public int? ModificationBy { get; set; }
         public int? Status { get; set; }
     }
+
 }

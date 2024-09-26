@@ -1,8 +1,8 @@
 ﻿using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using System.Threading.Tasks;
 
 namespace BackendEPPO.Controllers
 {
@@ -10,17 +10,28 @@ namespace BackendEPPO.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
 
-        public UserController(IUserService uService)
+        public UserController(IUserService userService)
         {
-            _userService = uService;
+            _userService = userService;
         }
 
         [HttpGet(ApiEndPointConstant.User.GetListUsers_Endpoint)]
-        public IActionResult GetListUsers()
+        public async Task<IActionResult> GetListUsers()
         {
-            return Ok(_userService.GetListUsers());
+            var users = await _userService.GetListUsers();
+
+            if (users == null || !users.Any())
+            {
+                return NotFound("No users found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,  
+                Message = "Request was successful",
+                Data = users
+            });
         }
     }
 }

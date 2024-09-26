@@ -1,10 +1,6 @@
 ﻿using BusinessObjects.Models;
 using Repository.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Repository.Implements
@@ -19,6 +15,7 @@ namespace Repository.Implements
         {
             this.context = context;
         }
+
         public IGenericRepository<Rank> RankRepository
         {
             get
@@ -26,6 +23,7 @@ namespace Repository.Implements
                 return rankRepository ??= new GenericRepository<Rank>(context);
             }
         }
+
         public IGenericRepository<User> UserRepository
         {
             get
@@ -34,10 +32,14 @@ namespace Repository.Implements
             }
         }
 
-
         public void Save()
         {
             context.SaveChanges();
+        }
+
+        public async Task SaveAsync()
+        {
+            await context.SaveChangesAsync();
         }
 
         private bool disposed = false;
