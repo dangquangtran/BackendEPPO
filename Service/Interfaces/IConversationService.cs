@@ -10,10 +10,11 @@ namespace Service.Interfaces
 {
     public interface IConversationService
     {
-        IEnumerable<Conversation> GetAllConversations();
+        IEnumerable<ConversationVM> GetAllConversations();
         Conversation GetConversationById(int id);
         void CreateConversation(CreateConversationDTO createConversation);
         void UpdateConversation(UpdateConversationDTO updateConversation);
         void DeleteConversation(int id);
+        IEnumerable<Conversation> GetConversationsByUserId(int userId);
     }
 }

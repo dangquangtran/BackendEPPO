@@ -3,6 +3,7 @@ using BusinessObjects.Models;
 using DTOs.Conversation;
 using DTOs.Message;
 using DTOs.Rank;
+using DTOs.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +20,10 @@ namespace Service.AutoMapper
             CreateMap<UpdateRankDTO, Rank>();
             CreateMap<CreateConversationDTO, Conversation>();
             CreateMap<UpdateConversationDTO, Conversation>();
-            CreateMap<CreateMessageDTO, Message>();
+            CreateMap<ChatMessageDTO, Message>();
             CreateMap<UpdateMessageDTO, Message>();
+            CreateMap<Conversation, ConversationVM>().ReverseMap();
+            CreateMap<User, UserVM>().ReverseMap();
         }
 
     }

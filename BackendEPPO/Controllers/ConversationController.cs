@@ -31,21 +31,27 @@ namespace BackendEPPO.Controllers
         public IActionResult CreateConversation([FromBody] CreateConversationDTO createConversation)
         {
             _conversationService.CreateConversation(createConversation);
-            return Ok();
+            return Ok("Đã tạo thành công");
         }
 
         [HttpPut("Conversations")]
         public IActionResult UpdateConversation([FromBody] UpdateConversationDTO updateConversation)
         {
             _conversationService.UpdateConversation(updateConversation);
-            return Ok();
+            return Ok("Đã cập nhật thành công");
         }
 
         [HttpDelete("Conversations/{id}")]
         public IActionResult DeleteConversation(int id)
         {
             _conversationService.DeleteConversation(id);
-            return Ok();
+            return Ok("Đã xóa thành công");
+        }
+
+        [HttpGet("Conversations/GetByUserId")]
+        public IActionResult GetConversationsByUserId([FromQuery] int userId)
+        {
+            return Ok(_conversationService.GetConversationsByUserId(userId));
         }
     }
 }

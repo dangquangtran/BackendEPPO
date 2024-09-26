@@ -28,24 +28,24 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpPost("Messages")]
-        public IActionResult CreateMessage([FromBody] CreateMessageDTO createMessage)
+        public IActionResult CreateMessage([FromBody] ChatMessageDTO createMessage)
         {
             _messageService.CreateMessage(createMessage);
-            return Ok();
+            return Ok(("Đã tạo thành công"));
         }
 
         [HttpPut("Messages")]
         public IActionResult UpdateMessage([FromBody] UpdateMessageDTO updateMessage)
         {
             _messageService.UpdateMessage(updateMessage);
-            return Ok();
+            return Ok("Đã cập nhật thành công");
         }
 
         [HttpDelete("Messages/{id}")]
         public IActionResult DeleteMessage(int id)
         {
             _messageService.DeleteMessage(id);
-            return Ok();
+            return Ok("Đã xóa thành công");
         }
     }
 }

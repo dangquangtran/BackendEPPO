@@ -12,7 +12,7 @@ namespace Service.Interfaces
     {
         IEnumerable<Message> GetAllMessages();
         Message GetMessageById(int id);
-        void CreateMessage(CreateMessageDTO createMessage);
+        void CreateMessage(ChatMessageDTO createMessage);
         void UpdateMessage(UpdateMessageDTO updateMessage);
         void DeleteMessage(int id);
     }

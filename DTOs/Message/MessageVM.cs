@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTOs.Message
 {
-    public class CreateMessageDTO
+    public class MessageVM
     {
-        public int? ConversationId { get; set; }
+        public int ConversationId { get; set; }
         public int? UserId { get; set; }
         public string Message1 { get; set; }
         public string Type { get; set; }

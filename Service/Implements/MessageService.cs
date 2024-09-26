@@ -30,7 +30,7 @@ namespace Service.Implements
             return _unitOfWork.MessageRepository.GetByID(id);
         }
 
-        public void CreateMessage(CreateMessageDTO createMessage)
+        public void CreateMessage(ChatMessageDTO createMessage)
         {
             Message message = _mapper.Map<Message>(createMessage);
             message.CreationDate = DateTime.Now;
