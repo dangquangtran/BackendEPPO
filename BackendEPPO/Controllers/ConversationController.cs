@@ -5,7 +5,7 @@ using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class ConversationController : ControllerBase
     {
@@ -15,40 +15,40 @@ namespace BackendEPPO.Controllers
             _conversationService = conversationService;
         }
 
-        [HttpGet("Conversations")]
+        [HttpGet]
         public IActionResult GetAllConversations()
         {
             return Ok(_conversationService.GetAllConversations());
         }
 
-        [HttpGet("Conversations/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetConversationById(int id)
         {
             return Ok(_conversationService.GetConversationById(id));
         }
 
-        [HttpPost("Conversations")]
+        [HttpPost]
         public IActionResult CreateConversation([FromBody] CreateConversationDTO createConversation)
         {
             _conversationService.CreateConversation(createConversation);
             return Ok("Đã tạo thành công");
         }
 
-        [HttpPut("Conversations")]
+        [HttpPut]
         public IActionResult UpdateConversation([FromBody] UpdateConversationDTO updateConversation)
         {
             _conversationService.UpdateConversation(updateConversation);
             return Ok("Đã cập nhật thành công");
         }
 
-        [HttpDelete("Conversations/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteConversation(int id)
         {
             _conversationService.DeleteConversation(id);
             return Ok("Đã xóa thành công");
         }
 
-        [HttpGet("Conversations/GetByUserId")]
+        [HttpGet("GetByUserId")]
         public IActionResult GetConversationsByUserId([FromQuery] int userId)
         {
             return Ok(_conversationService.GetConversationsByUserId(userId));

@@ -15,6 +15,7 @@ namespace DTOs.Conversation
         public DateTime? CreationDate { get; set; }
         public int? Status { get; set; }
         public UserVM UserOneNavigation { get; set; }
+        public UserVM UserTwoNavigation { get; set; }
         public virtual ICollection<MessageVM> Messages { get; set; }
     }
 }

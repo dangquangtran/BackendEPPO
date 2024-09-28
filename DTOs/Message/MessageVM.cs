@@ -8,6 +8,7 @@ namespace DTOs.Message
 {
     public class MessageVM
     {
+        public int MessageId { get; set; }
         public int ConversationId { get; set; }
         public int? UserId { get; set; }
         public string Message1 { get; set; }

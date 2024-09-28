@@ -5,7 +5,7 @@ using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class MessageController : ControllerBase
     {
@@ -15,33 +15,33 @@ namespace BackendEPPO.Controllers
             _messageService = messageService;
         }
 
-        [HttpGet("Messages")]
+        [HttpGet]
         public IActionResult GetAllMessages()
         {
             return Ok(_messageService.GetAllMessages());
         }
 
-        [HttpGet("Messages/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetMessageById(int id)
         {
             return Ok(_messageService.GetMessageById(id));
         }
 
-        [HttpPost("Messages")]
+        [HttpPost]
         public IActionResult CreateMessage([FromBody] ChatMessageDTO createMessage)
         {
             _messageService.CreateMessage(createMessage);
             return Ok(("Đã tạo thành công"));
         }
 
-        [HttpPut("Messages")]
+        [HttpPut]
         public IActionResult UpdateMessage([FromBody] UpdateMessageDTO updateMessage)
         {
             _messageService.UpdateMessage(updateMessage);
             return Ok("Đã cập nhật thành công");
         }
 
-        [HttpDelete("Messages/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteMessage(int id)
         {
             _messageService.DeleteMessage(id);

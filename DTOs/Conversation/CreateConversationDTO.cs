@@ -9,5 +9,6 @@ namespace DTOs.Conversation
     public class CreateConversationDTO
     {
         public int? UserOne { get; set; }
+        public int? UserTwo { get; set; }
     }
 }
