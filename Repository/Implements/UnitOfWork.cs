@@ -14,7 +14,8 @@ namespace Repository.Implements
         private IGenericRepository<Contract> contractRepository;
         private IGenericRepository<Plant> plantRepository;
         private IGenericRepository<Accessory> accessoryRepository;
-        
+        private IGenericRepository<Service> serviceRepository;
+
         private IConversationRepository conversationRepository;
         private IGenericRepository<Message> messageRepository;
 
@@ -63,7 +64,14 @@ namespace Repository.Implements
                 return accessoryRepository ??= new GenericRepository<Accessory>(context);
             }
         }
-
+        //Do Huu Thuan
+        public IGenericRepository<Service> ServicesRepository
+        {
+            get
+            {
+                return serviceRepository ??= new GenericRepository<Service>(context);
+            }
+        }
         public IConversationRepository ConversationRepository
         {
             get

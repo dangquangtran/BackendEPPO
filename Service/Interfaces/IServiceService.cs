@@ -7,6 +7,6 @@ namespace Service.Interfaces
 {
     public interface IServiceService
     {
-     
+        Task<IEnumerable<ServicesDTO>> GetListServices();
     }
 }
