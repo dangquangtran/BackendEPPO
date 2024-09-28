@@ -1,4 +1,5 @@
-﻿using BusinessObjects.Models;
+﻿using BackendEPPO.Extenstion;
+using BusinessObjects.Models;
 using DTOs.Login;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,10 @@ namespace BackendEPPO.Controllers
         {
             _userService = userService;
             _configuration = configuration;
-        }   
+        }
 
-
-        [HttpPost("login")]
+        [HttpPost(ApiEndPointConstant.User.Login_Endpoint)]
+   //     [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
