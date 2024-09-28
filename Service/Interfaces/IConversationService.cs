@@ -15,6 +15,6 @@ namespace Service.Interfaces
         void CreateConversation(CreateConversationDTO createConversation);
         void UpdateConversation(UpdateConversationDTO updateConversation);
         void DeleteConversation(int id);
-        IEnumerable<Conversation> GetConversationsByUserId(int userId);
+        IEnumerable<ConversationVM> GetConversationsByUserId(int userId);
     }
 }

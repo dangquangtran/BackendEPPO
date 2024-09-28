@@ -17,7 +17,7 @@ namespace Repository.Implements
 
         public IEnumerable<Conversation> GetConversationsByUserId(int userId)
         {
-            return dbSet.Where(c => c.UserOne == userId).Include(c => c.Messages.OrderByDescending(m => m.CreationDate)).ToList();
+            return dbSet.Where(c => c.UserOne == userId || c.UserTwo ==userId).Include(c => c.Messages.OrderByDescending(m => m.CreationDate)).Include(c => c.UserOneNavigation).Include(c=> c.UserTwoNavigation).ToList();
         }
     }
 }

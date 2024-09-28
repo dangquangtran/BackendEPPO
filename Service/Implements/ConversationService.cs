@@ -34,7 +34,6 @@ namespace Service.Implements
         public void CreateConversation(CreateConversationDTO createConversation)
         {
             Conversation conversation = _mapper.Map<Conversation>(createConversation);
-            conversation.UserTwo = 1;
             conversation.CreationDate = DateTime.Now;
             conversation.Status = 1;
             _unitOfWork.ConversationRepository.Insert(conversation);
@@ -53,9 +52,10 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
-        public IEnumerable<Conversation> GetConversationsByUserId(int userId)
+        public IEnumerable<ConversationVM> GetConversationsByUserId(int userId)
         {
-            return _unitOfWork.ConversationRepository.GetConversationsByUserId(userId);
+            var conversations = _unitOfWork.ConversationRepository.GetConversationsByUserId(userId);
+            return _mapper.Map<IEnumerable<ConversationVM>>(conversations);
         }
     }
 }
