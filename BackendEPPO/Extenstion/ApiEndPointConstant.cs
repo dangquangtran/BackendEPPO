@@ -15,9 +15,8 @@ namespace BackendEPPO.Extenstion
         // Do Huu Thuan     
         public static class User
         {
-        
             public const string GetListUsers_Endpoint = ApiEndpoint + "/GetList/Users";
-
+            public const string Login_Endpoint = ApiEndpoint + "/Login/Users";
         }
         // Do Huu Thuan
         public static class Contract
