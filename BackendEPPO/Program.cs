@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Repository.Implements;
 using Repository.Interfaces;
 using Service;
@@ -27,11 +28,43 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IAccessoryService, AccessoryService>();
-
+builder.Services.AddScoped<IServiceService, ServiceService>();
 
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// Add bearn to using the Authorization
+builder.Services.AddSwaggerGen(option =>
+{
+    option.DescribeAllParametersInCamelCase();
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+              new List<string>()
+        }
+    });
+});
 
 
 // Add CORS policy
@@ -45,6 +78,18 @@ builder.Services.AddCors(options =>
     });
 });
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAllOrigins",
+//        builder =>
+//        {
+//            builder.WithOrigins("https://localhost:7152", "https://localhost:7026")
+//                   .AllowAnyMethod()
+//                   .AllowAnyHeader()
+//                   .AllowCredentials();
+//        });
+//});
+
 //DBContext
 builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -53,6 +98,18 @@ builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>
 // WebSocket (chat service)
 builder.Services.AddSingleton<ChatHandler>();
 
+//Add cors for website
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.WithOrigins("https://localhost:7152", "https://localhost:7026")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowCredentials();
+        });
+});
 
 var app = builder.Build();
 
@@ -100,6 +157,8 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
+//app.UseCors("AllowAllOrigins");
+//app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -2,7 +2,9 @@
 using BusinessObjects.Models;
 using DTOs.Conversation;
 using DTOs.Message;
+using DTOs.Plants;
 using DTOs.Rank;
+using DTOs.Services;
 using DTOs.User;
 using System;
 using System.Collections.Generic;
@@ -24,6 +26,12 @@ namespace Service.AutoMapper
             CreateMap<UpdateMessageDTO, Message>();
             CreateMap<Conversation, ConversationVM>().ReverseMap();
             CreateMap<User, UserVM>().ReverseMap();
+
+
+            //Do Huu Thuan
+            CreateMap<Plant, ResponsePlantDTO>().ReverseMap();
+            CreateMap<User, ResponseUserDTO>().ReverseMap();
+            CreateMap<BusinessObjects.Models.Service, ServicesDTO>().ReverseMap();
         }
 
     }

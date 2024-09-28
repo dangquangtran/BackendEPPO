@@ -14,6 +14,7 @@ namespace Repository.Interfaces
         IGenericRepository<Contract> ContractRepository { get; }
         IGenericRepository<Plant> PlantRepository { get; }
         IGenericRepository<Accessory> AccessoryRepository { get; }
+        IGenericRepository<Service> ServicesRepository { get; }
 
         Task SaveAsync();
 

@@ -19,6 +19,9 @@ namespace Service
             _unitOfWork = unitOfWork;
         }
 
-  
+        public async Task<IEnumerable<ServicesDTO>> GetListServices()
+        {
+            return (IEnumerable<ServicesDTO>)await _unitOfWork.ServicesRepository.GetAsync();
+        }
     }
 }

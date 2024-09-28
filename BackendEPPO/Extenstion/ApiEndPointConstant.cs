@@ -32,6 +32,12 @@ namespace BackendEPPO.Extenstion
 
         }
         // Do Huu Thuan
+        public static class Services
+        {
+            public const string GetListServices_Endpoint = ApiEndpoint + "/GetList/Services";
+
+        }
+        // Do Huu Thuan
         public static class Plants
         {
             public const string GetListPlants_Endpoint = ApiEndpoint + "/GetList/Plants";
