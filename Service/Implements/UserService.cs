@@ -19,5 +19,9 @@ namespace Service
         {
             return await _unitOfWork.UserRepository.GetAsync(); 
         }
+        public async Task<User> GetUsersByID(int Id)
+        {
+            return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id));
+        }
     }
 }

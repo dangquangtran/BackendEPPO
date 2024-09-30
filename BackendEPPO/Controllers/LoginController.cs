@@ -1,7 +1,5 @@
-﻿using BackendEPPO.Extenstion;
-using BusinessObjects.Models;
+﻿using BusinessObjects.Models;
 using DTOs.Login;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Service.Interfaces;
@@ -24,82 +22,45 @@ namespace BackendEPPO.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost(ApiEndPointConstant.User.Login_Endpoint)]
-   //     [HttpPost("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            IActionResult response = Unauthorized();
 
             var users = await _userService.GetListUsers();
-
             var user = users.FirstOrDefault(x => x.UserName == request.UserName);
 
             if (user == null || user.Password != request.Password)
             {
-                return Unauthorized("Invalid username or password.");
-            }   
+                return Unauthorized("Invalid email or password.");
+            }
+
             var tokenString = GenerateJSONWebToken(user);
-
             return Ok(new { token = tokenString, role = user.Role });
-
         }
+
         private string GenerateJSONWebToken(User userInfo)
         {
-            try
-            {
-                var jwtKey = _configuration["Jwt:Key"];
-                var jwtIssuer = _configuration["Jwt:Issuer"];
-                var jwtAudience = _configuration["Jwt:Audience"];
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-                if (string.IsNullOrEmpty(jwtKey) || string.IsNullOrEmpty(jwtIssuer) || string.IsNullOrEmpty(jwtAudience))
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: new[]
                 {
-                    return null;
-                }
+                    new Claim(ClaimTypes.Email, userInfo.Email),
+                    new Claim(ClaimTypes.Role, userInfo.Role.ToString()),
+                    new Claim("userId", userInfo.UserId.ToString())
+                },
+                expires: DateTime.Now.AddMinutes(120),
+                signingCredentials: credentials
+            );
 
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-                var token = new JwtSecurityToken(
-                    issuer: jwtIssuer,
-                    audience: jwtAudience,
-                    claims: new[]
-                    {
-                new Claim(ClaimTypes.Role, userInfo.Role.ToString()),
-                new Claim("userId", userInfo.UserId.ToString()),
-                    },
-                    expires: DateTime.Now.AddMinutes(120),
-                    signingCredentials: credentials
-                );
-
-                return new JwtSecurityTokenHandler().WriteToken(token);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-        //private string GenerateJSONWebToken(User userInfo)
-        //{
-        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-        //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        //    var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
-        //      _configuration["Jwt:Audience"],
-        //      new Claim[]
-        //      {
-        //          new(ClaimTypes.Role, userInfo.Role.ToString()),
-        //          new("userId", userInfo.UserId.ToString()),
-        //      },
-        //      expires: DateTime.Now.AddMinutes(120),
-        //      signingCredentials: credentials
-        //      );
-
-        //    return new JwtSecurityTokenHandler().WriteToken(token);
-        //}
     }
 }

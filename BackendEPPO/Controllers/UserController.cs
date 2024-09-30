@@ -34,5 +34,24 @@ namespace BackendEPPO.Controllers
                 Data = users
             });
         }
+
+        [HttpGet(ApiEndPointConstant.User.GetUserByID)]
+        public async Task<IActionResult> GetUsersByID(int id)
+        {
+            var users = await _userService.GetUsersByID(id);
+
+            if (users == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = users
+            });
+        }
+
+
     }
 }

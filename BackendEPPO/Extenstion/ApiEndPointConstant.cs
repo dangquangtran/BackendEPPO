@@ -15,8 +15,11 @@ namespace BackendEPPO.Extenstion
         // Do Huu Thuan     
         public static class User
         {
+            public const string GetUserEndpoint = ApiEndpoint + "/GetUser/Users";
+
             public const string GetListUsers_Endpoint = ApiEndpoint + "/GetList/Users";
-            public const string Login_Endpoint = ApiEndpoint + "/Login/Users";
+            public const string Login_Endpoint = ApiEndpoint + "/Users/Login";
+            public const string GetUserByID = GetUserEndpoint + "/Id";
         }
         // Do Huu Thuan
         public static class Contract
@@ -28,6 +31,7 @@ namespace BackendEPPO.Extenstion
         public static class Accessory
         {
             public const string GetListAccessory_Endpoint = ApiEndpoint + "/GetList/Accessories";
+            public const string GetAccessoryByID = GetListAccessory_Endpoint + "/Id";
 
         }
         // Do Huu Thuan
@@ -40,7 +44,7 @@ namespace BackendEPPO.Extenstion
         public static class Plants
         {
             public const string GetListPlants_Endpoint = ApiEndpoint + "/GetList/Plants";
-
+            public const string GetPlantByID = GetListPlants_Endpoint + "/Id";
 
 
 

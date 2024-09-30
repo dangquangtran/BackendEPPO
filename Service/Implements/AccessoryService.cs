@@ -19,5 +19,9 @@ namespace Service.Implements
         {
             return await _unitOfWork.AccessoryRepository.GetAsync();
         }
+        public async Task<Accessory> GetAccessoryByID(int id)
+        {
+            return await Task.FromResult(_unitOfWork.AccessoryRepository.GetByID(id));
+        }
     }
 }

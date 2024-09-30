@@ -1,6 +1,7 @@
 ﻿using BackendEPPO.Extenstion;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
@@ -30,6 +31,23 @@ namespace BackendEPPO.Controllers
                 StatusCode = 200,
                 Message = "Request was successful",
                 Data = _accessory,
+            });
+        }
+
+        [HttpGet(ApiEndPointConstant.Accessory.GetAccessoryByID)]
+        public async Task<IActionResult> GetAccessoryByID(int id)
+        {
+            var accessory = await _accessoryService.GetAccessoryByID(id);
+
+            if (accessory == null)
+            {
+                return NotFound($"Accessory with ID {id} not found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = accessory
             });
         }
     }

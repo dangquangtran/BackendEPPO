@@ -23,6 +23,7 @@ namespace Repository.Interfaces
             int? pageIndex = null,
             int? pageSize = null);
 
+
         TEntity GetByID(object id);
 
         void Insert(TEntity entity);

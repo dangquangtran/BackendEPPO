@@ -22,5 +22,9 @@ namespace Service
         {
             return await _unitOfWork.PlantRepository.GetAsync();
         }
+        public async Task<Plant> GetPlantByID(int id)
+        {
+            return await Task.FromResult(_unitOfWork.PlantRepository.GetByID(id));
+        }
     }
 }

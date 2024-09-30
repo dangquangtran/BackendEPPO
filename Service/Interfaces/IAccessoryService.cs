@@ -10,5 +10,6 @@ namespace Service.Interfaces
     public interface IAccessoryService
     {
         Task<IEnumerable<Accessory>> GetListAccessory();
+        Task<Accessory> GetAccessoryByID(int Id);
     }
 }
