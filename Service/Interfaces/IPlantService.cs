@@ -9,7 +9,7 @@ namespace Service.Interfaces
 {
     public interface IPlantService
     {
-        Task<IEnumerable<Plant>> GetListPlants();
+        Task<IEnumerable<Plant>> GetListPlants(int page, int size);
         Task<Plant> GetPlantByID(int Id);
         Task<IEnumerable<Plant>> GetListPlantByCategory(int Id);
     }

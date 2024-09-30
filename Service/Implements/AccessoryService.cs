@@ -15,9 +15,9 @@ namespace Service.Implements
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Accessory>> GetListAccessory()
+        public async Task<IEnumerable<Accessory>> GetListAccessory(int page, int size)
         {
-            return await _unitOfWork.AccessoryRepository.GetAsync();
+            return await _unitOfWork.AccessoryRepository.GetAsync(pageIndex: page, pageSize:size);
         }
         public async Task<Accessory> GetAccessoryByID(int id)
         {

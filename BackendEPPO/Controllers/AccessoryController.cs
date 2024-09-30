@@ -18,9 +18,9 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Accessory.GetListAccessory_Endpoint)]
-        public async Task<IActionResult> GetListAccessory()
+        public async Task<IActionResult> GetListAccessory(int page, int size)
         {
-            var _accessory = await _accessoryService.GetListAccessory();
+            var _accessory = await _accessoryService.GetListAccessory(page,size);
 
             if (_accessory == null || !_accessory.Any())
             {

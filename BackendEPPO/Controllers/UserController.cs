@@ -19,9 +19,9 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.User.GetListUsers_Endpoint)]
-        public async Task<IActionResult> GetListUsers()
+        public async Task<IActionResult> GetListUsers(int page, int size)
         {
-            var users = await _userService.GetListUsers();
+            var users = await _userService.GetListUsers(page, size);
 
             if (users == null || !users.Any())
             {

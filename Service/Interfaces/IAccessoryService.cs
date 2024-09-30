@@ -9,7 +9,7 @@ namespace Service.Interfaces
 {
     public interface IAccessoryService
     {
-        Task<IEnumerable<Accessory>> GetListAccessory();
+        Task<IEnumerable<Accessory>> GetListAccessory(int page, int size);
         Task<Accessory> GetAccessoryByID(int Id);
     }
 }
