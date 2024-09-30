@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Service.Interfaces
 {
-    public interface IPlantService
+    public interface ICategoryService
     {
-        Task<IEnumerable<Plant>> GetListPlants();
-        Task<Plant> GetPlantByID(int Id);
-        Task<IEnumerable<Plant>> GetListPlantByCategory(int Id);
+        Task<IEnumerable<Category>> GetListCategory();
+        Task<Category> GetCategoryByID(int Id);
+      
     }
 }

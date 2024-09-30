@@ -15,6 +15,7 @@ namespace Repository.Implements
         private IGenericRepository<Plant> plantRepository;
         private IGenericRepository<Accessory> accessoryRepository;
         private IGenericRepository<Service> serviceRepository;
+        private IGenericRepository<Category> categoryRepository;
 
         private IConversationRepository conversationRepository;
         private IGenericRepository<Message> messageRepository;
@@ -70,6 +71,14 @@ namespace Repository.Implements
             get
             {
                 return serviceRepository ??= new GenericRepository<Service>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Category> CategoriesRepository
+        {
+            get
+            {
+                return categoryRepository ??= new GenericRepository<Category>(context);
             }
         }
         public IConversationRepository ConversationRepository

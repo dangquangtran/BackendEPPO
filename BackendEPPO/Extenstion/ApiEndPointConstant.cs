@@ -45,11 +45,16 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListPlants_Endpoint = ApiEndpoint + "/GetList/Plants";
             public const string GetPlantByID = GetListPlants_Endpoint + "/Id";
-
+            public const string GetPlantByCategory = GetListPlants_Endpoint + "/CategoryId";
 
 
         }
-
+        // Do Huu Thuan
+        public static class Categories
+        {
+            public const string GetListCategory_Endpoint = ApiEndpoint + "/GetList/Categories";
+            public const string GetCategoriesByID = GetListCategory_Endpoint + "/Id";
+        }
 
 
 
