@@ -33,5 +33,22 @@ namespace BackendEPPO.Controllers
                 Data = _plant
             });
         }
+
+        [HttpGet(ApiEndPointConstant.Plants.GetPlantByID)]
+        public async Task<IActionResult> GetPlantByID(int id)
+        {
+            var plant = await _plantsService.GetPlantByID(id); 
+
+            if (plant == null)
+            {
+                return NotFound($"Plant with ID {id} not found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = plant
+            });
+        }
     }
 }

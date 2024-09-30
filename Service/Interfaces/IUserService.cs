@@ -7,5 +7,6 @@ namespace Service.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<User>> GetListUsers();
+        Task<User> GetUsersByID(int Id);
     }
 }

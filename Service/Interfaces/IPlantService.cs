@@ -10,5 +10,6 @@ namespace Service.Interfaces
     public interface IPlantService
     {
         Task<IEnumerable<Plant>> GetListPlants();
+        Task<Plant> GetPlantByID(int Id);
     }
 }
