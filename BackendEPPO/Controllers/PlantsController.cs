@@ -50,5 +50,23 @@ namespace BackendEPPO.Controllers
                 Data = plant
             });
         }
+
+
+        [HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
+        public async Task<IActionResult> GetListPlantsByCategory(int Id)
+        {
+            var _plant = await _plantsService.GetListPlantByCategory(Id);
+
+            if (_plant == null || !_plant.Any())
+            {
+                return NotFound("No contract found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = _plant
+            });
+        }
     }
 }

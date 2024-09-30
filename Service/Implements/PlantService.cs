@@ -26,5 +26,9 @@ namespace Service
         {
             return await Task.FromResult(_unitOfWork.PlantRepository.GetByID(id));
         }
+        public async Task<IEnumerable<Plant>> GetListPlantByCategory(int Id)
+        {
+            return await _unitOfWork.PlantRepository.GetAsync();
+        }
     }
 }

@@ -29,7 +29,7 @@ builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IAccessoryService, AccessoryService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
-
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
