@@ -18,9 +18,9 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Plants.GetListPlants_Endpoint)]
-        public async Task<IActionResult> GetListPlants()
+        public async Task<IActionResult> GetListPlants(int page, int size)
         {
-            var _plant = await _plantsService.GetListPlants();
+            var _plant = await _plantsService.GetListPlants(page, size);
 
             if (_plant == null || !_plant.Any())
             {

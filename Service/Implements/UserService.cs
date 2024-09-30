@@ -15,9 +15,9 @@ namespace Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<User>> GetListUsers()
+        public async Task<IEnumerable<User>> GetListUsers(int page, int size)
         {
-            return await _unitOfWork.UserRepository.GetAsync(); 
+            return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, pageSize: size); 
         }
         public async Task<User> GetUsersByID(int Id)
         {

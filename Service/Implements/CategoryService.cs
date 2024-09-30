@@ -18,9 +18,9 @@ namespace Service.Implements
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Category>> GetListCategory()
+        public async Task<IEnumerable<Category>> GetListCategory(int page, int size)
         {
-            return await _unitOfWork.CategoriesRepository.GetAsync();
+            return await _unitOfWork.CategoriesRepository.GetAsync(pageIndex: page, pageSize: size);
         }
         public async Task<Category> GetCategoryByID(int id)
         {

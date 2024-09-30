@@ -1,6 +1,7 @@
 ﻿using BackendEPPO.Extenstion;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
@@ -17,9 +18,9 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Categories.GetListCategory_Endpoint)]
-        public async Task<IActionResult> GetListCategory()
+        public async Task<IActionResult> GetListCategory(int page, int size)
         {
-            var _cate = await _IService.GetListCategory();
+            var _cate = await _IService.GetListCategory(page, size);
 
             if (_cate == null || !_cate.Any())
             {

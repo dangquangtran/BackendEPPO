@@ -22,25 +22,25 @@ namespace BackendEPPO.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            var users = await _userService.GetListUsers();
-            var user = users.FirstOrDefault(x => x.UserName == request.UserName);
+        //    var users = await _userService.GetListUsers();
+        //    var user = users.FirstOrDefault(x => x.UserName == request.UserName);
 
-            if (user == null || user.Password != request.Password)
-            {
-                return Unauthorized("Invalid email or password.");
-            }
+        //    if (user == null || user.Password != request.Password)
+        //    {
+        //        return Unauthorized("Invalid email or password.");
+        //    }
 
-            var tokenString = GenerateJSONWebToken(user);
-            return Ok(new { token = tokenString, role = user.Role });
-        }
+        //    var tokenString = GenerateJSONWebToken(user);
+        //    return Ok(new { token = tokenString, role = user.Role });
+        //}
 
         private string GenerateJSONWebToken(User userInfo)
         {
