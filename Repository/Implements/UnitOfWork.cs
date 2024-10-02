@@ -19,6 +19,7 @@ namespace Repository.Implements
         private IGenericRepository<ContractDetail> contractDetailRepository;
         private IGenericRepository<Room> roomRepository;
         private IGenericRepository<RoomParticipant> roomParticipantRepository;
+        private IGenericRepository<Notification> notificationtRepository;
 
         private IGenericRepository<Rank> rankRepository;
    
@@ -45,7 +46,15 @@ namespace Repository.Implements
             {
                 return roomRepository ??= new GenericRepository<Room>(context);
             }
-        } 
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Notification> NotificationRepository
+        {
+            get
+            {
+                return notificationtRepository ??= new GenericRepository<Notification>(context);
+            }
+        }
         //Do Huu Thuan
         public IGenericRepository<RoomParticipant> RoomParticipantRepository
         {

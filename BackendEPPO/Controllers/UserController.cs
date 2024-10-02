@@ -1,5 +1,6 @@
 ﻿using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
+using DTOs.User;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.Interfaces;
@@ -49,6 +50,25 @@ namespace BackendEPPO.Controllers
                 StatusCode = 200,
                 Message = "Request was successful",
                 Data = users
+            });
+        }
+
+        [HttpPost(ApiEndPointConstant.User.CreateUserAccount)]
+        public async Task<IActionResult> CreateUser([FromBody] ResponseUserDTO user)
+        {
+            
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _userService.CreateUserAccount(user);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "User created successfully",
+                Data = user
             });
         }
 

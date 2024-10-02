@@ -34,6 +34,9 @@ builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IContractDetailServices, ContractDetailServices>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomParticipantService, RoomParticipantService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
