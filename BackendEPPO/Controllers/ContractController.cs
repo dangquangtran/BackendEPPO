@@ -18,13 +18,29 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Contract.GetListContract_Endpoint)]
-        public async Task<IActionResult> GetListContracts()
+        public async Task<IActionResult> GetListContracts(int page, int size)
         {
-            var contract = await _contractService.GetListContract();
+            var contract = await _contractService.GetListContract(page, size);
 
             if (contract == null || !contract.Any())
             {
                 return NotFound("No contract found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = contract
+            });
+        }
+        [HttpGet(ApiEndPointConstant.Contract.GetContractByID)]
+        public async Task<IActionResult> GetUsersByID(int id)
+        {
+            var contract = await _contractService.GetContractByID(id);
+
+            if (contract == null)
+            {
+                return NotFound($"Contract with ID {id} not found.");
             }
             return Ok(new
             {

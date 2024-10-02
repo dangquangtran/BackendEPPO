@@ -8,14 +8,20 @@ namespace Repository.Implements
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly bef4qvhxkgrn0oa7ipg0Context context;
-        private IGenericRepository<Rank> rankRepository;
+        //Do Huu Thuan
         private IGenericRepository<User> userRepository;
-
         private IGenericRepository<Contract> contractRepository;
         private IGenericRepository<Plant> plantRepository;
         private IGenericRepository<Accessory> accessoryRepository;
         private IGenericRepository<Service> serviceRepository;
         private IGenericRepository<Category> categoryRepository;
+        private IGenericRepository<Address> addressRepository;
+        private IGenericRepository<ContractDetail> contractDetailRepository;
+        private IGenericRepository<Room> roomRepository;
+        private IGenericRepository<RoomParticipant> roomParticipantRepository;
+
+        private IGenericRepository<Rank> rankRepository;
+   
 
         private IConversationRepository conversationRepository;
         private IGenericRepository<Message> messageRepository;
@@ -32,7 +38,38 @@ namespace Repository.Implements
                 return rankRepository ??= new GenericRepository<Rank>(context);
             }
         }
-
+        //Do Huu Thuan
+        public IGenericRepository<Room> RoomRepository
+        {
+            get
+            {
+                return roomRepository ??= new GenericRepository<Room>(context);
+            }
+        } 
+        //Do Huu Thuan
+        public IGenericRepository<RoomParticipant> RoomParticipantRepository
+        {
+            get
+            {
+                return roomParticipantRepository ??= new GenericRepository<RoomParticipant>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<ContractDetail> ContractDetailRepository
+        {
+            get
+            {
+                return contractDetailRepository ??= new GenericRepository<ContractDetail>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Address> AddressRepository
+        {
+            get
+            {
+                return addressRepository ??= new GenericRepository<Address>(context);
+            }
+        }
         //Do Huu Thuan
         public IGenericRepository<User> UserRepository
         {

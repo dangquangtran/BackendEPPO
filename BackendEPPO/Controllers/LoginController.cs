@@ -1,4 +1,5 @@
-﻿using BusinessObjects.Models;
+﻿using BackendEPPO.Extenstion;
+using BusinessObjects.Models;
 using DTOs.Login;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -22,25 +23,23 @@ namespace BackendEPPO.Controllers
             _configuration = configuration;
         }
 
-        //[HttpPost("login")]
-        //public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPost(ApiEndPointConstant.User.Login_Endpoint)]
+        public IActionResult Login([FromBody] LoginRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            IActionResult response = Unauthorized();
+            var user = _userService.GetAllUsers().Where(x => x.UserName == request.UserName).FirstOrDefault();
 
-        //    var users = await _userService.GetListUsers();
-        //    var user = users.FirstOrDefault(x => x.UserName == request.UserName);
-
-        //    if (user == null || user.Password != request.Password)
-        //    {
-        //        return Unauthorized("Invalid email or password.");
-        //    }
-
-        //    var tokenString = GenerateJSONWebToken(user);
-        //    return Ok(new { token = tokenString, role = user.Role });
-        //}
+            if (user != null && user.Password == request.Password)
+            {
+                var tokenString = GenerateJSONWebToken(user);
+                response = Ok(new { token = tokenString, role = user.Role });
+            }
+            return response;
+        }
 
         private string GenerateJSONWebToken(User userInfo)
         {
@@ -52,8 +51,9 @@ namespace BackendEPPO.Controllers
                 audience: _configuration["Jwt:Audience"],
                 claims: new[]
                 {
+                    new Claim(ClaimTypes.Name, userInfo.FullName),
                     new Claim(ClaimTypes.Email, userInfo.Email),
-                    new Claim(ClaimTypes.Role, userInfo.Role.ToString()),
+                    new Claim(ClaimTypes.Role, userInfo.Role.NameRole.ToString()),
                     new Claim("userId", userInfo.UserId.ToString())
                 },
                 expires: DateTime.Now.AddMinutes(120),
