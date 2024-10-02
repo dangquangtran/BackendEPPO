@@ -1,4 +1,6 @@
-﻿using BusinessObjects.Models;
+﻿using AutoMapper;
+using BusinessObjects.Models;
+using DTOs.User;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System.Collections.Generic;
@@ -9,10 +11,30 @@ namespace Service
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+        public async Task CreateUserAccount(ResponseUserDTO userDto)
+        {
+            var userEntity = new User
+            {
+                UserName = userDto.UserName,
+                Password = userDto.Password,
+                PhoneNumber = userDto.PhoneNumber,
+                Email = userDto.Email,
+                RoleId = 4,
+                CreationDate = DateTime.Now,
+                IsActive = true,
+                Status = 1,
+
+            };
+
+            _unitOfWork.UserRepository.Insert(userEntity); 
+            await _unitOfWork.SaveAsync();
         }
 
         public IQueryable<User> GetAllUsers()

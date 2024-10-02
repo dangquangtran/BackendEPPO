@@ -20,8 +20,8 @@ namespace Repository.Interfaces
         IGenericRepository<ContractDetail> ContractDetailRepository { get; }
         IGenericRepository<Room> RoomRepository { get; }
         IGenericRepository<RoomParticipant> RoomParticipantRepository { get; }
+        IGenericRepository<Notification> NotificationRepository { get; }
         
-
         Task SaveAsync();
 
         IConversationRepository ConversationRepository { get; }

@@ -16,10 +16,11 @@ namespace BackendEPPO.Extenstion
         public static class User
         {
             public const string GetUserEndpoint = ApiEndpoint + "/GetUser/Users";
-
             public const string GetListUsers_Endpoint = ApiEndpoint + "/GetList/Users";
             public const string Login_Endpoint = ApiEndpoint + "/Users/Login";
             public const string GetUserByID = GetUserEndpoint + "/Id";
+
+            public const string CreateUserAccount = ApiEndpoint + "/UsersAccount/CreateAccount";
         }
         // Do Huu Thuan
         public static class Room
@@ -50,6 +51,12 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListAddress_Endpoint = ApiEndpoint + "/GetList/Address";
             public const string GetAddressByID = GetListAddress_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class Notification
+        {
+            public const string GetListNotification_Endpoint = ApiEndpoint + "/GetList/Notification";
+            public const string GetNotificationByID = GetListNotification_Endpoint + "/Id";
         }
         // Do Huu Thuan
         public static class Accessory
