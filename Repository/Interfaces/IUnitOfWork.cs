@@ -16,6 +16,11 @@ namespace Repository.Interfaces
         IGenericRepository<Accessory> AccessoryRepository { get; }
         IGenericRepository<Service> ServicesRepository { get; }
         IGenericRepository<Category> CategoriesRepository { get; }
+        IGenericRepository<Address> AddressRepository { get; }
+        IGenericRepository<ContractDetail> ContractDetailRepository { get; }
+        IGenericRepository<Room> RoomRepository { get; }
+        IGenericRepository<RoomParticipant> RoomParticipantRepository { get; }
+        
 
         Task SaveAsync();
 

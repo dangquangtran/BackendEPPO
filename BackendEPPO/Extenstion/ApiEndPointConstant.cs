@@ -22,10 +22,34 @@ namespace BackendEPPO.Extenstion
             public const string GetUserByID = GetUserEndpoint + "/Id";
         }
         // Do Huu Thuan
+        public static class Room
+        {
+            public const string GetListRoom_Endpoint = ApiEndpoint + "/GetList/Rooms";
+            public const string GetRoomByID = GetListRoom_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
         public static class Contract
         {
             public const string GetListContract_Endpoint = ApiEndpoint + "/GetList/Contracts";
-
+            public const string GetContractByID = GetListContract_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class RoomParticipant
+        {
+            public const string GetRoomParticipant_Endpoint = ApiEndpoint + "/GetList/RoomParticipant";
+            public const string GetRoomParticipantByID = GetRoomParticipant_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class ContractDetails
+        {
+            public const string GetListContractDetails_Endpoint = ApiEndpoint + "/GetList/ContractDetails";
+            public const string GetContractDetailsByID = GetListContractDetails_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class Address
+        {
+            public const string GetListAddress_Endpoint = ApiEndpoint + "/GetList/Address";
+            public const string GetAddressByID = GetListAddress_Endpoint + "/Id";
         }
         // Do Huu Thuan
         public static class Accessory

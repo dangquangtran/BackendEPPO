@@ -15,6 +15,11 @@ namespace Service
             _unitOfWork = unitOfWork;
         }
 
+        public IQueryable<User> GetAllUsers()
+        {
+            return _unitOfWork.UserRepository.Get(includeProperties: "Role").AsQueryable(); 
+        }
+
         public async Task<IEnumerable<User>> GetListUsers(int page, int size)
         {
             return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, pageSize: size); 

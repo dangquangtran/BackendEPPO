@@ -15,11 +15,14 @@ namespace Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Contract>> GetListContract()
+        public async Task<IEnumerable<Contract>> GetListContract(int page, int size)
         {
-            return await _unitOfWork.ContractRepository.GetAsync();
+            return await _unitOfWork.ContractRepository.GetAsync(includeProperties: "User", pageIndex: page, pageSize: size);
         }
 
-       
+        public async Task<Contract> GetContractByID(int Id)
+        {
+            return await Task.FromResult(_unitOfWork.ContractRepository.GetByID(Id));
+        }
     }
 }

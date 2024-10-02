@@ -30,6 +30,10 @@ builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IAccessoryService, AccessoryService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IContractDetailServices, ContractDetailServices>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IRoomParticipantService, RoomParticipantService>();
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
