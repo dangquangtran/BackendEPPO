@@ -14,6 +14,5 @@ namespace Service.Interfaces
         Message GetMessageById(int id);
         void CreateMessage(ChatMessageDTO createMessage);
         void UpdateMessage(UpdateMessageDTO updateMessage);
-        void DeleteMessage(int id);
     }
 }

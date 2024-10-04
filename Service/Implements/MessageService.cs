@@ -44,11 +44,5 @@ namespace Service.Implements
             _unitOfWork.MessageRepository.Update(message);
             _unitOfWork.Save();
         }
-
-        public void DeleteMessage(int id)
-        {
-            _unitOfWork.MessageRepository.Delete(id);
-            _unitOfWork.Save();
-        }
     }
 }

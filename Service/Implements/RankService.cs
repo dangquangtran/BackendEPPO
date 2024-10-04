@@ -44,11 +44,5 @@ namespace Service.Implements
             _unitOfWork.RankRepository.Update(rank);
             _unitOfWork.Save();
         }
-
-        public void DeleteRank(int id)
-        {
-            _unitOfWork.RankRepository.Delete(id);
-            _unitOfWork.Save();
-        }
     }
 }

@@ -41,13 +41,6 @@ namespace BackendEPPO.Controllers
             return Ok("Đã cập nhật thành công");
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteConversation(int id)
-        {
-            _conversationService.DeleteConversation(id);
-            return Ok("Đã xóa thành công");
-        }
-
         [HttpGet("GetByUserId")]
         public IActionResult GetConversationsByUserId([FromQuery] int userId)
         {

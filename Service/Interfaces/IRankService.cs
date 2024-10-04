@@ -14,6 +14,5 @@ namespace Service.Interfaces
         Rank GetRankById(int id);
         void CreateRank(CreateRankDTO createRank);
         void UpdateRank(UpdateRankDTO updateRank);
-        void DeleteRank(int id);
     }
 }
