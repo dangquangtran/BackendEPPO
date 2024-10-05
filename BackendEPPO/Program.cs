@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Implements;
 using Repository.Interfaces;
 using Service;
 using Service.Implements;
 using Service.Interfaces;
+using System.Text;
 using System.Text.Json.Serialization;
+using static BackendEPPO.Extenstion.ApiEndPointConstant;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +44,36 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey =
+            new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
+    };
+});
 
 // Add bearn to using the Authorization
 builder.Services.AddSwaggerGen(option =>
@@ -85,17 +119,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowAllOrigins",
-//        builder =>
-//        {
-//            builder.WithOrigins("https://localhost:7152", "https://localhost:7026")
-//                   .AllowAnyMethod()
-//                   .AllowAnyHeader()
-//                   .AllowCredentials();
-//        });
-//});
 
 //DBContext
 builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>

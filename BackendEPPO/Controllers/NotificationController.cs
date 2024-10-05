@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
@@ -16,6 +17,7 @@ namespace BackendEPPO.Controllers
             _iNotificationService = IService;
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Notification.GetListNotification_Endpoint)]
         public async Task<IActionResult> GetListNotification(int page, int size)
         {
@@ -33,6 +35,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Notification.GetNotificationByID)]
         public async Task<IActionResult> GetNotificationByID(int id)
         {

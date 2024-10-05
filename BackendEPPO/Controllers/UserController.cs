@@ -1,6 +1,7 @@
 ﻿using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
 using DTOs.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.Interfaces;
@@ -19,6 +20,7 @@ namespace BackendEPPO.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpGet(ApiEndPointConstant.User.GetListUsers_Endpoint)]
         public async Task<IActionResult> GetListUsers(int page, int size)
         {
@@ -36,6 +38,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.User.GetUserByID)]
         public async Task<IActionResult> GetUsersByID(int id)
         {

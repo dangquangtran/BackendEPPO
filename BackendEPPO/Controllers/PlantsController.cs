@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -17,6 +18,7 @@ namespace BackendEPPO.Controllers
             _plantsService = IService;
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Plants.GetListPlants_Endpoint)]
         public async Task<IActionResult> GetListPlants(int page, int size)
         {
@@ -34,6 +36,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Plants.GetPlantByID)]
         public async Task<IActionResult> GetPlantByID(int id)
         {
@@ -51,7 +54,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
-
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
         public async Task<IActionResult> GetListPlantsByCategory(int Id)
         {

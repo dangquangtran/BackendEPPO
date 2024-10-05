@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -17,6 +18,7 @@ namespace BackendEPPO.Controllers
             _accessoryService = IService;
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Accessory.GetListAccessory_Endpoint)]
         public async Task<IActionResult> GetListAccessory(int page, int size)
         {
@@ -34,6 +36,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Accessory.GetAccessoryByID)]
         public async Task<IActionResult> GetAccessoryByID(int id)
         {
