@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -16,6 +17,8 @@ namespace BackendEPPO.Controllers
         {
             _IService = _addressService;
         }
+
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetListAddress_Endpoint)]
         public async Task<IActionResult> GetListUsers(int page, int size)
         {
@@ -32,6 +35,7 @@ namespace BackendEPPO.Controllers
                 Data = users
             });
         }
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetAddressByID)]
         public async Task<IActionResult> GetUsersByID(int id)
         {

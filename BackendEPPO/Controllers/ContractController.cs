@@ -1,5 +1,6 @@
 ﻿using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
@@ -17,6 +18,7 @@ namespace BackendEPPO.Controllers
             _contractService = IService;
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Contract.GetListContract_Endpoint)]
         public async Task<IActionResult> GetListContracts(int page, int size)
         {
@@ -33,6 +35,8 @@ namespace BackendEPPO.Controllers
                 Data = contract
             });
         }
+
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Contract.GetContractByID)]
         public async Task<IActionResult> GetUsersByID(int id)
         {

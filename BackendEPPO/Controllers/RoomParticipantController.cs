@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
@@ -16,6 +17,7 @@ namespace BackendEPPO.Controllers
             _roomParticipantService = IService;
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.RoomParticipant.GetRoomParticipant_Endpoint)]
         public async Task<IActionResult> GetListRoomParticipant(int page, int size)
         {
@@ -32,6 +34,8 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
+
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.RoomParticipant.GetRoomParticipantByID)]
         public async Task<IActionResult> GetRoomParticipantByID(int id)
         {

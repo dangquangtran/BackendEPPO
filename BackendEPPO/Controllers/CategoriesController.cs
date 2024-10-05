@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,6 +18,7 @@ namespace BackendEPPO.Controllers
             _IService = IService;
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Categories.GetListCategory_Endpoint)]
         public async Task<IActionResult> GetListCategory(int page, int size)
         {
@@ -34,6 +36,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Categories.GetCategoriesByID)]
         public async Task<IActionResult> GetCategoriesByID(int id)
         {
