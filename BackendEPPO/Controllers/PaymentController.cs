@@ -14,7 +14,6 @@ namespace BackendEPPO.Controllers
         private readonly string key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
         private readonly string create_order_url = "https://sb-openapi.zalopay.vn/v2/create";
         private readonly string redirectUrl = "https://localhost:7170/api/Product/GetAllProducts";
-        private readonly string refund_url = "https://sb-openapi.zalopay.vn/v2/refund";
         public PaymentController()
         {
         }
@@ -87,34 +86,7 @@ namespace BackendEPPO.Controllers
             // thông báo kết quả cho ZaloPay server
             return Ok(result);
         }
-
-        [HttpPost("Refund")]
-        public async Task<IActionResult> Refund()
-        {
-
-            var timestamp = Utils.GetTimeStamp().ToString();
-            var rand = new Random();
-            var uid = timestamp + "" + rand.Next(111, 999).ToString();
-
-            Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("app_id", app_id);
-            param.Add("m_refund_id", DateTime.Now.ToString("yyMMdd") + "_" + app_id + "_" + uid);
-            param.Add("zp_trans_id", "1234567");
-            param.Add("amount", "1000");
-            param.Add("timestamp", timestamp);
-            param.Add("description", "demo");
-
-            var data = app_id + "|" + param["zp_trans_id"] + "|" + param["amount"] + "|" + param["description"] + "|" + param["timestamp"];
-            param.Add("mac", HmacHelper.Compute(ZaloPayHMAC.HMACSHA256, key1, data));
-
-            var result = await HttpHelper.PostFormAsync(refund_url, param);
-
-            foreach (var entry in result)
-            {
-                Console.WriteLine("{0} = {1}", entry.Key, entry.Value);
-            }
-            return Ok(result);
-        }
+       
     }
 }
 
