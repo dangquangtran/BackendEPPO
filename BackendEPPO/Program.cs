@@ -125,6 +125,9 @@ builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
+//var secretKey = builder.Configuration["AppSettings:SecretKey"];// Load your secret key from config
+//builder.Services.AddSingleton<IJwtTokenHelper>(new JwtTokenHelper(secretKey));
+
 // WebSocket (chat service)
 builder.Services.AddSingleton<ChatHandler>();
 

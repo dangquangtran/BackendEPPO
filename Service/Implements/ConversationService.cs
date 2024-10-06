@@ -46,12 +46,6 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
-        public void DeleteConversation(int id)
-        {
-            _unitOfWork.ConversationRepository.Delete(id);
-            _unitOfWork.Save();
-        }
-
         public IEnumerable<ConversationVM> GetConversationsByUserId(int userId)
         {
             var conversations = _unitOfWork.ConversationRepository.GetConversationsByUserId(userId);

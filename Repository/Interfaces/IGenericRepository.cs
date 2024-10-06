@@ -28,9 +28,9 @@ namespace Repository.Interfaces
 
         void Insert(TEntity entity);
 
-        void Delete(object id);
+        //void Delete(object id);
 
-        void Delete(TEntity entityToDelete);
+        //void Delete(TEntity entityToDelete);
 
         void Update(TEntity entityToUpdate);
     }

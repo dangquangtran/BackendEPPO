@@ -1,4 +1,5 @@
 ﻿using DTOs.Conversation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
@@ -41,16 +42,12 @@ namespace BackendEPPO.Controllers
             return Ok("Đã cập nhật thành công");
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteConversation(int id)
-        {
-            _conversationService.DeleteConversation(id);
-            return Ok("Đã xóa thành công");
-        }
-
+        [Authorize]
         [HttpGet("GetByUserId")]
-        public IActionResult GetConversationsByUserId([FromQuery] int userId)
+        public IActionResult GetConversationsByUserId()
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
             return Ok(_conversationService.GetConversationsByUserId(userId));
         }
     }

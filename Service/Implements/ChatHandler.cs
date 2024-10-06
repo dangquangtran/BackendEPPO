@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Message;
+using Firebase.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Repository.Interfaces;
 using System;
@@ -10,6 +11,10 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using Microsoft.Extensions.Configuration;
+using DTOs.Conversation;
+using System.Text.Encodings.Web;
 
 namespace Service.Implements
 {
@@ -17,10 +22,12 @@ namespace Service.Implements
     {
         private readonly ConcurrentDictionary<int, WebSocket> _userSockets = new ConcurrentDictionary<int, WebSocket>();
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IConfiguration _configuration;
 
-        public ChatHandler(IServiceScopeFactory serviceScopeFactory)
+        public ChatHandler(IServiceScopeFactory serviceScopeFactory, IConfiguration configuration)
         {
             _serviceScopeFactory = serviceScopeFactory;
+            _configuration = configuration;
         }
 
         public async Task HandleAsync(WebSocket socket)
@@ -67,6 +74,13 @@ namespace Service.Implements
 
                         if (chatMessage != null)
                         {
+                            string imageUrl = null;
+
+                            // Nếu tin nhắn có hình ảnh, tải lên Firebase
+                            if (!string.IsNullOrEmpty(chatMessage.ImageLink))
+                            {
+                                imageUrl = await UploadImageToFirebase(chatMessage.ImageLink, chatMessage.UserId, chatMessage.ConversationId);
+                            }
                             // Tạo một phạm vi mới để sử dụng IUnitOfWork
                             using (var scope = _serviceScopeFactory.CreateScope())
                             {
@@ -79,7 +93,7 @@ namespace Service.Implements
                                     UserId = chatMessage.UserId,
                                     Message1 = chatMessage.Message1,
                                     Type = chatMessage.Type,
-                                    ImageLink = chatMessage.ImageLink,
+                                    ImageLink = imageUrl,
                                     CreationDate = DateTime.UtcNow,
                                     IsSent = true,
                                     IsSeen = false,
@@ -114,6 +128,27 @@ namespace Service.Implements
 
                 socket.Dispose();
             }
+        }
+
+        private async Task<string> UploadImageToFirebase(string imagePath, int userId, int conversationId)
+        {
+            var stream = File.Open(imagePath, FileMode.Open);
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmssfff"); // Sử dụng "fff" để có độ chính xác đến mili giây
+            var fileName = $"user_{userId}_conv_{conversationId}_{timestamp}.jpg";
+
+            // Tải ảnh lên Firebase
+            var task = new FirebaseStorage(
+                _configuration["Firebase:Bucket"],
+                new FirebaseStorageOptions
+                {
+                    ThrowOnCancel = true
+                })
+                .Child("chat_images")
+                .Child(fileName)
+                .PutAsync(stream);
+
+            // Lấy URL của ảnh đã tải lên
+            return await task;
         }
 
         private async Task BroadcastMessage(int conversationId, Message message, IUnitOfWork unitOfWork)
@@ -157,7 +192,13 @@ namespace Service.Implements
                 message.Status
             };
 
-            var broadcastJson = JsonSerializer.Serialize(broadcastMessage);
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true, // Để dễ đọc
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // Bỏ qua escape cho một số ký tự
+            };
+
+            var broadcastJson = JsonSerializer.Serialize(broadcastMessage, options);
             var broadcastBytes = Encoding.UTF8.GetBytes(broadcastJson);
             var buffer = new ArraySegment<byte>(broadcastBytes);
 

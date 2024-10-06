@@ -41,11 +41,6 @@ namespace BackendEPPO.Controllers
             return Ok("Đã cập nhật thành công");
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteMessage(int id)
-        {
-            _messageService.DeleteMessage(id);
-            return Ok("Đã xóa thành công");
-        }
+
     }
 }
