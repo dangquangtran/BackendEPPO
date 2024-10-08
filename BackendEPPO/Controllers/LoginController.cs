@@ -49,7 +49,6 @@ namespace BackendEPPO.Controllers
                 response = Ok(new
                 {
                     token = tokenString,
-                    roleName = user.Role.NameRole,
                 });
             }
             return response;
@@ -67,6 +66,7 @@ namespace BackendEPPO.Controllers
                 {
                     new Claim("userId", userInfo.UserId.ToString()),
                     new Claim("roleId", userInfo.RoleId.ToString()),
+                    new Claim("roleName", userInfo.Role.NameRole),
                     new Claim("fullName", userInfo.FullName.ToString()),
                     new Claim("email", userInfo.Email.ToString()),
                     new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),

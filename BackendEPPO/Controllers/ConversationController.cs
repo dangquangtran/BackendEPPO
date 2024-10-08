@@ -46,7 +46,7 @@ namespace BackendEPPO.Controllers
         [HttpGet("GetByUserId")]
         public IActionResult GetConversationsByUserId()
         {
-            var userIdClaim = User.FindFirst("userId")?.Value;
+            var userIdClaim =User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
             return Ok(_conversationService.GetConversationsByUserId(userId));
         }
