@@ -44,11 +44,11 @@ namespace BackendEPPO.Controllers
 
             if (user != null && user.Password == request.Password)
             {
-                var token = GenerateJSONWebToken(user);
+                var tokenString = GenerateJSONWebToken(user);
 
                 response = Ok(new
                 {
-                    tokenString = token,
+                    token = tokenString,
                     roleName = user.Role.NameRole,
                 });
             }
