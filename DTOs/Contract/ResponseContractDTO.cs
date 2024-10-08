@@ -20,4 +20,5 @@ namespace DTOs.Contract
         public int? Status { get; set; }
 
     }
+
 }
