@@ -4,9 +4,22 @@ namespace BackendEPPO.Extenstion
 {
     public class ApiEndPointConstant
     {
+
+        public const string ApiRoleAdmin = "/Admin";
+        public const string ApiRoleManager = "/Manager";
+        public const string ApiRoleStaff = "/Staff";
+        public const string ApiRoleOwner = "/Owner";
+        public const string ApiRoleCustomer = "/Customer";
         public const string RootEndPoint = "/api";
         public const string ApiVersion = "/v1";
+
         public const string ApiEndpoint = RootEndPoint + ApiVersion;
+
+        public const string ApiEndpointByAdmin = RootEndPoint + ApiVersion + ApiRoleAdmin;
+        public const string ApiEndpointByManager = RootEndPoint + ApiVersion + ApiRoleManager;
+        public const string ApiEndpointByStaff = RootEndPoint + ApiVersion + ApiRoleStaff;
+        public const string ApiEndpointByCustomer = RootEndPoint + ApiVersion + ApiRoleCustomer;
+        public const string ApiEndpointByOwner = RootEndPoint + ApiVersion + ApiRoleOwner;
 
         static ApiEndPointConstant()
         {
@@ -51,6 +64,8 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListAddress_Endpoint = ApiEndpoint + "/GetList/Address";
             public const string GetAddressByID = GetListAddress_Endpoint + "/Id";
+
+
         }
         // Do Huu Thuan
         public static class Notification
