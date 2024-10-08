@@ -9,7 +9,6 @@ namespace DTOs.Message
     public class ChatMessageDTO
     {
         public int ConversationId { get; set; }
-        public int UserId { get; set; }
         public string Message1 { get; set; }
         public string Type { get; set; }
         public string ImageLink { get; set; }

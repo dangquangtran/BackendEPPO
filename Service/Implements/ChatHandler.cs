@@ -15,6 +15,8 @@ using System.Xml.Linq;
 using Microsoft.Extensions.Configuration;
 using DTOs.Conversation;
 using System.Text.Encodings.Web;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Service.Implements
 {
@@ -42,12 +44,27 @@ namespace Service.Implements
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
                     var initialMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    var authMessage = JsonSerializer.Deserialize<AuthMessageDTO>(initialMessage);
-
-                    if (authMessage != null && authMessage.UserId > 0)
+                    var options = new JsonSerializerOptions
                     {
-                        userId = authMessage.UserId;
-                        _userSockets.TryAdd(userId.Value, socket);
+                        PropertyNameCaseInsensitive = true
+                    };
+                    var authMessage = JsonSerializer.Deserialize<AuthMessageDTO>(initialMessage, options);
+
+                    if (authMessage != null && !string.IsNullOrEmpty(authMessage.Token))
+                    {
+                        // Giải mã token để lấy userId
+                        var userIdClaim = DecodeJwtToken(authMessage.Token, "userId");
+
+                        if (!string.IsNullOrEmpty(userIdClaim))
+                        {
+                            userId = int.Parse(userIdClaim);
+                            _userSockets.TryAdd(userId.Value, socket);
+                        }
+                        else
+                        {
+                            await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "Invalid token", CancellationToken.None);
+                            return;
+                        }
                     }
                     else
                     {
@@ -79,7 +96,7 @@ namespace Service.Implements
                             // Nếu tin nhắn có hình ảnh, tải lên Firebase
                             if (!string.IsNullOrEmpty(chatMessage.ImageLink))
                             {
-                                imageUrl = await UploadImageToFirebase(chatMessage.ImageLink, chatMessage.UserId, chatMessage.ConversationId);
+                                imageUrl = await UploadImageToFirebase(chatMessage.ImageLink, userId.Value, chatMessage.ConversationId);
                             }
                             // Tạo một phạm vi mới để sử dụng IUnitOfWork
                             using (var scope = _serviceScopeFactory.CreateScope())
@@ -90,7 +107,7 @@ namespace Service.Implements
                                 var message = new Message
                                 {
                                     ConversationId = chatMessage.ConversationId,
-                                    UserId = chatMessage.UserId,
+                                    UserId = userId.Value,
                                     Message1 = chatMessage.Message1,
                                     Type = chatMessage.Type,
                                     ImageLink = imageUrl,
@@ -130,6 +147,32 @@ namespace Service.Implements
             }
         }
 
+
+        private string DecodeJwtToken(string token, string claimType)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
+            try
+            {
+                var claimsPrincipal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var claim = jwtToken.Claims.FirstOrDefault(c => c.Type == claimType);
+
+                return claim?.Value;
+            }
+            catch
+            {
+                return null; // Trả về null nếu không giải mã được
+            }
+        }
         private async Task<string> UploadImageToFirebase(string imagePath, int userId, int conversationId)
         {
             var stream = File.Open(imagePath, FileMode.Open);
@@ -212,5 +255,5 @@ namespace Service.Implements
 }
     public class AuthMessageDTO
 {
-    public int UserId { get; set; } // ID của người dùng
+    public string Token { get; set; }
 }
