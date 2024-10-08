@@ -21,7 +21,7 @@ namespace Service
 
         public async Task<IEnumerable<ServicesDTO>> GetListServices()
         {
-            return (IEnumerable<ServicesDTO>)await _unitOfWork.ServicesRepository.GetAsync();
+            return (IEnumerable<ServicesDTO>)await _unitOfWork.EpposerviceRepository.GetAsync();
         }
     }
 }

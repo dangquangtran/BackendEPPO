@@ -16,6 +16,7 @@ namespace BusinessObjects.Models
             ConversationUserOneNavigations = new HashSet<Conversation>();
             ConversationUserTwoNavigations = new HashSet<Conversation>();
             Deliveries = new HashSet<Delivery>();
+            Epposervices = new HashSet<Epposervice>();
             Feedbacks = new HashSet<Feedback>();
             HistoryBids = new HashSet<HistoryBid>();
             Messages = new HashSet<Message>();
@@ -25,7 +26,6 @@ namespace BusinessObjects.Models
             Plants = new HashSet<Plant>();
             RoomParticipants = new HashSet<RoomParticipant>();
             Rooms = new HashSet<Room>();
-            Services = new HashSet<Service>();
             UserVouchers = new HashSet<UserVoucher>();
         }
 
@@ -61,6 +61,7 @@ namespace BusinessObjects.Models
         public virtual ICollection<Conversation> ConversationUserOneNavigations { get; set; }
         public virtual ICollection<Conversation> ConversationUserTwoNavigations { get; set; }
         public virtual ICollection<Delivery> Deliveries { get; set; }
+        public virtual ICollection<Epposervice> Epposervices { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<HistoryBid> HistoryBids { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
@@ -70,7 +71,6 @@ namespace BusinessObjects.Models
         public virtual ICollection<Plant> Plants { get; set; }
         public virtual ICollection<RoomParticipant> RoomParticipants { get; set; }
         public virtual ICollection<Room> Rooms { get; set; }
-        public virtual ICollection<Service> Services { get; set; }
         public virtual ICollection<UserVoucher> UserVouchers { get; set; }
     }
 }

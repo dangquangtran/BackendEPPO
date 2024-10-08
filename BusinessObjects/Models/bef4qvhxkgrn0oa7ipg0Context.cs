@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace BusinessObjects.Models
 {
@@ -25,6 +24,7 @@ namespace BusinessObjects.Models
         public virtual DbSet<ContractDetail> ContractDetails { get; set; }
         public virtual DbSet<Conversation> Conversations { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<Epposervice> Epposervices { get; set; }
         public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<HistoryBid> HistoryBids { get; set; }
         public virtual DbSet<ImageAccessory> ImageAccessories { get; set; }
@@ -41,7 +41,6 @@ namespace BusinessObjects.Models
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<RoomParticipant> RoomParticipants { get; set; }
-        public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<SubFeedback> SubFeedbacks { get; set; }
         public virtual DbSet<SubOrderDetail> SubOrderDetails { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
@@ -50,22 +49,14 @@ namespace BusinessObjects.Models
         public virtual DbSet<UserVoucher> UserVouchers { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseMySQL(GetConnectionStrings());
-        //    }
-        //}
-
-        //private string GetConnectionStrings()
-        //{
-        //    IConfiguration configuration = new ConfigurationBuilder()
-        //        .SetBasePath(Directory.GetCurrentDirectory())
-        //        .AddJsonFile("appsettings.json")
-        //        .Build();
-        //    return configuration.GetConnectionString("DefaultConnection");
-        //}
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseMySQL("Server=bef4qvhxkgrn0oa7ipg0-mysql.services.clever-cloud.com;Uid=us2diblhg4zawg4d\n;Pwd=babZ7q3tl6uyTqzKCRF6;Database=bef4qvhxkgrn0oa7ipg0");
+//            }
+//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -235,7 +226,8 @@ namespace BusinessObjects.Models
                 entity.HasOne(d => d.Contract)
                     .WithMany(p => p.ContractDetails)
                     .HasForeignKey(d => d.ContractId)
-                    .HasConstraintName("ContractDetail_ibfk_1");
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("ContractDetail_ibfk_3");
 
                 entity.HasOne(d => d.Plant)
                     .WithMany(p => p.ContractDetails)
@@ -296,6 +288,36 @@ namespace BusinessObjects.Models
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("Delivery_ibfk_2");
+            });
+
+            modelBuilder.Entity<Epposervice>(entity =>
+            {
+                entity.HasKey(e => e.ServiceId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("EPPOService");
+
+                entity.HasIndex(e => e.ModificationBy, "ModificationBy");
+
+                entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
+
+                entity.Property(e => e.Code).HasMaxLength(50);
+
+                entity.Property(e => e.CreationDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Description).HasColumnType("text");
+
+                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ServiceName)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.ModificationByNavigation)
+                    .WithMany(p => p.Epposervices)
+                    .HasForeignKey(d => d.ModificationBy)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("EPPOService_ibfk_1");
             });
 
             modelBuilder.Entity<Feedback>(entity =>
@@ -729,33 +751,6 @@ namespace BusinessObjects.Models
                     .WithMany(p => p.RoomParticipants)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("RoomParticipant_ibfk_2");
-            });
-
-            modelBuilder.Entity<Service>(entity =>
-            {
-                entity.ToTable("Service");
-
-                entity.HasIndex(e => e.ModificationBy, "ModificationBy");
-
-                entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
-
-                entity.Property(e => e.Code).HasMaxLength(50);
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasColumnType("text");
-
-                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ServiceName)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.HasOne(d => d.ModificationByNavigation)
-                    .WithMany(p => p.Services)
-                    .HasForeignKey(d => d.ModificationBy)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("Service_ibfk_1");
             });
 
             modelBuilder.Entity<SubFeedback>(entity =>

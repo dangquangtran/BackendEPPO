@@ -14,7 +14,7 @@ namespace Repository.Interfaces
         IGenericRepository<Contract> ContractRepository { get; }
         IGenericRepository<Plant> PlantRepository { get; }
         IGenericRepository<Accessory> AccessoryRepository { get; }
-        IGenericRepository<Service> ServicesRepository { get; }
+        IGenericRepository<Epposervice> EpposerviceRepository { get; }
         IGenericRepository<Category> CategoriesRepository { get; }
         IGenericRepository<Address> AddressRepository { get; }
         IGenericRepository<ContractDetail> ContractDetailRepository { get; }

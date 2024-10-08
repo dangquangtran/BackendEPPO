@@ -16,6 +16,6 @@ namespace BusinessObjects.Models
         public virtual HistoryBid HistoryBid { get; set; }
         public virtual OrderDetail OrderDetail { get; set; }
         public virtual Plant Plant { get; set; }
-        public virtual Service Service { get; set; }
+        public virtual Epposervice Service { get; set; }
     }
 }

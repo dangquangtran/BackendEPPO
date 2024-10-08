@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace BusinessObjects.Models
 {
-    public partial class Service
+    public partial class Epposervice
     {
-        public Service()
+        public Epposervice()
         {
             SubFeedbacks = new HashSet<SubFeedback>();
             SubOrderDetails = new HashSet<SubOrderDetail>();

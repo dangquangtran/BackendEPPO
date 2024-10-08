@@ -31,7 +31,7 @@ namespace Service.AutoMapper
             //Do Huu Thuan
             CreateMap<Plant, ResponsePlantDTO>().ReverseMap();
             CreateMap<User, ResponseUserDTO>().ReverseMap();
-            CreateMap<BusinessObjects.Models.Service, ServicesDTO>().ReverseMap();
+            CreateMap<BusinessObjects.Models.Epposervice, ServicesDTO>().ReverseMap();
         }
 
     }

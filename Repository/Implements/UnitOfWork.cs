@@ -13,7 +13,7 @@ namespace Repository.Implements
         private IGenericRepository<Contract> contractRepository;
         private IGenericRepository<Plant> plantRepository;
         private IGenericRepository<Accessory> accessoryRepository;
-        private IGenericRepository<Service> serviceRepository;
+        private IGenericRepository<Epposervice> epposerviceRepository;
         private IGenericRepository<Category> categoryRepository;
         private IGenericRepository<Address> addressRepository;
         private IGenericRepository<ContractDetail> contractDetailRepository;
@@ -112,11 +112,11 @@ namespace Repository.Implements
             }
         }
         //Do Huu Thuan
-        public IGenericRepository<Service> ServicesRepository
+        public IGenericRepository<Epposervice> EpposerviceRepository
         {
             get
             {
-                return serviceRepository ??= new GenericRepository<Service>(context);
+                return epposerviceRepository ??= new GenericRepository<Epposervice>(context);
             }
         }
         //Do Huu Thuan

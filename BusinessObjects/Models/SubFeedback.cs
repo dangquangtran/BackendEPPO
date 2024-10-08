@@ -12,6 +12,6 @@ namespace BusinessObjects.Models
 
         public virtual Accessory Accessory { get; set; }
         public virtual Plant Plant { get; set; }
-        public virtual Service Service { get; set; }
+        public virtual Epposervice Service { get; set; }
     }
 }
