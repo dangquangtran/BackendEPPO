@@ -10,6 +10,10 @@ namespace Service.Interfaces
 {
     public interface IRankService
     {
+        Task<IEnumerable<Rank>> GetListRanks(int page, int size);
+        Task<Rank> GetRankByID(int Id);
+
+
         IEnumerable<Rank> GetAllRanks();
         Rank GetRankById(int id);
         void CreateRank(CreateRankDTO createRank);

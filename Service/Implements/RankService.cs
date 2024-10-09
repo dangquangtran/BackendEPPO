@@ -20,6 +20,15 @@ namespace Service.Implements
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+        public async Task<IEnumerable<Rank>> GetListRanks(int page, int size)
+        {
+            return await _unitOfWork.RankRepository.GetAsync(pageIndex: page, pageSize: size);
+        }
+        public async Task<Rank> GetRankByID(int Id)
+        {
+            return await Task.FromResult(_unitOfWork.RankRepository.GetByID(Id));
+        }
+
         public IEnumerable<Rank> GetAllRanks()
         {
             return _unitOfWork.RankRepository.Get();

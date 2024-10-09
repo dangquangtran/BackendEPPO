@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
 using DTOs.Rank;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -18,16 +20,40 @@ namespace BackendEPPO.Controllers
             _rankService = rankService;
         }
 
-        [HttpGet("Ranks")]
-        public IActionResult GetAllRanks()
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Rank.GetListRank_Endpoint)]
+        public async Task<IActionResult> GetListRanks(int page, int size)
         {
-            return Ok(_rankService.GetAllRanks());
+            var ranks = await _rankService.GetListRanks(page, size);
+
+            if (ranks == null || !ranks.Any())
+            {
+                return NotFound("No ranks found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = ranks
+            });
         }
 
-        [HttpGet("Ranks/{id}")]
-        public IActionResult GetRankById(int id)
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Rank.GetRoleByID)]
+        public async Task<IActionResult> GetRankByID(int id)
         {
-            return Ok(_rankService.GetRankById(id));
+            var ranks = await _rankService.GetRankByID(id);
+
+            if (ranks == null)
+            {
+                return NotFound($"Rank with ID {id} not found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = ranks
+            });
         }
 
         [HttpPost("Ranks")]

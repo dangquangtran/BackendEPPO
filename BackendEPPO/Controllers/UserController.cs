@@ -56,8 +56,8 @@ namespace BackendEPPO.Controllers
             });
         }
 
-        [HttpPost(ApiEndPointConstant.User.CreateUserAccount)]
-        public async Task<IActionResult> CreateUser([FromBody] ResponseUserDTO user)
+        [HttpPost(ApiEndPointConstant.User.CreateAccountByCustomer)]
+        public async Task<IActionResult> CreateAccountByCustomers([FromBody] CreateAccountByCustomerDTO customer)
         {
             
             if (!ModelState.IsValid)
@@ -65,13 +65,51 @@ namespace BackendEPPO.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _userService.CreateUserAccount(user);
+            await _userService.CreateAccountByCustomer(customer);
 
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "User created successfully",
-                Data = user
+                Message = "Customer created successfully",
+                Data = customer
+            });
+        }
+
+        [HttpPost(ApiEndPointConstant.User.CreateAccountByOwner)]
+        public async Task<IActionResult> CreateAccountByOwner([FromBody] CreateAccountByOwnerDTO owner)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _userService.CreateAccountByOwner(owner);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "Owner created successfully",
+                Data = owner
+            });
+        }
+
+        [HttpPost(ApiEndPointConstant.User.CreateAccountByAdmin)]
+        public async Task<IActionResult> CreateAccountByAdmin([FromBody] CreateAccountByAdminDTO admin)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _userService.CreateAccountByAdmin(admin);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "Admin created successfully",
+                Data = admin
             });
         }
 

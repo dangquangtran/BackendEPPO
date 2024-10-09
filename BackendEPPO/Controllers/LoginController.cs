@@ -39,7 +39,7 @@ namespace BackendEPPO.Controllers
                 return BadRequest();
             }
             IActionResult response = Unauthorized();
-            var user = _userService.GetAllUsers().Where(x => x.UserName == request.UserName).FirstOrDefault();
+            var user = _userService.GetAllUsers().Where(x => x.Email == request.Email).FirstOrDefault();
 
 
             if (user != null && user.Password == request.Password)
