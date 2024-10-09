@@ -36,6 +36,62 @@ namespace Service
             _unitOfWork.UserRepository.Insert(userEntity); 
             await _unitOfWork.SaveAsync();
         }
+        public async Task CreateAccountByCustomer(CreateAccountByCustomerDTO customer)
+        {
+            var customerEntity = new User
+            {
+                FullName = customer.FullName,
+                PhoneNumber = customer.PhoneNumber,
+                Email = customer.Email,
+                Password = customer.Password,
+                RoleId = 4,
+                CreationDate = DateTime.Now,
+                IsActive = true,
+                Status = 1,
+
+            };
+
+            _unitOfWork.UserRepository.Insert(customerEntity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task CreateAccountByOwner(CreateAccountByOwnerDTO owner)
+        {
+            var customerEntity = new User
+            {
+                FullName = owner.FullName,
+                PhoneNumber = owner.PhoneNumber,
+                Email = owner.Email,
+                Password = owner.Password,
+                RoleId = 4,
+                CreationDate = DateTime.Now,
+                IsActive = true,
+                Status = 1,
+
+            };
+
+            _unitOfWork.UserRepository.Insert(customerEntity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task CreateAccountByAdmin(CreateAccountByAdminDTO admin)
+        {
+            var customerEntity = new User
+            {
+                FullName = admin.FullName,
+                PhoneNumber = admin.PhoneNumber,
+                Email = admin.Email,
+                Password = admin.Password,
+                RoleId = 4,
+                CreationDate = DateTime.Now,
+                IsActive = true,
+                Status = 1,
+
+            };
+
+            _unitOfWork.UserRepository.Insert(customerEntity);
+            await _unitOfWork.SaveAsync();
+        }
 
         public IQueryable<User> GetAllUsers()
         {

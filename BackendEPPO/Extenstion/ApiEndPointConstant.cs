@@ -34,6 +34,12 @@ namespace BackendEPPO.Extenstion
             public const string GetUserByID = GetUserEndpoint + "/Id";
 
             public const string CreateUserAccount = ApiEndpoint + "/UsersAccount/CreateAccount";
+
+            public const string CreateAccountByCustomer = ApiEndpointByCustomer + "/CreateAccount";
+
+            public const string CreateAccountByOwner = ApiEndpointByOwner + "/CreateAccount";
+
+            public const string CreateAccountByAdmin = ApiEndpointByAdmin + "/CreateAccount";
         }
         // Do Huu Thuan
         public static class Room
@@ -101,7 +107,12 @@ namespace BackendEPPO.Extenstion
             public const string GetListCategory_Endpoint = ApiEndpoint + "/GetList/Categories";
             public const string GetCategoriesByID = GetListCategory_Endpoint + "/Id";
         }
-
+        // Do Huu Thuan
+        public static class Rank
+        {
+            public const string GetListRank_Endpoint = ApiEndpoint + "/GetList/Ranks";
+            public const string GetRoleByID = GetListRank_Endpoint + "/Id";
+        }
 
 
     }

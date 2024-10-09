@@ -14,5 +14,9 @@ namespace Service.Interfaces
 
         Task CreateUserAccount(ResponseUserDTO user);
 
+
+        Task CreateAccountByCustomer(CreateAccountByCustomerDTO customer);
+        Task CreateAccountByOwner(CreateAccountByOwnerDTO owner);
+        Task CreateAccountByAdmin(CreateAccountByAdminDTO admin);
     }
 }
