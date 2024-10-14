@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing;
+﻿using BusinessObjects.Models;
+using Microsoft.AspNetCore.Routing;
 
 namespace BackendEPPO.Extenstion
 {
@@ -80,6 +81,30 @@ namespace BackendEPPO.Extenstion
             public const string GetNotificationByID = GetListNotification_Endpoint + "/Id";
         }
         // Do Huu Thuan
+        public static class TypeEcommerce
+        {
+            public const string GetListTypeEcommerce_Endpoint = ApiEndpoint + "/GetList/TypeEcommerce";
+            public const string GetTypeEcommerceByID = GetListTypeEcommerce_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class Wallet
+        {
+            public const string GetListWallet_Endpoint = ApiEndpoint + "/GetList/Wallet";
+            public const string GetWalletByID = GetListWallet_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class Blog
+        {
+            public const string GetListBlog_Endpoint = ApiEndpoint + "/GetList/Blog";
+            public const string GetBlogByID = GetListBlog_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class Feedback
+        {
+            public const string GetListFeedback_Endpoint = ApiEndpoint + "/GetList/Feedback";
+            public const string GetFeedbackByID = GetListFeedback_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
         public static class Accessory
         {
             public const string GetListAccessory_Endpoint = ApiEndpoint + "/GetList/Accessories";
@@ -113,8 +138,24 @@ namespace BackendEPPO.Extenstion
             public const string GetListRank_Endpoint = ApiEndpoint + "/GetList/Ranks";
             public const string GetRoleByID = GetListRank_Endpoint + "/Id";
         }
-
-
+        // Do Huu Thuan
+        public static class SubFeedback
+        {
+            public const string GetListSubFeedback_Endpoint = ApiEndpoint + "/GetList/SubFeedback";
+            public const string GetSubFeedbackByID = GetListSubFeedback_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class ImageFeedback
+        {
+            public const string GetListImageFeedback_Endpoint = ApiEndpoint + "/GetList/ImageFeedback";
+            public const string GetImageFeedbackByID = GetListImageFeedback_Endpoint + "/Id";
+        }
+        // Do Huu Thuan
+        public static class UserVoucher
+        {
+            public const string GetListUserVoucher_Endpoint = ApiEndpoint + "/GetList/UserVoucher";
+            public const string GetImageFeedbackByID = GetListUserVoucher_Endpoint + "/Id";
+        }
     }
    
 
