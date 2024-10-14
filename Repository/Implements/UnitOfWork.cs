@@ -20,10 +20,14 @@ namespace Repository.Implements
         private IGenericRepository<Room> roomRepository;
         private IGenericRepository<RoomParticipant> roomParticipantRepository;
         private IGenericRepository<Notification> notificationtRepository;
-
+        private IGenericRepository<Wallet> walletRepository;
         private IGenericRepository<Rank> rankRepository;
-   
-
+        private IGenericRepository<TypeEcommerce> typeEcommerceRepository;
+        private IGenericRepository<Blog> blogRepository;
+        private IGenericRepository<Feedback> feedbackRepository;
+        private IGenericRepository<SubFeedback> subFeedbackRepository;
+        private IGenericRepository<ImageFeedback> imageFeedbackRepository;
+        private IGenericRepository<UserVoucher> userVoucherRepository;
         private IConversationRepository conversationRepository;
         private IGenericRepository<Message> messageRepository;
 
@@ -31,12 +35,68 @@ namespace Repository.Implements
         {
             this.context = context;
         }
-
+        //Do Huu Thuan
+        public IGenericRepository<UserVoucher> UserVoucherRepository
+        {
+            get
+            {
+                return userVoucherRepository ??= new GenericRepository<UserVoucher>(context);
+            }
+        }
+        //Do Huu Thuan
         public IGenericRepository<Rank> RankRepository
         {
             get
             {
                 return rankRepository ??= new GenericRepository<Rank>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<ImageFeedback> ImageFeedbackRepository
+        {
+            get
+            {
+                return imageFeedbackRepository ??= new GenericRepository<ImageFeedback>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<SubFeedback> SubFeedbackRepository
+        {
+            get
+            {
+                return subFeedbackRepository ??= new GenericRepository<SubFeedback>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Feedback> FeedbackRepository
+        {
+            get
+            {
+                return feedbackRepository ??= new GenericRepository<Feedback>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Blog> BlogRepository
+        {
+            get
+            {
+                return blogRepository ??= new GenericRepository<Blog>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<TypeEcommerce> TypeEcommerceRepository
+        {
+            get
+            {
+                return typeEcommerceRepository ??= new GenericRepository<TypeEcommerce>(context);
+            }
+        }
+        //Do Huu Thuan
+        public IGenericRepository<Wallet> WalletRepository
+        {
+            get
+            {
+                return walletRepository ??= new GenericRepository<Wallet>(context);
             }
         }
         //Do Huu Thuan

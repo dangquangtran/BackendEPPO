@@ -39,8 +39,13 @@ builder.Services.AddScoped<IContractDetailServices, ContractDetailServices>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomParticipantService, RoomParticipantService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
-
-
+builder.Services.AddScoped<IWalletService, WalletService>(); 
+builder.Services.AddScoped<ITypeEcommerceService, TypeEcommerceService>();
+builder.Services.AddScoped<IBlogService, BlogService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<ISubFeedbackService, SubFeedbackService>();
+builder.Services.AddScoped<IImageFeedbackService, ImageFeedbackService>();
+builder.Services.AddScoped<IUserVoucherService, UserVoucherService>();
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
