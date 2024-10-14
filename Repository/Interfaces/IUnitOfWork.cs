@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using Repository.Implements;
 using System;
 using System.Threading.Tasks;
 
@@ -21,10 +22,10 @@ namespace Repository.Interfaces
         IGenericRepository<Room> RoomRepository { get; }
         IGenericRepository<RoomParticipant> RoomParticipantRepository { get; }
         IGenericRepository<Notification> NotificationRepository { get; }
-        
         Task SaveAsync();
 
-        IConversationRepository ConversationRepository { get; }
+        IGenericRepository<Transaction> TransactionRepository { get; }
+        IGenericRepository<Conversation> ConversationRepository { get; }
         IGenericRepository<Message> MessageRepository { get; }
         void Save();
     }

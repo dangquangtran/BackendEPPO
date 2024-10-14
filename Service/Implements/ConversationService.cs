@@ -22,7 +22,7 @@ namespace Service.Implements
         }
         public IEnumerable<ConversationVM> GetAllConversations()
         {
-            var conversations = _unitOfWork.ConversationRepository.Get(includeProperties: "Messages,UserOneNavigation,UserTwoNavigation");
+            var conversations = _unitOfWork.ConversationRepository.Get(filter: c => c.Status != 0, includeProperties: "Messages,UserOneNavigation,UserTwoNavigation");
             return _mapper.Map<IEnumerable<ConversationVM>>(conversations);
         }
 
@@ -48,7 +48,11 @@ namespace Service.Implements
 
         public IEnumerable<ConversationVM> GetConversationsByUserId(int userId)
         {
-            var conversations = _unitOfWork.ConversationRepository.GetConversationsByUserId(userId);
+            var conversations = _unitOfWork.ConversationRepository.Get(
+                filter: c => (c.UserOne == userId || c.UserTwo == userId) && c.Status != 0,
+                includeProperties: "Messages,UserOneNavigation,UserTwoNavigation",
+                orderBy: q => q.OrderByDescending(c => c.Messages.OrderByDescending(m => m.CreationDate))
+   );
             return _mapper.Map<IEnumerable<ConversationVM>>(conversations);
         }
     }

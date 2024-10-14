@@ -26,6 +26,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 //Do Huu Thuan
 builder.Services.AddScoped<IUserService, UserService>();
