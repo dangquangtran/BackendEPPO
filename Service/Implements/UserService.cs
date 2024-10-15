@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.User;
+using Mysqlx.Crud;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System.Collections.Generic;
@@ -40,11 +41,13 @@ namespace Service
         {
             var customerEntity = new User
             {
+                UserName= customer.UserName,
                 FullName = customer.FullName,
                 PhoneNumber = customer.PhoneNumber,
                 Email = customer.Email,
                 Password = customer.Password,
                 RoleId = 4,
+                RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
                 Status = 1,
@@ -59,11 +62,13 @@ namespace Service
         {
             var customerEntity = new User
             {
+                UserName = owner.UserName,
                 FullName = owner.FullName,
                 PhoneNumber = owner.PhoneNumber,
                 Email = owner.Email,
                 Password = owner.Password,
-                RoleId = 4,
+                RoleId = 5,
+                RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
                 Status = 1,
@@ -78,11 +83,13 @@ namespace Service
         {
             var customerEntity = new User
             {
+                UserName = admin.UserName,
                 FullName = admin.FullName,
                 PhoneNumber = admin.PhoneNumber,
                 Email = admin.Email,
                 Password = admin.Password,
-                RoleId = 4,
+                RoleId = 3,
+                RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
                 Status = 1,
@@ -106,5 +113,93 @@ namespace Service
         {
             return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id));
         }
+
+        public async Task UpdateUserAccount(UpdateAccount accountDTO)
+        {
+            var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(accountDTO.UserId));
+
+            if (userEntity == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.UserName))
+            {
+                userEntity.UserName = accountDTO.UserName;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.Password))
+            {
+                userEntity.Password = accountDTO.Password; 
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.FullName))
+            {
+                userEntity.FullName = accountDTO.FullName;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.Gender))
+            {
+                userEntity.Gender = accountDTO.Gender;
+            }
+            if (accountDTO.DateOfBirth.HasValue)
+            {
+                userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.PhoneNumber))
+            {
+                userEntity.PhoneNumber = accountDTO.PhoneNumber;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.Email))
+            {
+                userEntity.Email = accountDTO.Email;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.ImageUrl))
+            {
+                userEntity.ImageUrl = accountDTO.ImageUrl;
+            }
+            if (accountDTO.IdentificationCard.HasValue)
+            {
+                userEntity.IdentificationCard = accountDTO.IdentificationCard.Value;
+            }
+            if (accountDTO.WalletId.HasValue)
+            {
+                userEntity.WalletId = accountDTO.WalletId.Value;
+            }
+
+            if (accountDTO.RoleId.HasValue)
+            {
+                userEntity.RoleId = accountDTO.RoleId.Value;
+            }
+
+            if (accountDTO.RankId.HasValue)
+            {
+                userEntity.RankId = accountDTO.RankId.Value;
+            }
+
+            if (accountDTO.IsActive.HasValue)
+            {
+                userEntity.IsActive = accountDTO.IsActive.Value;
+            }
+
+            if (accountDTO.CreationDate.HasValue)
+            {
+                userEntity.CreationDate = accountDTO.CreationDate.Value;
+            }
+
+            if (accountDTO.CreationBy.HasValue)
+            {
+                userEntity.CreationBy = accountDTO.CreationBy.Value;
+            }
+
+            userEntity.ModificationDate = DateTime.Now;
+            userEntity.ModificationBy = accountDTO.ModificationBy;
+
+            if (accountDTO.Status.HasValue)
+            {
+                userEntity.Status = accountDTO.Status.Value;
+            }
+
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.SaveAsync();
+        }
+
+
     }
 }

@@ -17,9 +17,9 @@ namespace BackendEPPO.Controllers
 
     //1-admin
     //2-manage
-    //3-owner
+    //3-staff
     //4-customer
-
+    //5-owwner
     public class LoginController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -39,7 +39,20 @@ namespace BackendEPPO.Controllers
                 return BadRequest();
             }
             IActionResult response = Unauthorized();
-            var user = _userService.GetAllUsers().Where(x => x.Email == request.Email).FirstOrDefault();
+
+            var user = _userService.GetAllUsers()
+                .FirstOrDefault(x =>
+                    x.Email.Equals(request.UsernameOrEmail, StringComparison.OrdinalIgnoreCase) ||
+                    x.UserName.Equals(request.UsernameOrEmail, StringComparison.OrdinalIgnoreCase));
+
+            
+            if (user == null || user.Password != request.Password)
+            {
+                return Unauthorized(new { message = "Invalid username/email or password" });
+            }
+
+
+            //var user = _userService.GetAllUsers().Where(x => x.Email == request.Email).FirstOrDefault();
 
 
             if (user != null && user.Password == request.Password)
@@ -64,18 +77,31 @@ namespace BackendEPPO.Controllers
                 audience: _configuration["Jwt:Audience"],
                 claims: new[]
                 {
+                    //new Claim("userId", userInfo.UserId.ToString()),
+                    //new Claim("roleId", userInfo.RoleId.ToString()),
+                    //new Claim("roleName", userInfo.Role.NameRole),
+                    //new Claim("fullName", userInfo.FullName.ToString()),
+                    //new Claim("email", userInfo.Email.ToString()),
+                    //new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),
+                    //new Claim("gender", userInfo.Gender.ToString()),
+                    //new Claim("rankId", userInfo.RankId.ToString()),
+                    //new Claim("walletId", userInfo.WalletId.ToString()),
+                    //new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
+                    //new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),
+                    //new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
+
                     new Claim("userId", userInfo.UserId.ToString()),
                     new Claim("roleId", userInfo.RoleId.ToString()),
-                    new Claim("roleName", userInfo.Role.NameRole),
-                    new Claim("fullName", userInfo.FullName.ToString()),
-                    new Claim("email", userInfo.Email.ToString()),
-                    new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),
-                    new Claim("gender", userInfo.Gender.ToString()),
-                    new Claim("rankId", userInfo.RankId.ToString()),
-                    new Claim("walletId", userInfo.WalletId.ToString()),
-                    new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
-                    new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),
-                    new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
+                    new Claim("roleName", userInfo.Role.NameRole ?? "Unknown"),
+                    new Claim("fullName", userInfo.FullName ?? string.Empty),
+                    new Claim("email", userInfo.Email ?? string.Empty),
+                    new Claim("phoneNumber", userInfo.PhoneNumber ?? string.Empty),
+                    new Claim("gender", userInfo.Gender?.ToString() ?? string.Empty),
+                    new Claim("rankId", userInfo.RankId?.ToString() ?? "0"),
+                    new Claim("walletId", userInfo.WalletId?.ToString() ?? "0"),
+                    new Claim("identificationCard", userInfo.IdentificationCard.ToString() ?? "0"),
+                    new Claim("dateOfBirth", userInfo.DateOfBirth?.ToString("yyyy-MM-dd") ?? string.Empty),
+                    new Claim(ClaimTypes.Role, userInfo.Role.NameRole ?? "Unknown")
 
                 }, 
                 expires: DateTime.Now.AddMinutes(120),
