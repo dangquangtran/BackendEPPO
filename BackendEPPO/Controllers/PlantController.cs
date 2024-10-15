@@ -1,28 +1,30 @@
 ﻿using BackendEPPO.Extenstion;
+using DTOs.Plant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Implements;
 using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlantsController : ControllerBase
+    public class PlantController : ControllerBase
     {
-        private readonly IPlantService _plantsService;
+        private readonly IPlantService _plantService;
 
-        public PlantsController(IPlantService IService)
+        public PlantController(IPlantService IService)
         {
-            _plantsService = IService;
+            _plantService = IService;
         }
 
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Plants.GetListPlants_Endpoint)]
         public async Task<IActionResult> GetListPlants(int page, int size)
         {
-            var _plant = await _plantsService.GetListPlants(page, size);
+            var _plant = await _plantService.GetListPlants(page, size);
 
             if (_plant == null || !_plant.Any())
             {
@@ -40,7 +42,7 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Plants.GetPlantByID)]
         public async Task<IActionResult> GetPlantByID(int id)
         {
-            var plant = await _plantsService.GetPlantByID(id); 
+            var plant = await _plantService.GetPlantByID(id); 
 
             if (plant == null)
             {
@@ -58,7 +60,7 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
         public async Task<IActionResult> GetListPlantsByCategory(int Id)
         {
-            var _plant = await _plantsService.GetListPlantByCategory(Id);
+            var _plant = await _plantService.GetListPlantByCategory(Id);
 
             if (_plant == null || !_plant.Any())
             {
@@ -71,5 +73,32 @@ namespace BackendEPPO.Controllers
                 Data = _plant
             });
         }
+
+        [HttpGet]
+        public IActionResult GetAllPlants()
+        {
+            return Ok(_plantService.GetAllPlants());
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetPlantById(int id)
+        {
+            return Ok(_plantService.GetPlantById(id));
+        }
+
+        [HttpPost]
+        public IActionResult CreatePlant([FromBody] CreatePlantDTO createPlant)
+        {
+            _plantService.CreatePlant(createPlant);
+            return Ok("Đã tạo thành công");
+        }
+
+        [HttpPut]
+        public IActionResult UpdatePlant([FromBody] UpdatePlantDTO updatePlant)
+        {
+            _plantService.UpdatePlant(updatePlant);
+            return Ok("Đã cập nhật thành công");
+        }
+
     }
 }

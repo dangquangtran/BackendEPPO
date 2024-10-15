@@ -1,4 +1,6 @@
-﻿using BusinessObjects.Models;
+﻿using AutoMapper;
+using BusinessObjects.Models;
+using DTOs.Plant;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Repository.Interfaces;
 using Service.Interfaces;
@@ -14,10 +16,12 @@ namespace Service
     public class PlantService : IPlantService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public PlantService(IUnitOfWork unitOfWork)
+        public PlantService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Plant>> GetListPlants(int page, int size)
@@ -31,6 +35,31 @@ namespace Service
         public async Task<IEnumerable<Plant>> GetListPlantByCategory(int Id)
         {
             return await _unitOfWork.PlantRepository.GetAsync();
+        }
+        public IEnumerable<PlantVM> GetAllPlants()
+        {
+            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status != 0);
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+
+        public Plant GetPlantById(int id)
+        {
+            return _unitOfWork.PlantRepository.GetByID(id);
+        }
+
+        public void CreatePlant(CreatePlantDTO createPlant)
+        {
+            Plant plant = _mapper.Map<Plant>(createPlant);
+            plant.CreationDate = DateTime.Now;
+            plant.Status = 1;
+            _unitOfWork.PlantRepository.Insert(plant);
+            _unitOfWork.Save();
+        }
+        public void UpdatePlant(UpdatePlantDTO updatePlant)
+        {
+            Plant plant = _mapper.Map<Plant>(updatePlant);
+            _unitOfWork.PlantRepository.Update(plant);
+            _unitOfWork.Save();
         }
     }
 }

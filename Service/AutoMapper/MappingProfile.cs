@@ -2,7 +2,7 @@
 using BusinessObjects.Models;
 using DTOs.Conversation;
 using DTOs.Message;
-using DTOs.Plants;
+using DTOs.Plant;
 using DTOs.Rank;
 using DTOs.Services;
 using DTOs.Transaction;
@@ -30,6 +30,9 @@ namespace Service.AutoMapper
             CreateMap<CreateTransactionDTO, Transaction>();
             CreateMap<UpdateTransactionDTO, Transaction>();
             CreateMap<Transaction, TransactionVM>().ReverseMap();
+            CreateMap<CreatePlantDTO, Plant>();
+            CreateMap<UpdatePlantDTO, Plant>();
+            CreateMap<Plant, PlantVM>().ReverseMap();
 
 
             //Do Huu Thuan
