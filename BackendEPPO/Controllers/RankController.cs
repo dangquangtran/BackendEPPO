@@ -20,7 +20,7 @@ namespace BackendEPPO.Controllers
             _rankService = rankService;
         }
 
-        [Authorize(Roles = "admin, manager, staff")]
+      //  [Authorize(Roles = "admin, manager, staff")]
         [HttpGet(ApiEndPointConstant.Rank.GetListRank_Endpoint)]
         public async Task<IActionResult> GetListRanks(int page, int size)
         {
