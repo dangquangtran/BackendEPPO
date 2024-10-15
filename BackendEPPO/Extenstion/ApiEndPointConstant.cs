@@ -156,6 +156,13 @@ namespace BackendEPPO.Extenstion
             public const string GetListUserVoucher_Endpoint = ApiEndpoint + "/GetList/UserVoucher";
             public const string GetImageFeedbackByID = GetListUserVoucher_Endpoint + "/Id";
         }
+
+        public static class Conversation
+        {
+            public const string GetListConversation_Endpoint = ApiEndpoint + "/GetList/Conversations";
+            public const string GetConversationByID = GetListConversation_Endpoint + "/Id";
+        }
+
     }
    
 

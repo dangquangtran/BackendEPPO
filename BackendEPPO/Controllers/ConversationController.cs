@@ -1,4 +1,5 @@
-﻿using DTOs.Conversation;
+﻿using BackendEPPO.Extenstion;
+using DTOs.Conversation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ConversationController : ControllerBase
     {

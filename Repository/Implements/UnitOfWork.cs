@@ -28,7 +28,9 @@ namespace Repository.Implements
         private IGenericRepository<SubFeedback> subFeedbackRepository;
         private IGenericRepository<ImageFeedback> imageFeedbackRepository;
         private IGenericRepository<UserVoucher> userVoucherRepository;
-        private IConversationRepository conversationRepository;
+
+        private IGenericRepository<Transaction> transactionRepository;
+        private IGenericRepository<Conversation> conversationRepository;
         private IGenericRepository<Message> messageRepository;
 
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
@@ -187,11 +189,11 @@ namespace Repository.Implements
                 return categoryRepository ??= new GenericRepository<Category>(context);
             }
         }
-        public IConversationRepository ConversationRepository
+        public IGenericRepository<Conversation> ConversationRepository
         {
             get
             {
-                return conversationRepository ??= new ConversationRepository(context);
+                return conversationRepository ??= new GenericRepository<Conversation>(context);
             }
         }
 
@@ -200,6 +202,14 @@ namespace Repository.Implements
             get
             {
                 return messageRepository ??= new GenericRepository<Message>(context);
+            }
+        }
+
+        public IGenericRepository<Transaction> TransactionRepository
+        {
+            get
+            {
+                return transactionRepository ??= new GenericRepository<Transaction>(context);
             }
         }
 
