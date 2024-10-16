@@ -33,5 +33,10 @@ namespace Repository.Interfaces
         //void Delete(TEntity entityToDelete);
 
         void Update(TEntity entityToUpdate);
+
+        Task<int> CountAsync(Expression<Func<TEntity, bool>> filter = null);
+
+        Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> filter);
+        Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter);
     }
 }
