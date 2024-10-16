@@ -19,6 +19,22 @@ namespace Repository.Implements
             this.context = context;
             this.dbSet = context.Set<TEntity>();
         }
+        public async Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await dbSet.FirstOrDefaultAsync(filter);
+        }
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>> filter = null)
+        {
+            if (filter != null)
+            {
+                return await dbSet.CountAsync(filter);
+            }
+            return await dbSet.CountAsync();
+        }
+        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await dbSet.AnyAsync(filter);
+        }
 
         // Updated Get method with pagination (synchronous)
         public virtual IEnumerable<TEntity> Get(

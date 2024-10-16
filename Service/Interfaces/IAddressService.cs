@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Address;
+using DTOs.Rank;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,5 +11,8 @@ namespace Service.Interfaces
     {
         Task<IEnumerable<Address>> GetLisAddress(int page, int size);
         Task<Address> GetAddressByID(int Id);
+
+        Task CreateAddress(RequestAddress address);
+        Task UpdateAddress(UpdateAddressDTO address);
     }
 }

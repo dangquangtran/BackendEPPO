@@ -74,6 +74,8 @@ namespace BackendEPPO.Extenstion
             public const string GetListAddress_Endpoint = ApiEndpoint + "/GetList/Address";
             public const string GetAddressByID = GetListAddress_Endpoint + "/Id";
 
+            public const string CreateAddress = GetListAddress_Endpoint + "/CreateAddress";
+            public const string UpdateAddress = GetListAddress_Endpoint + "/UpdateAddress/AddressId";
 
         }
         // Do Huu Thuan
@@ -137,8 +139,11 @@ namespace BackendEPPO.Extenstion
         // Do Huu Thuan
         public static class Rank
         {
-            public const string GetListRank_Endpoint = ApiEndpoint + "/GetList/Ranks";
+            public const string GetListRank_Endpoint = ApiEndpoint + "/GetList/Ranks"; 
             public const string GetRoleByID = GetListRank_Endpoint + "/Id";
+
+            public const string CreateRankByManager = ApiEndpointByManager + "/CreateRank";
+            public const string UpdateRank = GetListRank_Endpoint + "/UpdateRank/RankId";
         }
         // Do Huu Thuan
         public static class SubFeedback
