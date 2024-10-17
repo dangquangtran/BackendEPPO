@@ -22,6 +22,5 @@ namespace DTOs.Plant
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
         public int? ModificationBy { get; set; }
-        public string Code { get; set; }
     }
 }

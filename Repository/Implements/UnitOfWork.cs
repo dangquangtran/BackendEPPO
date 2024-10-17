@@ -32,6 +32,9 @@ namespace Repository.Implements
         private IGenericRepository<Transaction> transactionRepository;
         private IGenericRepository<Conversation> conversationRepository;
         private IGenericRepository<Message> messageRepository;
+        private IGenericRepository<Order> orderRepository;
+        private IGenericRepository<OrderDetail> orderDetailRepository;
+        private IGenericRepository<SubOrderDetail> subOrderDetailRepository;
 
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
@@ -210,6 +213,30 @@ namespace Repository.Implements
             get
             {
                 return transactionRepository ??= new GenericRepository<Transaction>(context);
+            }
+        }
+
+        public IGenericRepository<Order> OrderRepository
+        {
+            get
+            {
+                return orderRepository ??= new GenericRepository<Order>(context);
+            }
+        }
+
+        public IGenericRepository<OrderDetail> OrderDetailRepository
+        {
+            get
+            {
+                return orderDetailRepository ??= new GenericRepository<OrderDetail>(context);
+            }
+        }
+
+        public IGenericRepository<SubOrderDetail> SubOrderDetailRepository
+        {
+            get
+            {
+                return subOrderDetailRepository ??= new GenericRepository<SubOrderDetail>(context);
             }
         }
 
