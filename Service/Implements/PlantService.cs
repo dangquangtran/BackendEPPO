@@ -36,9 +36,9 @@ namespace Service
         {
             return await _unitOfWork.PlantRepository.GetAsync();
         }
-        public IEnumerable<PlantVM> GetAllPlants()
+        public IEnumerable<PlantVM> GetAllPlants(int pageIndex, int pageSize)
         {
-            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status != 0);
+            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status != 0, pageIndex : pageIndex, pageSize : pageSize);
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
@@ -52,14 +52,27 @@ namespace Service
             Plant plant = _mapper.Map<Plant>(createPlant);
             plant.CreationDate = DateTime.Now;
             plant.Status = 1;
+            plant.IsActive = true;
             _unitOfWork.PlantRepository.Insert(plant);
             _unitOfWork.Save();
         }
         public void UpdatePlant(UpdatePlantDTO updatePlant)
         {
             Plant plant = _mapper.Map<Plant>(updatePlant);
+            plant.ModificationDate = DateTime.Now;
             _unitOfWork.PlantRepository.Update(plant);
             _unitOfWork.Save();
         }
+        public IEnumerable<PlantVM> GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(
+                filter: c => c.CategoryId == categoryId && c.Status != 0, 
+                pageIndex: pageIndex,
+                pageSize: pageSize
+            );
+
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+
     }
 }

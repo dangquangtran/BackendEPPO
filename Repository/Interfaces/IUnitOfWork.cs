@@ -27,6 +27,9 @@ namespace Repository.Interfaces
         IGenericRepository<Transaction> TransactionRepository { get; }
         IGenericRepository<Conversation> ConversationRepository { get; }
         IGenericRepository<Message> MessageRepository { get; }
+        IGenericRepository<Order> OrderRepository { get; }
+        IGenericRepository<OrderDetail> OrderDetailRepository { get; }
+        IGenericRepository<SubOrderDetail> SubOrderDetailRepository { get; }
         void Save();
     }
 }

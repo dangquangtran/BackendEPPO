@@ -9,7 +9,7 @@ using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class PlantController : ControllerBase
     {
@@ -20,72 +20,75 @@ namespace BackendEPPO.Controllers
             _plantService = IService;
         }
 
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[HttpGet(ApiEndPointConstant.Plants.GetListPlants_Endpoint)]
+        //public async Task<IActionResult> GetListPlants(int page, int size)
+        //{
+        //    var _plant = await _plantService.GetListPlants(page, size);
+
+        //    if (_plant == null || !_plant.Any())
+        //    {
+        //        return NotFound("No contract found.");
+        //    }
+        //    return Ok(new
+        //    {
+        //        StatusCode = 200,
+        //        Message = "Request was successful",
+        //        Data = _plant
+        //    });
+        //}
+
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[HttpGet(ApiEndPointConstant.Plants.GetPlantByID)]
+        //public async Task<IActionResult> GetPlantByID(int id)
+        //{
+        //    var plant = await _plantService.GetPlantByID(id); 
+
+        //    if (plant == null)
+        //    {
+        //        return NotFound($"Plant with ID {id} not found.");
+        //    }
+        //    return Ok(new
+        //    {
+        //        StatusCode = 200,
+        //        Message = "Request was successful",
+        //        Data = plant
+        //    });
+        //}
+
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
+        //public async Task<IActionResult> GetListPlantsByCategory(int Id)
+        //{
+        //    var _plant = await _plantService.GetListPlantByCategory(Id);
+
+        //    if (_plant == null || !_plant.Any())
+        //    {
+        //        return NotFound("No contract found.");
+        //    }
+        //    return Ok(new
+        //    {
+        //        StatusCode = 200,
+        //        Message = "Request was successful",
+        //        Data = _plant
+        //    });
+        //}
+
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
-        [HttpGet(ApiEndPointConstant.Plants.GetListPlants_Endpoint)]
-        public async Task<IActionResult> GetListPlants(int page, int size)
-        {
-            var _plant = await _plantService.GetListPlants(page, size);
-
-            if (_plant == null || !_plant.Any())
-            {
-                return NotFound("No contract found.");
-            }
-            return Ok(new
-            {
-                StatusCode = 200,
-                Message = "Request was successful",
-                Data = _plant
-            });
-        }
-
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
-        [HttpGet(ApiEndPointConstant.Plants.GetPlantByID)]
-        public async Task<IActionResult> GetPlantByID(int id)
-        {
-            var plant = await _plantService.GetPlantByID(id); 
-
-            if (plant == null)
-            {
-                return NotFound($"Plant with ID {id} not found.");
-            }
-            return Ok(new
-            {
-                StatusCode = 200,
-                Message = "Request was successful",
-                Data = plant
-            });
-        }
-
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
-        [HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
-        public async Task<IActionResult> GetListPlantsByCategory(int Id)
-        {
-            var _plant = await _plantService.GetListPlantByCategory(Id);
-
-            if (_plant == null || !_plant.Any())
-            {
-                return NotFound("No contract found.");
-            }
-            return Ok(new
-            {
-                StatusCode = 200,
-                Message = "Request was successful",
-                Data = _plant
-            });
-        }
-
         [HttpGet]
-        public IActionResult GetAllPlants()
+        public IActionResult GetAllPlants(int pageIndex, int pageSize)
         {
-            return Ok(_plantService.GetAllPlants());
+            return Ok(_plantService.GetAllPlants(pageIndex, pageSize));
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetPlantById(int id)
         {
             return Ok(_plantService.GetPlantById(id));
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult CreatePlant([FromBody] CreatePlantDTO createPlant)
         {
@@ -93,6 +96,7 @@ namespace BackendEPPO.Controllers
             return Ok("Đã tạo thành công");
         }
 
+        [Authorize]
         [HttpPut]
         public IActionResult UpdatePlant([FromBody] UpdatePlantDTO updatePlant)
         {
