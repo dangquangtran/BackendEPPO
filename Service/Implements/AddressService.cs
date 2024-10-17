@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Address;
+using DTOs.Rank;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -25,6 +27,38 @@ namespace Service.Implements
         public async Task<Address> GetAddressByID(int Id)
         {
             return await Task.FromResult(_unitOfWork.AddressRepository.GetByID(Id));
+        }
+        public async Task CreateAddress(RequestAddress address)
+        {
+            var entity = new Address
+            {
+             UserId = address.UserId,
+             CreationDate = DateTime.Now,
+             Description = address.Description, 
+             ModificationDate = DateTime.Now,  
+             Status = 1,
+            };
+
+            _unitOfWork.AddressRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task UpdateAddress(UpdateAddressDTO address)
+        {
+
+            var entity = await Task.FromResult(_unitOfWork.AddressRepository.GetByID(address.AddressId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Address with ID {address.AddressId} not found.");
+            }
+            address.UserId = address.UserId;
+            address.Description = address.Description;
+            address.ModificationDate = DateTime.Now;
+            address.Status = address.Status;
+
+            _unitOfWork.AddressRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

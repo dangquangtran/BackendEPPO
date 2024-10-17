@@ -64,7 +64,16 @@ namespace BackendEPPO.Controllers
             {
                 return BadRequest(ModelState);
             }
+            bool isExistingUser = await _userService.CheckAccountExists(customer.Email, customer.UserName);
 
+            if (isExistingUser)
+            {
+                return Conflict(new
+                {
+                    StatusCode = 409,
+                    Message = "Account with the same email or username already exists."
+                });
+            }
             await _userService.CreateAccountByCustomer(customer);
 
             return Ok(new

@@ -46,7 +46,7 @@ namespace Service
                 PhoneNumber = customer.PhoneNumber,
                 Email = customer.Email,
                 Password = customer.Password,
-                RoleId = 4,
+                RoleId = 5,
                 RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
@@ -67,7 +67,7 @@ namespace Service
                 PhoneNumber = owner.PhoneNumber,
                 Email = owner.Email,
                 Password = owner.Password,
-                RoleId = 5,
+                RoleId = 4,
                 RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
@@ -198,6 +198,13 @@ namespace Service
 
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
+        }
+        public async Task<bool> CheckAccountExists(string email, string userName)
+        {
+            var existingUser = await _unitOfWork.UserRepository
+                .GetFirstOrDefaultAsync(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase)
+                                           || u.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase));
+            return existingUser != null;
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Rank;
+using DTOs.User;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -33,7 +34,19 @@ namespace Service.Implements
         {
             return _unitOfWork.RankRepository.Get();
         }
+        public async Task CreateRankByManager(CreateRankDTO rank)
+        {
+            var rankEntity = new Rank
+            {
+               Title = rank.Title,
+               Description = rank.Description,
+               CreationDate = DateTime.Now,
+               UpdateDate = DateTime.Now,
+            };
 
+            _unitOfWork.RankRepository.Insert(rankEntity);
+            await _unitOfWork.SaveAsync();
+        }
         public Rank GetRankById(int id)
         {
             return _unitOfWork.RankRepository.GetByID(id);
@@ -53,5 +66,25 @@ namespace Service.Implements
             _unitOfWork.RankRepository.Update(rank);
             _unitOfWork.Save();
         }
+        public async Task UpdateRank(UpdateRanksDTO rank)
+        {
+         
+            var rankEntity = await Task.FromResult(_unitOfWork.RankRepository.GetByID(rank.RankId));
+
+            if (rankEntity == null)
+            {
+                throw new Exception($"Rank with ID {rank.RankId} not found.");
+            }
+
+         
+            rankEntity.Title = rank.Title;
+            rankEntity.Description = rank.Description;
+            rankEntity.UpdateDate = DateTime.Now;
+
+ 
+            _unitOfWork.RankRepository.Update(rankEntity);
+            await _unitOfWork.SaveAsync();
+        }
+
     }
 }
