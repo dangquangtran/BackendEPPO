@@ -104,5 +104,11 @@ namespace BackendEPPO.Controllers
             return Ok("Đã cập nhật thành công");
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet("GetPlantsByCategoryId")]
+        public IActionResult GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize)
+        {
+            return Ok(_plantService.GetPlantsByCategoryId(categoryId,pageIndex, pageSize));
+        }
     }
 }
