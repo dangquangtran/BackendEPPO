@@ -11,7 +11,7 @@ namespace Service.Interfaces
     public interface IOrderService
     {
         IEnumerable<OrderVM> GetAllOrders(int pageIndex, int pageSize);
-        Order GetOrderById(int id);
+        OrderVM GetOrderById(int id);
         void CreateOrder(CreateOrderDTO createOrder, int userId);
         void UpdateOrder(UpdateOrderDTO updateOrder);
         IEnumerable<OrderVM> GetOrdersByUserId(int userId, int pageIndex, int pageSize);

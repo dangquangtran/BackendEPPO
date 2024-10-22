@@ -24,21 +24,44 @@ namespace Service.Implements
 
         public IEnumerable<OrderVM> GetAllOrders(int pageIndex, int pageSize)
         {
-            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails");
+            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails,OrderDetails.SubOrderDetails");
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
-        public Order GetOrderById(int id)
+        public OrderVM GetOrderById(int id)
         {
-            return _unitOfWork.OrderRepository.GetByID(id);
+            var order =_unitOfWork.OrderRepository.GetByID(id, includeProperties: "OrderDetails,OrderDetails.SubOrderDetails");
+            return _mapper.Map<OrderVM>(order);
         }
 
-        public void CreateOrder(CreateOrderDTO createOrder, int userId)
+        public void CreateOrder(CreateOrderDTO createOrderDTO, int userId)
         {
-            Order order = _mapper.Map<Order>(createOrder);
+            Order order = _mapper.Map<Order>(createOrderDTO);
             order.CreationDate = DateTime.Now;
             order.Status = 1;
             order.UserId = userId;
+            // 2. Tính tổng tiền và giá cuối cùng nếu có voucher
+            //order.TotalPrice = CalculateTotalPrice(createOrderDTO);
+            //order.FinalPrice = ApplyVoucher(order.TotalPrice, order.UserVoucherId, order.PlantVoucherId);
+
+            //// 3. Thêm các chi tiết đơn hàng (OrderDetails) và sub chi tiết (SubOrderDetails)
+            //foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+            //{
+            //    OrderDetail orderDetail = _mapper.Map<OrderDetail>(orderDetailDTO);
+            //    orderDetail.CreationDate = DateTime.Now;
+            //    orderDetail.Status = 1; // Giả sử trạng thái "1" là chi tiết đơn hàng mới
+            //    orderDetail.OrderId = order.OrderId; // Gắn OrderId vào OrderDetail
+            //    order.OrderDetails.Add(orderDetail);
+
+            //    // 4. Thêm các SubOrderDetails
+            //    foreach (var subOrderDetailDTO in orderDetailDTO.SubOrderDetails)
+            //    {
+            //        SubOrderDetail subOrderDetail = _mapper.Map<SubOrderDetail>(subOrderDetailDTO);
+            //        subOrderDetail.OrderDetailId = orderDetail.OrderDetailId; // Gắn OrderDetailId vào SubOrderDetail
+            //        orderDetail.SubOrderDetails.Add(subOrderDetail);
+            //    }
+            //}
+
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
         }
@@ -56,11 +79,42 @@ namespace Service.Implements
                 filter: o => o.UserId == userId && o.Status != 0, // Lọc theo userId và trạng thái đơn hàng
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "OrderDetails" // Bao gồm thông tin chi tiết đơn hàng
+                includeProperties: "OrderDetails,OrderDetails.SubOrderDetails" // Bao gồm thông tin chi tiết đơn hàng
             );
 
             // Sử dụng AutoMapper để chuyển đổi từ Order sang OrderVM
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
+
+        //private double CalculateTotalPrice(CreateOrderDTO createOrderDTO)
+        //{
+        //    double totalPrice = 0;
+
+        //    // Tính tổng giá của tất cả các OrderDetails
+        //    foreach (var orderDetail in createOrderDTO.OrderDetails)
+        //    {
+        //        totalPrice += orderDetail.TotalPrice ?? 0;
+        //    }
+
+        //    return totalPrice;
+        //}
+
+        //private double ApplyVoucher(double? totalPrice, int? userVoucherId, int? plantVoucherId)
+        //{
+        //    double finalPrice = totalPrice ?? 0;
+
+        //    // Giả sử hàm ApplyUserVoucher và ApplyPlantVoucher sẽ trả về số tiền giảm giá
+        //    if (userVoucherId.HasValue)
+        //    {
+        //        finalPrice -= ApplyUserVoucher(userVoucherId.Value);
+        //    }
+
+        //    if (plantVoucherId.HasValue)
+        //    {
+        //        finalPrice -= ApplyPlantVoucher(plantVoucherId.Value);
+        //    }
+
+        //    return finalPrice;
+        //}
     }
 }

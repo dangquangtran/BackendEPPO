@@ -14,7 +14,7 @@ namespace Service.Interfaces
         Task<Plant> GetPlantByID(int Id);
         Task<IEnumerable<Plant>> GetListPlantByCategory(int Id);
         IEnumerable<PlantVM> GetAllPlants(int pageIndex, int pageSize);
-        Plant GetPlantById(int id);
+        PlantVM GetPlantById(int id);
         void CreatePlant(CreatePlantDTO createPlant);
         void UpdatePlant(UpdatePlantDTO updatePlant);
         IEnumerable<PlantVM> GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize);

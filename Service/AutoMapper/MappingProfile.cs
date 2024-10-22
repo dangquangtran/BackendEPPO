@@ -3,9 +3,11 @@ using BusinessObjects.Models;
 using DTOs.Conversation;
 using DTOs.Message;
 using DTOs.Order;
+using DTOs.OrderDetail;
 using DTOs.Plant;
 using DTOs.Rank;
 using DTOs.Services;
+using DTOs.SubOrderDetail;
 using DTOs.Transaction;
 using DTOs.User;
 using System;
@@ -37,8 +39,10 @@ namespace Service.AutoMapper
             CreateMap<CreateOrderDTO, Order>();
             CreateMap<UpdateOrderDTO, Order>();
             CreateMap<Order, OrderVM>().ReverseMap();
-
-
+            CreateMap<CreateOrderDetailDTO, OrderDetail>();
+            CreateMap<CreateSubOrderDetailDTO, SubOrderDetail>();
+            CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
+            CreateMap<SubOrderDetail, SubOrderDetailVM>().ReverseMap();
             //Do Huu Thuan
             CreateMap<Plant, ResponsePlantDTO>().ReverseMap();
             CreateMap<User, ResponseUserDTO>().ReverseMap();

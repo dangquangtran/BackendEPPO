@@ -96,9 +96,20 @@ namespace Repository.Implements
             return await query.ToListAsync();
         }
 
-        public virtual TEntity GetByID(object id)
+        public virtual TEntity GetByID(object id, string includeProperties = "")
         {
-            return dbSet.Find(id);
+            IQueryable<TEntity> query = dbSet;
+
+            // Bao gồm các thuộc tính liên quan
+            foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            // Tìm kiếm theo id
+            var keyPropertyName = context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties[0].Name;
+
+            return query.FirstOrDefault(e => EF.Property<object>(e, keyPropertyName).Equals(id));
         }
 
         public virtual void Insert(TEntity entity)

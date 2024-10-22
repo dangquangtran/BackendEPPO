@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using DTOs.OrderDetail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace DTOs.Order
         public int? TransactionId { get; set; }
         public int? PaymentId { get; set; }
         public int? PaymentStatus { get; set; }
+        public List<CreateOrderDetailDTO> OrderDetails { get; set; }
     }
 }

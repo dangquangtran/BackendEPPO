@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,9 +43,10 @@ namespace Service
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
-        public Plant GetPlantById(int id)
+        public PlantVM GetPlantById(int id)
         {
-            return _unitOfWork.PlantRepository.GetByID(id);
+            var plant = _unitOfWork.PlantRepository.GetByID(id);
+            return _mapper.Map<PlantVM>(plant);
         }
 
         public void CreatePlant(CreatePlantDTO createPlant)

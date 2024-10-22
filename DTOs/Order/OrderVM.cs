@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using DTOs.OrderDetail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,6 @@ namespace DTOs.Order
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
 
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetailVM> OrderDetails { get; set; }
     }
 }
