@@ -5,7 +5,7 @@ using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase
     {

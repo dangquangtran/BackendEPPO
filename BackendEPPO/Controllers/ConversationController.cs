@@ -44,7 +44,7 @@ namespace BackendEPPO.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetByUserId")]
+        [HttpGet("GetByUser")]
         public IActionResult GetConversationsByUserId()
         {
             var userIdClaim =User.FindFirst("userId")?.Value;
