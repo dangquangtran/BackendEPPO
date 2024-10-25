@@ -24,13 +24,13 @@ namespace Service.Implements
 
         public IEnumerable<OrderVM> GetAllOrders(int pageIndex, int pageSize)
         {
-            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails,OrderDetails.SubOrderDetails");
+            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails");
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
         public OrderVM GetOrderById(int id)
         {
-            var order =_unitOfWork.OrderRepository.GetByID(id, includeProperties: "OrderDetails,OrderDetails.SubOrderDetails");
+            var order =_unitOfWork.OrderRepository.GetByID(id, includeProperties: "OrderDetails");
             return _mapper.Map<OrderVM>(order);
         }
 
@@ -40,6 +40,7 @@ namespace Service.Implements
             order.CreationDate = DateTime.Now;
             order.Status = 1;
             order.UserId = userId;
+            order.FinalPrice = order.TotalPrice + order.DeliveryFee;
             // 2. Tính tổng tiền và giá cuối cùng nếu có voucher
             //order.TotalPrice = CalculateTotalPrice(createOrderDTO);
             //order.FinalPrice = ApplyVoucher(order.TotalPrice, order.UserVoucherId, order.PlantVoucherId);
@@ -79,7 +80,7 @@ namespace Service.Implements
                 filter: o => o.UserId == userId && o.Status != 0, // Lọc theo userId và trạng thái đơn hàng
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "OrderDetails,OrderDetails.SubOrderDetails" // Bao gồm thông tin chi tiết đơn hàng
+                includeProperties: "OrderDetails" // Bao gồm thông tin chi tiết đơn hàng
             );
 
             // Sử dụng AutoMapper để chuyển đổi từ Order sang OrderVM
