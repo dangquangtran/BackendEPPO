@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Conversation;
+using DTOs.ImagePlant;
 using DTOs.Message;
 using DTOs.Order;
 using DTOs.OrderDetail;
@@ -43,6 +44,7 @@ namespace Service.AutoMapper
             CreateMap<CreateSubOrderDetailDTO, SubOrderDetail>();
             CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
             CreateMap<SubOrderDetail, SubOrderDetailVM>().ReverseMap();
+            CreateMap<ImagePlant, ImagePlantVM>().ReverseMap();
             //Do Huu Thuan
             CreateMap<Plant, ResponsePlantDTO>().ReverseMap();
             CreateMap<User, ResponseUserDTO>().ReverseMap();

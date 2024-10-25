@@ -28,6 +28,7 @@ builder.Services.AddScoped<IConversationService, ConversationService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<FirebaseStorageService>();
 
 //Do Huu Thuan
 builder.Services.AddScoped<IUserService, UserService>();

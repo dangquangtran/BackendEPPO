@@ -74,25 +74,23 @@ namespace BackendEPPO.Controllers
         //    });
         //}
 
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet]
         public IActionResult GetAllPlants(int pageIndex, int pageSize)
         {
             return Ok(_plantService.GetAllPlants(pageIndex, pageSize));
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetPlantById(int id)
         {
             return Ok(_plantService.GetPlantById(id));
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost]
-        public IActionResult CreatePlant([FromBody] CreatePlantDTO createPlant)
+        public async Task<IActionResult> CreatePlant([FromForm] CreatePlantDTO createPlant)
         {
-            _plantService.CreatePlant(createPlant);
+            await _plantService.CreatePlant(createPlant, createPlant.ImageFiles);
             return Ok("Đã tạo thành công");
         }
 
@@ -104,7 +102,6 @@ namespace BackendEPPO.Controllers
             return Ok("Đã cập nhật thành công");
         }
 
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet("GetPlantsByCategoryId")]
         public IActionResult GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize)
         {
