@@ -92,16 +92,16 @@ namespace BackendEPPO.Controllers
 
                     new Claim("userId", userInfo.UserId.ToString()),
                     new Claim("roleId", userInfo.RoleId.ToString()),
-                    new Claim("roleName", userInfo.Role.NameRole ?? "Unknown"),
-                    new Claim("fullName", userInfo.FullName ?? string.Empty),
-                    new Claim("email", userInfo.Email ?? string.Empty),
-                    new Claim("phoneNumber", userInfo.PhoneNumber ?? string.Empty),
-                    new Claim("gender", userInfo.Gender?.ToString() ?? string.Empty),
-                    new Claim("rankId", userInfo.RankId?.ToString() ?? "0"),
-                    new Claim("walletId", userInfo.WalletId?.ToString() ?? "0"),
-                    new Claim("identificationCard", userInfo.IdentificationCard.ToString() ?? "0"),
-                    new Claim("dateOfBirth", userInfo.DateOfBirth?.ToString("yyyy-MM-dd") ?? string.Empty),
-                    new Claim(ClaimTypes.Role, userInfo.Role.NameRole ?? "Unknown")
+
+                    new Claim("roleName", userInfo.Role.NameRole),
+                    new Claim("fullName", userInfo.FullName.ToString()),
+                    new Claim("email", userInfo.Email.ToString()),
+                    new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),
+                    new Claim("gender", userInfo.Gender.ToString()),
+                    new Claim("walletId", userInfo.WalletId.ToString()),
+                    new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
+                    new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),
+                    new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
 
                 }, 
                 expires: DateTime.Now.AddMinutes(120),

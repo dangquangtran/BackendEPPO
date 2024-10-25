@@ -6,9 +6,6 @@ using DTOs.Message;
 using DTOs.Order;
 using DTOs.OrderDetail;
 using DTOs.Plant;
-using DTOs.Rank;
-using DTOs.Services;
-using DTOs.SubOrderDetail;
 using DTOs.Transaction;
 using DTOs.User;
 using System;
@@ -23,8 +20,6 @@ namespace Service.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<CreateRankDTO, Rank>();
-            CreateMap<UpdateRankDTO, Rank>();
             CreateMap<CreateConversationDTO, Conversation>();
             CreateMap<UpdateConversationDTO, Conversation>();
             CreateMap<ChatMessageDTO, Message>();
@@ -41,14 +36,11 @@ namespace Service.AutoMapper
             CreateMap<UpdateOrderDTO, Order>();
             CreateMap<Order, OrderVM>().ReverseMap();
             CreateMap<CreateOrderDetailDTO, OrderDetail>();
-            CreateMap<CreateSubOrderDetailDTO, SubOrderDetail>();
             CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
-            CreateMap<SubOrderDetail, SubOrderDetailVM>().ReverseMap();
             CreateMap<ImagePlant, ImagePlantVM>().ReverseMap();
             //Do Huu Thuan
             CreateMap<Plant, ResponsePlantDTO>().ReverseMap();
             CreateMap<User, ResponseUserDTO>().ReverseMap();
-            CreateMap<BusinessObjects.Models.Epposervice, ServicesDTO>().ReverseMap();
         }
 
     }

@@ -16,18 +16,13 @@ namespace BusinessObjects.Models
         {
         }
 
-        public virtual DbSet<Accessory> Accessories { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
-        public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Contract> Contracts { get; set; }
         public virtual DbSet<ContractDetail> ContractDetails { get; set; }
         public virtual DbSet<Conversation> Conversations { get; set; }
-        public virtual DbSet<Delivery> Deliveries { get; set; }
-        public virtual DbSet<Epposervice> Epposervices { get; set; }
         public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<HistoryBid> HistoryBids { get; set; }
-        public virtual DbSet<ImageAccessory> ImageAccessories { get; set; }
         public virtual DbSet<ImageFeedback> ImageFeedbacks { get; set; }
         public virtual DbSet<ImagePlant> ImagePlants { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
@@ -36,17 +31,12 @@ namespace BusinessObjects.Models
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Plant> Plants { get; set; }
-        public virtual DbSet<PlantVoucher> PlantVouchers { get; set; }
-        public virtual DbSet<Rank> Ranks { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
-        public virtual DbSet<RoomParticipant> RoomParticipants { get; set; }
-        public virtual DbSet<SubFeedback> SubFeedbacks { get; set; }
-        public virtual DbSet<SubOrderDetail> SubOrderDetails { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<TypeEcommerce> TypeEcommerces { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserVoucher> UserVouchers { get; set; }
+        public virtual DbSet<UserRoom> UserRooms { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -60,35 +50,6 @@ namespace BusinessObjects.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Accessory>(entity =>
-            {
-                entity.ToTable("Accessory");
-
-                entity.HasIndex(e => e.ModificationBy, "ModificationBy");
-
-                entity.Property(e => e.AccessoryId).HasColumnName("AccessoryID");
-
-                entity.Property(e => e.AccessoryName)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.Property(e => e.Code).HasMaxLength(50);
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasColumnType("text");
-
-                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Title).HasMaxLength(255);
-
-                entity.HasOne(d => d.ModificationByNavigation)
-                    .WithMany(p => p.Accessories)
-                    .HasForeignKey(d => d.ModificationBy)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("Accessory_ibfk_1");
-            });
-
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("Address");
@@ -109,53 +70,6 @@ namespace BusinessObjects.Models
                     .WithMany(p => p.Addresses)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("Address_ibfk_1");
-            });
-
-            modelBuilder.Entity<Blog>(entity =>
-            {
-                entity.ToTable("Blog");
-
-                entity.HasIndex(e => e.ModificationByUserId, "ModificationByUserID");
-
-                entity.HasIndex(e => e.PlantId, "PlantID");
-
-                entity.HasIndex(e => e.UserId, "UserID");
-
-                entity.Property(e => e.BlogId).HasColumnName("BlogID");
-
-                entity.Property(e => e.Content).HasColumnType("text");
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ModificationByUserId).HasColumnName("ModificationByUserID");
-
-                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ModificationDescription).HasColumnType("text");
-
-                entity.Property(e => e.PlantId).HasColumnName("PlantID");
-
-                entity.Property(e => e.Title)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.Property(e => e.UserId).HasColumnName("UserID");
-
-                entity.HasOne(d => d.ModificationByUser)
-                    .WithMany(p => p.BlogModificationByUsers)
-                    .HasForeignKey(d => d.ModificationByUserId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("Blog_ibfk_3");
-
-                entity.HasOne(d => d.Plant)
-                    .WithMany(p => p.Blogs)
-                    .HasForeignKey(d => d.PlantId)
-                    .HasConstraintName("Blog_ibfk_1");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.BlogUsers)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("Blog_ibfk_2");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -191,13 +105,21 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.ContractId).HasColumnName("ContractID");
 
+                entity.Property(e => e.ContractUrl)
+                    .HasMaxLength(255)
+                    .HasColumnName("ContractURL");
+
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
                 entity.Property(e => e.CreationContractDate).HasColumnType("datetime");
 
+                entity.Property(e => e.Description).HasMaxLength(255);
+
                 entity.Property(e => e.EndContractDate).HasColumnType("datetime");
 
                 entity.Property(e => e.IsActive).HasColumnType("bit(1)");
+
+                entity.Property(e => e.TypeContract).HasMaxLength(255);
 
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
@@ -258,73 +180,15 @@ namespace BusinessObjects.Models
                     .HasConstraintName("Conversation_ibfk_2");
             });
 
-            modelBuilder.Entity<Delivery>(entity =>
-            {
-                entity.ToTable("Delivery");
-
-                entity.HasIndex(e => e.ModificationBy, "ModificationBy");
-
-                entity.HasIndex(e => e.OrderId, "OrderID");
-
-                entity.Property(e => e.DeliveryId).HasColumnName("DeliveryID");
-
-                entity.Property(e => e.Code).HasMaxLength(255);
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasMaxLength(255);
-
-                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.OrderId).HasColumnName("OrderID");
-
-                entity.HasOne(d => d.ModificationByNavigation)
-                    .WithMany(p => p.Deliveries)
-                    .HasForeignKey(d => d.ModificationBy)
-                    .HasConstraintName("Delivery_ibfk_1");
-
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.Deliveries)
-                    .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("Delivery_ibfk_2");
-            });
-
-            modelBuilder.Entity<Epposervice>(entity =>
-            {
-                entity.HasKey(e => e.ServiceId)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("EPPOService");
-
-                entity.HasIndex(e => e.ModificationBy, "ModificationBy");
-
-                entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
-
-                entity.Property(e => e.Code).HasMaxLength(50);
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasColumnType("text");
-
-                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ServiceName)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.HasOne(d => d.ModificationByNavigation)
-                    .WithMany(p => p.Epposervices)
-                    .HasForeignKey(d => d.ModificationBy)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("EPPOService_ibfk_1");
-            });
-
             modelBuilder.Entity<Feedback>(entity =>
             {
                 entity.ToTable("Feedback");
 
                 entity.HasIndex(e => e.ModificationByUserId, "ModificationByUserID");
+
+                entity.HasIndex(e => e.PlantId, "PlantID");
+
+                entity.HasIndex(e => e.UserId, "UserID");
 
                 entity.Property(e => e.FeedbackId).HasColumnName("FeedbackID");
 
@@ -336,14 +200,30 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.ModificationDate).HasColumnType("datetime");
 
+                entity.Property(e => e.PlantId).HasColumnName("PlantID");
+
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
                 entity.HasOne(d => d.ModificationByUser)
-                    .WithMany(p => p.Feedbacks)
+                    .WithMany(p => p.FeedbackModificationByUsers)
                     .HasForeignKey(d => d.ModificationByUserId)
                     .HasConstraintName("Feedback_ibfk_1");
+
+                entity.HasOne(d => d.Plant)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.PlantId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("Feedback_ibfk_2");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.FeedbackUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("Feedback_ibfk_3");
             });
 
             modelBuilder.Entity<HistoryBid>(entity =>
@@ -377,26 +257,6 @@ namespace BusinessObjects.Models
                     .WithMany(p => p.HistoryBids)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("HistoryBid_ibfk_1");
-            });
-
-            modelBuilder.Entity<ImageAccessory>(entity =>
-            {
-                entity.ToTable("ImageAccessory");
-
-                entity.HasIndex(e => e.AccessoryId, "AccessoryID");
-
-                entity.Property(e => e.ImageAccessoryId).HasColumnName("ImageAccessoryID");
-
-                entity.Property(e => e.AccessoryId).HasColumnName("AccessoryID");
-
-                entity.Property(e => e.ImageUrl)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.HasOne(d => d.Accessory)
-                    .WithMany(p => p.ImageAccessories)
-                    .HasForeignKey(d => d.AccessoryId)
-                    .HasConstraintName("ImageAccessory_ibfk_1");
             });
 
             modelBuilder.Entity<ImageFeedback>(entity =>
@@ -477,6 +337,8 @@ namespace BusinessObjects.Models
 
             modelBuilder.Entity<Notification>(entity =>
             {
+                entity.ToTable("Notification");
+
                 entity.HasIndex(e => e.UserId, "UserID");
 
                 entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
@@ -490,7 +352,7 @@ namespace BusinessObjects.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("Notifications_ibfk_1");
+                    .HasConstraintName("Notification_ibfk_1");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -501,17 +363,13 @@ namespace BusinessObjects.Models
 
                 entity.HasIndex(e => e.PaymentId, "PaymentID");
 
-                entity.HasIndex(e => e.PlantVoucherId, "PlantVoucherID");
-
-                entity.HasIndex(e => e.TransactionId, "TransactionID");
-
-                entity.HasIndex(e => e.UserVoucherId, "UserVoucherID");
-
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
                 entity.Property(e => e.Code).HasMaxLength(50);
 
                 entity.Property(e => e.CreationDate).HasColumnType("datetime");
+
+                entity.Property(e => e.DeliveryAddress).HasMaxLength(255);
 
                 entity.Property(e => e.Description).HasMaxLength(255);
 
@@ -519,13 +377,9 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
 
-                entity.Property(e => e.PlantVoucherId).HasColumnName("PlantVoucherID");
-
-                entity.Property(e => e.TransactionId).HasColumnName("TransactionID");
+                entity.Property(e => e.PaymentStatus).HasMaxLength(255);
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
-
-                entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
 
                 entity.HasOne(d => d.ModificationByNavigation)
                     .WithMany(p => p.Orders)
@@ -538,54 +392,32 @@ namespace BusinessObjects.Models
                     .HasForeignKey(d => d.PaymentId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("Order_ibfk_2");
-
-                entity.HasOne(d => d.PlantVoucher)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.PlantVoucherId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("Order_ibfk_3");
-
-                entity.HasOne(d => d.Transaction)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.TransactionId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("Order_ibfk_4");
-
-                entity.HasOne(d => d.UserVoucher)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.UserVoucherId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("Order_ibfk_5");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.ToTable("OrderDetail");
 
-                entity.HasIndex(e => e.ModificationBy, "ModificationBy");
-
                 entity.HasIndex(e => e.OrderId, "OrderID");
+
+                entity.HasIndex(e => e.PlantId, "PlantID");
 
                 entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
 
-                entity.Property(e => e.Code).HasMaxLength(50);
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
-
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
-                entity.HasOne(d => d.ModificationByNavigation)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.ModificationBy)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("OrderDetail_ibfk_2");
+                entity.Property(e => e.PlantId).HasColumnName("PlantID");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("OrderDetail_ibfk_1");
+
+                entity.HasOne(d => d.Plant)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.PlantId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("OrderDetail_ibfk_2");
             });
 
             modelBuilder.Entity<Payment>(entity =>
@@ -644,45 +476,6 @@ namespace BusinessObjects.Models
                     .HasConstraintName("Plant_ibfk_2");
             });
 
-            modelBuilder.Entity<PlantVoucher>(entity =>
-            {
-                entity.ToTable("PlantVoucher");
-
-                entity.HasIndex(e => e.PlantId, "PlantID");
-
-                entity.Property(e => e.PlantVoucherId).HasColumnName("PlantVoucherID");
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasMaxLength(255);
-
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
-
-                entity.Property(e => e.PlantId).HasColumnName("PlantID");
-
-                entity.HasOne(d => d.Plant)
-                    .WithMany(p => p.PlantVouchers)
-                    .HasForeignKey(d => d.PlantId)
-                    .HasConstraintName("PlantVoucher_ibfk_1");
-            });
-
-            modelBuilder.Entity<Rank>(entity =>
-            {
-                entity.ToTable("Rank");
-
-                entity.Property(e => e.RankId).HasColumnName("RankID");
-
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasMaxLength(255);
-
-                entity.Property(e => e.Title)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-            });
-
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role");
@@ -706,6 +499,8 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
+                entity.Property(e => e.ActiveDate).HasColumnType("datetime");
+
                 entity.Property(e => e.CreationDate).HasColumnType("datetime");
 
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
@@ -726,127 +521,11 @@ namespace BusinessObjects.Models
                     .HasConstraintName("Room_ibfk_1");
             });
 
-            modelBuilder.Entity<RoomParticipant>(entity =>
-            {
-                entity.ToTable("RoomParticipant");
-
-                entity.HasIndex(e => e.RoomId, "RoomID");
-
-                entity.HasIndex(e => e.UserId, "UserID");
-
-                entity.Property(e => e.RoomParticipantId).HasColumnName("RoomParticipantID");
-
-                entity.Property(e => e.JoinDate).HasColumnType("datetime");
-
-                entity.Property(e => e.RoomId).HasColumnName("RoomID");
-
-                entity.Property(e => e.UserId).HasColumnName("UserID");
-
-                entity.HasOne(d => d.Room)
-                    .WithMany(p => p.RoomParticipants)
-                    .HasForeignKey(d => d.RoomId)
-                    .HasConstraintName("RoomParticipant_ibfk_1");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.RoomParticipants)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("RoomParticipant_ibfk_2");
-            });
-
-            modelBuilder.Entity<SubFeedback>(entity =>
-            {
-                entity.ToTable("SubFeedback");
-
-                entity.HasIndex(e => e.AccessoryId, "AccessoryID");
-
-                entity.HasIndex(e => e.PlantId, "PlantID");
-
-                entity.HasIndex(e => e.ServiceId, "ServiceID");
-
-                entity.Property(e => e.SubFeedbackId).HasColumnName("SubFeedbackID");
-
-                entity.Property(e => e.AccessoryId).HasColumnName("AccessoryID");
-
-                entity.Property(e => e.PlantId).HasColumnName("PlantID");
-
-                entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
-
-                entity.HasOne(d => d.Accessory)
-                    .WithMany(p => p.SubFeedbacks)
-                    .HasForeignKey(d => d.AccessoryId)
-                    .HasConstraintName("SubFeedback_ibfk_2");
-
-                entity.HasOne(d => d.Plant)
-                    .WithMany(p => p.SubFeedbacks)
-                    .HasForeignKey(d => d.PlantId)
-                    .HasConstraintName("SubFeedback_ibfk_1");
-
-                entity.HasOne(d => d.Service)
-                    .WithMany(p => p.SubFeedbacks)
-                    .HasForeignKey(d => d.ServiceId)
-                    .HasConstraintName("SubFeedback_ibfk_3");
-            });
-
-            modelBuilder.Entity<SubOrderDetail>(entity =>
-            {
-                entity.ToTable("SubOrderDetail");
-
-                entity.HasIndex(e => e.AccessoryId, "AccessoryID");
-
-                entity.HasIndex(e => e.HistoryBidId, "HistoryBidID");
-
-                entity.HasIndex(e => e.OrderDetailId, "OrderDetailID");
-
-                entity.HasIndex(e => e.PlantId, "PlantID");
-
-                entity.HasIndex(e => e.ServiceId, "ServiceID");
-
-                entity.Property(e => e.SubOrderDetailId).HasColumnName("SubOrderDetailID");
-
-                entity.Property(e => e.AccessoryId).HasColumnName("AccessoryID");
-
-                entity.Property(e => e.HistoryBidId).HasColumnName("HistoryBidID");
-
-                entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
-
-                entity.Property(e => e.PlantId).HasColumnName("PlantID");
-
-                entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
-
-                entity.HasOne(d => d.Accessory)
-                    .WithMany(p => p.SubOrderDetails)
-                    .HasForeignKey(d => d.AccessoryId)
-                    .HasConstraintName("SubOrderDetail_ibfk_3");
-
-                entity.HasOne(d => d.HistoryBid)
-                    .WithMany(p => p.SubOrderDetails)
-                    .HasForeignKey(d => d.HistoryBidId)
-                    .HasConstraintName("SubOrderDetail_ibfk_5");
-
-                entity.HasOne(d => d.OrderDetail)
-                    .WithMany(p => p.SubOrderDetails)
-                    .HasForeignKey(d => d.OrderDetailId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("SubOrderDetail_ibfk_1");
-
-                entity.HasOne(d => d.Plant)
-                    .WithMany(p => p.SubOrderDetails)
-                    .HasForeignKey(d => d.PlantId)
-                    .HasConstraintName("SubOrderDetail_ibfk_2");
-
-                entity.HasOne(d => d.Service)
-                    .WithMany(p => p.SubOrderDetails)
-                    .HasForeignKey(d => d.ServiceId)
-                    .HasConstraintName("SubOrderDetail_ibfk_4");
-            });
-
             modelBuilder.Entity<Transaction>(entity =>
             {
                 entity.ToTable("Transaction");
 
                 entity.HasIndex(e => e.PaymentId, "PaymentID");
-
-                entity.HasIndex(e => e.TypeEcommerceId, "TypeEcommerceID");
 
                 entity.HasIndex(e => e.WalletId, "WalletID");
 
@@ -856,13 +535,9 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.Description).HasMaxLength(255);
 
-                entity.Property(e => e.ModificationDate).HasColumnType("datetime");
-
                 entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
 
                 entity.Property(e => e.RechargeDate).HasColumnType("datetime");
-
-                entity.Property(e => e.TypeEcommerceId).HasColumnName("TypeEcommerceID");
 
                 entity.Property(e => e.WalletId).HasColumnName("WalletID");
 
@@ -872,11 +547,6 @@ namespace BusinessObjects.Models
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.PaymentId)
                     .HasConstraintName("Transaction_ibfk_2");
-
-                entity.HasOne(d => d.TypeEcommerce)
-                    .WithMany(p => p.Transactions)
-                    .HasForeignKey(d => d.TypeEcommerceId)
-                    .HasConstraintName("Transaction_ibfk_3");
 
                 entity.HasOne(d => d.Wallet)
                     .WithMany(p => p.Transactions)
@@ -898,8 +568,6 @@ namespace BusinessObjects.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
-
-                entity.HasIndex(e => e.RankId, "RankID");
 
                 entity.HasIndex(e => e.RoleId, "RoleID");
 
@@ -929,7 +597,7 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-                entity.Property(e => e.RankId).HasColumnName("RankID");
+                entity.Property(e => e.RankLevel).HasMaxLength(255);
 
                 entity.Property(e => e.RoleId).HasColumnName("RoleID");
 
@@ -938,12 +606,6 @@ namespace BusinessObjects.Models
                     .HasMaxLength(255);
 
                 entity.Property(e => e.WalletId).HasColumnName("WalletID");
-
-                entity.HasOne(d => d.Rank)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.RankId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("User_ibfk_3");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
@@ -956,26 +618,31 @@ namespace BusinessObjects.Models
                     .HasConstraintName("User_ibfk_1");
             });
 
-            modelBuilder.Entity<UserVoucher>(entity =>
+            modelBuilder.Entity<UserRoom>(entity =>
             {
-                entity.ToTable("UserVoucher");
+                entity.ToTable("UserRoom");
+
+                entity.HasIndex(e => e.RoomId, "RoomID");
 
                 entity.HasIndex(e => e.UserId, "UserID");
 
-                entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
+                entity.Property(e => e.UserRoomId).HasColumnName("UserRoomID");
 
-                entity.Property(e => e.CreationDate).HasColumnType("datetime");
+                entity.Property(e => e.JoinDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Description).HasColumnType("text");
-
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
+                entity.HasOne(d => d.Room)
+                    .WithMany(p => p.UserRooms)
+                    .HasForeignKey(d => d.RoomId)
+                    .HasConstraintName("UserRoom_ibfk_1");
+
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserVouchers)
+                    .WithMany(p => p.UserRooms)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("UserVoucher_ibfk_1");
+                    .HasConstraintName("UserRoom_ibfk_2");
             });
 
             modelBuilder.Entity<Wallet>(entity =>

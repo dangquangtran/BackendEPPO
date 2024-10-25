@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace BusinessObjects.Models
 {
-    public partial class RoomParticipant
+    public partial class UserRoom
     {
-        public int RoomParticipantId { get; set; }
+        public int UserRoomId { get; set; }
         public int? RoomId { get; set; }
         public int? UserId { get; set; }
         public DateTime? JoinDate { get; set; }
