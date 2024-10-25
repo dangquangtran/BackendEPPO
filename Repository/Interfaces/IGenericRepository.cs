@@ -24,7 +24,7 @@ namespace Repository.Interfaces
             int? pageSize = null);
 
 
-        TEntity GetByID(object id);
+        TEntity GetByID(object id, string includeProperties = "");
 
         void Insert(TEntity entity);
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using DTOs.ImagePlant;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +24,6 @@ namespace DTOs.Plant
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
         public int? ModificationBy { get; set; }
+        public virtual ICollection<ImagePlantVM> ImagePlants { get; set; }
     }
 }

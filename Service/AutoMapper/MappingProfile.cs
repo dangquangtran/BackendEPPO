@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Conversation;
+using DTOs.ImagePlant;
 using DTOs.Message;
+using DTOs.Order;
+using DTOs.OrderDetail;
 using DTOs.Plant;
 using DTOs.Rank;
 using DTOs.Services;
+using DTOs.SubOrderDetail;
 using DTOs.Transaction;
 using DTOs.User;
 using System;
@@ -33,8 +37,14 @@ namespace Service.AutoMapper
             CreateMap<CreatePlantDTO, Plant>();
             CreateMap<UpdatePlantDTO, Plant>();
             CreateMap<Plant, PlantVM>().ReverseMap();
-
-
+            CreateMap<CreateOrderDTO, Order>();
+            CreateMap<UpdateOrderDTO, Order>();
+            CreateMap<Order, OrderVM>().ReverseMap();
+            CreateMap<CreateOrderDetailDTO, OrderDetail>();
+            CreateMap<CreateSubOrderDetailDTO, SubOrderDetail>();
+            CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
+            CreateMap<SubOrderDetail, SubOrderDetailVM>().ReverseMap();
+            CreateMap<ImagePlant, ImagePlantVM>().ReverseMap();
             //Do Huu Thuan
             CreateMap<Plant, ResponsePlantDTO>().ReverseMap();
             CreateMap<User, ResponseUserDTO>().ReverseMap();
