@@ -13,7 +13,6 @@ namespace BusinessObjects.Models
 
         public int WalletId { get; set; }
         public double? NumberBalance { get; set; }
-        public double? WalletRank { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
         public int? Status { get; set; }

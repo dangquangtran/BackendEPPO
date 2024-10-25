@@ -12,36 +12,25 @@ namespace Repository.Implements
         private IGenericRepository<User> userRepository;
         private IGenericRepository<Contract> contractRepository;
         private IGenericRepository<Plant> plantRepository;
-        private IGenericRepository<Accessory> accessoryRepository;
-        private IGenericRepository<Epposervice> epposerviceRepository;
         private IGenericRepository<Category> categoryRepository;
         private IGenericRepository<Address> addressRepository;
         private IGenericRepository<ContractDetail> contractDetailRepository;
         private IGenericRepository<Room> roomRepository;
-        private IGenericRepository<RoomParticipant> roomParticipantRepository;
         private IGenericRepository<Notification> notificationtRepository;
 
-        private IGenericRepository<Rank> rankRepository;
 
         private IGenericRepository<Transaction> transactionRepository;
         private IGenericRepository<Conversation> conversationRepository;
         private IGenericRepository<Message> messageRepository;
         private IGenericRepository<Order> orderRepository;
         private IGenericRepository<OrderDetail> orderDetailRepository;
-        private IGenericRepository<SubOrderDetail> subOrderDetailRepository;
 
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
             this.context = context;
         }
 
-        public IGenericRepository<Rank> RankRepository
-        {
-            get
-            {
-                return rankRepository ??= new GenericRepository<Rank>(context);
-            }
-        }
+       
         //Do Huu Thuan
         public IGenericRepository<Room> RoomRepository
         {
@@ -59,14 +48,7 @@ namespace Repository.Implements
             }
         }
         //Do Huu Thuan
-        public IGenericRepository<RoomParticipant> RoomParticipantRepository
-        {
-            get
-            {
-                return roomParticipantRepository ??= new GenericRepository<RoomParticipant>(context);
-            }
-        }
-        //Do Huu Thuan
+        
         public IGenericRepository<ContractDetail> ContractDetailRepository
         {
             get
@@ -106,23 +88,7 @@ namespace Repository.Implements
                 return plantRepository ??= new GenericRepository<Plant>(context);
             }
         }
-        //Do Huu Thuan
-        public IGenericRepository<Accessory> AccessoryRepository
-        {
-            get
-            {
-                return accessoryRepository ??= new GenericRepository<Accessory>(context);
-            }
-        }
-        //Do Huu Thuan
-        public IGenericRepository<Epposervice> EpposerviceRepository
-        {
-            get
-            {
-                return epposerviceRepository ??= new GenericRepository<Epposervice>(context);
-            }
-        }
-        //Do Huu Thuan
+       
         public IGenericRepository<Category> CategoriesRepository
         {
             get
@@ -170,14 +136,7 @@ namespace Repository.Implements
             }
         }
 
-        public IGenericRepository<SubOrderDetail> SubOrderDetailRepository
-        {
-            get
-            {
-                return subOrderDetailRepository ??= new GenericRepository<SubOrderDetail>(context);
-            }
-        }
-
+       
         public void Save()
         {
             context.SaveChanges();

@@ -7,26 +7,20 @@ namespace BusinessObjects.Models
     {
         public User()
         {
-            Accessories = new HashSet<Accessory>();
             Addresses = new HashSet<Address>();
-            BlogModificationByUsers = new HashSet<Blog>();
-            BlogUsers = new HashSet<Blog>();
             Categories = new HashSet<Category>();
             Contracts = new HashSet<Contract>();
             ConversationUserOneNavigations = new HashSet<Conversation>();
             ConversationUserTwoNavigations = new HashSet<Conversation>();
-            Deliveries = new HashSet<Delivery>();
-            Epposervices = new HashSet<Epposervice>();
-            Feedbacks = new HashSet<Feedback>();
+            FeedbackModificationByUsers = new HashSet<Feedback>();
+            FeedbackUsers = new HashSet<Feedback>();
             HistoryBids = new HashSet<HistoryBid>();
             Messages = new HashSet<Message>();
             Notifications = new HashSet<Notification>();
-            OrderDetails = new HashSet<OrderDetail>();
             Orders = new HashSet<Order>();
             Plants = new HashSet<Plant>();
-            RoomParticipants = new HashSet<RoomParticipant>();
             Rooms = new HashSet<Room>();
-            UserVouchers = new HashSet<UserVoucher>();
+            UserRooms = new HashSet<UserRoom>();
         }
 
         public int UserId { get; set; }
@@ -41,7 +35,7 @@ namespace BusinessObjects.Models
         public int? IdentificationCard { get; set; }
         public int? WalletId { get; set; }
         public int? RoleId { get; set; }
-        public int? RankId { get; set; }
+        public string RankLevel { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? CreationDate { get; set; }
         public int? CreationBy { get; set; }
@@ -49,28 +43,21 @@ namespace BusinessObjects.Models
         public int? ModificationBy { get; set; }
         public int? Status { get; set; }
 
-        public virtual Rank Rank { get; set; }
         public virtual Role Role { get; set; }
         public virtual Wallet Wallet { get; set; }
-        public virtual ICollection<Accessory> Accessories { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
-        public virtual ICollection<Blog> BlogModificationByUsers { get; set; }
-        public virtual ICollection<Blog> BlogUsers { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Contract> Contracts { get; set; }
         public virtual ICollection<Conversation> ConversationUserOneNavigations { get; set; }
         public virtual ICollection<Conversation> ConversationUserTwoNavigations { get; set; }
-        public virtual ICollection<Delivery> Deliveries { get; set; }
-        public virtual ICollection<Epposervice> Epposervices { get; set; }
-        public virtual ICollection<Feedback> Feedbacks { get; set; }
+        public virtual ICollection<Feedback> FeedbackModificationByUsers { get; set; }
+        public virtual ICollection<Feedback> FeedbackUsers { get; set; }
         public virtual ICollection<HistoryBid> HistoryBids { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Plant> Plants { get; set; }
-        public virtual ICollection<RoomParticipant> RoomParticipants { get; set; }
         public virtual ICollection<Room> Rooms { get; set; }
-        public virtual ICollection<UserVoucher> UserVouchers { get; set; }
+        public virtual ICollection<UserRoom> UserRooms { get; set; }
     }
 }

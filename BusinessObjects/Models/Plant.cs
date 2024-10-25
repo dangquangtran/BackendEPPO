@@ -7,13 +7,11 @@ namespace BusinessObjects.Models
     {
         public Plant()
         {
-            Blogs = new HashSet<Blog>();
             ContractDetails = new HashSet<ContractDetail>();
+            Feedbacks = new HashSet<Feedback>();
             ImagePlants = new HashSet<ImagePlant>();
-            PlantVouchers = new HashSet<PlantVoucher>();
+            OrderDetails = new HashSet<OrderDetail>();
             Rooms = new HashSet<Room>();
-            SubFeedbacks = new HashSet<SubFeedback>();
-            SubOrderDetails = new HashSet<SubOrderDetail>();
         }
 
         public int PlantId { get; set; }
@@ -35,12 +33,10 @@ namespace BusinessObjects.Models
         public virtual Category Category { get; set; }
         public virtual User ModificationByNavigation { get; set; }
         public virtual TypeEcommerce TypeEcommerce { get; set; }
-        public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<ContractDetail> ContractDetails { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<ImagePlant> ImagePlants { get; set; }
-        public virtual ICollection<PlantVoucher> PlantVouchers { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Room> Rooms { get; set; }
-        public virtual ICollection<SubFeedback> SubFeedbacks { get; set; }
-        public virtual ICollection<SubOrderDetail> SubOrderDetails { get; set; }
     }
 }

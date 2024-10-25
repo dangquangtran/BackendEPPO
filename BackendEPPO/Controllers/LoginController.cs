@@ -71,7 +71,6 @@ namespace BackendEPPO.Controllers
                     new Claim("email", userInfo.Email.ToString()),
                     new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),
                     new Claim("gender", userInfo.Gender.ToString()),
-                    new Claim("rankId", userInfo.RankId.ToString()),
                     new Claim("walletId", userInfo.WalletId.ToString()),
                     new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
                     new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),

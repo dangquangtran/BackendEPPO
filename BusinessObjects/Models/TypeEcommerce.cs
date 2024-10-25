@@ -8,7 +8,6 @@ namespace BusinessObjects.Models
         public TypeEcommerce()
         {
             Plants = new HashSet<Plant>();
-            Transactions = new HashSet<Transaction>();
         }
 
         public int TypeEcommerceId { get; set; }
@@ -17,6 +16,5 @@ namespace BusinessObjects.Models
         public int? Status { get; set; }
 
         public virtual ICollection<Plant> Plants { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }
