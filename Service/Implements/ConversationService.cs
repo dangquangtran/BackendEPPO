@@ -49,10 +49,18 @@ namespace Service.Implements
         public IEnumerable<ConversationVM> GetConversationsByUserId(int userId)
         {
             var conversations = _unitOfWork.ConversationRepository.Get(
-                filter: c => (c.UserOne == userId || c.UserTwo == userId) && c.Status != 0,
-                includeProperties: "Messages,UserOneNavigation,UserTwoNavigation",
-                orderBy: q => q.OrderByDescending(c => c.Messages.OrderByDescending(m => m.CreationDate))
-   );
+        filter: c => (c.UserOne == userId || c.UserTwo == userId) && c.Status != 0,
+        includeProperties: "Messages,UserOneNavigation,UserTwoNavigation"
+    );
+            foreach (var conversation in conversations)
+            {
+                conversation.Messages = conversation.Messages
+                    .OrderByDescending(m => m.CreationDate)
+                    .ToList();
+            }
+            var sortedConversations = conversations
+        .OrderByDescending(c => c.Messages.FirstOrDefault()?.CreationDate)
+        .ToList();
             return _mapper.Map<IEnumerable<ConversationVM>>(conversations);
         }
     }
