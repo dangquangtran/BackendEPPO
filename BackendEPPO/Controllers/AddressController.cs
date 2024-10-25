@@ -1,6 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
 using DTOs.Address;
-using DTOs.Rank;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

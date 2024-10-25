@@ -18,13 +18,9 @@ namespace Repository.Implements
         private IGenericRepository<Room> roomRepository;
         private IGenericRepository<Notification> notificationtRepository;
         private IGenericRepository<Wallet> walletRepository;
-        private IGenericRepository<Rank> rankRepository;
         private IGenericRepository<TypeEcommerce> typeEcommerceRepository;
-        private IGenericRepository<Blog> blogRepository;
         private IGenericRepository<Feedback> feedbackRepository;
-        private IGenericRepository<SubFeedback> subFeedbackRepository;
         private IGenericRepository<ImageFeedback> imageFeedbackRepository;
-        private IGenericRepository<UserVoucher> userVoucherRepository;
 
 
         private IGenericRepository<Transaction> transactionRepository;
@@ -46,14 +42,7 @@ namespace Repository.Implements
                 return imageFeedbackRepository ??= new GenericRepository<ImageFeedback>(context);
             }
         }
-        //Do Huu Thuan
-        public IGenericRepository<SubFeedback> SubFeedbackRepository
-        {
-            get
-            {
-                return subFeedbackRepository ??= new GenericRepository<SubFeedback>(context);
-            }
-        }
+       
         //Do Huu Thuan
         public IGenericRepository<Feedback> FeedbackRepository
         {
@@ -61,15 +50,7 @@ namespace Repository.Implements
             {
                 return feedbackRepository ??= new GenericRepository<Feedback>(context);
             }
-        }
-        //Do Huu Thuan
-        public IGenericRepository<Blog> BlogRepository
-        {
-            get
-            {
-                return blogRepository ??= new GenericRepository<Blog>(context);
-            }
-        }
+        }        
         //Do Huu Thuan
         public IGenericRepository<TypeEcommerce> TypeEcommerceRepository
         {

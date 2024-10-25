@@ -1,6 +1,5 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Address;
-using DTOs.Rank;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

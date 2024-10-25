@@ -47,7 +47,6 @@ namespace Service
                 Email = customer.Email,
                 Password = customer.Password,
                 RoleId = 5,
-                RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
                 Status = 1,
@@ -68,7 +67,6 @@ namespace Service
                 Email = owner.Email,
                 Password = owner.Password,
                 RoleId = 4,
-                RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
                 Status = 1,
@@ -89,7 +87,6 @@ namespace Service
                 Email = admin.Email,
                 Password = admin.Password,
                 RoleId = 3,
-                RankId = 1,
                 CreationDate = DateTime.Now,
                 IsActive = true,
                 Status = 1,
@@ -166,11 +163,6 @@ namespace Service
             if (accountDTO.RoleId.HasValue)
             {
                 userEntity.RoleId = accountDTO.RoleId.Value;
-            }
-
-            if (accountDTO.RankId.HasValue)
-            {
-                userEntity.RankId = accountDTO.RankId.Value;
             }
 
             if (accountDTO.IsActive.HasValue)

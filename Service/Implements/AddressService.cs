@@ -1,6 +1,5 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Address;
-using DTOs.Rank;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;

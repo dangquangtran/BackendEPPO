@@ -20,11 +20,8 @@ namespace Repository.Interfaces
         IGenericRepository<Notification> NotificationRepository { get; }
         IGenericRepository<Wallet> WalletRepository { get; }
         IGenericRepository<TypeEcommerce> TypeEcommerceRepository { get; }
-        IGenericRepository<Blog> BlogRepository { get; }
         IGenericRepository<Feedback> FeedbackRepository { get; }
-        IGenericRepository<SubFeedback> SubFeedbackRepository { get; }
         IGenericRepository<ImageFeedback> ImageFeedbackRepository { get; }
-        IGenericRepository<UserVoucher> UserVoucherRepository { get; }
         
 
         Task SaveAsync(); 
