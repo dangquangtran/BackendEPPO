@@ -83,6 +83,8 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListNotification_Endpoint = ApiEndpoint + "/GetList/Notification";
             public const string GetNotificationByID = GetListNotification_Endpoint + "/Id";
+            public const string CreateNotificationByID = GetListNotification_Endpoint + "/Create/Notification";
+            public const string UpdateNotificationByID = GetListNotification_Endpoint + "/Update/Notification";
         }
         // Do Huu Thuan
         public static class TypeEcommerce
@@ -95,6 +97,8 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListWallet_Endpoint = ApiEndpoint + "/GetList/Wallet";
             public const string GetWalletByID = GetListWallet_Endpoint + "/Id";
+            public const string CreateWallet = GetListWallet_Endpoint + "/Create/Wallet";
+            public const string UpdateWalletByID = GetListWallet_Endpoint + "/Update/Wallet";
         }
         // Do Huu Thuan
         public static class Blog

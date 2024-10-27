@@ -1,7 +1,10 @@
 ﻿using BackendEPPO.Extenstion;
+using DTOs.Notification;
+using DTOs.Wallet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service.Implements;
 using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
@@ -51,6 +54,57 @@ namespace BackendEPPO.Controllers
                 Message = "Request was successful",
                 Data = _wallet
             });
+        }
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPost(ApiEndPointConstant.Wallet.CreateWallet)]
+        public async Task<IActionResult> CreateWallet([FromBody] CreateWalletDTO wallet)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _service.CreateWallet(wallet);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "Wallet created successfully",
+                Data = wallet
+            });
+        }
+
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.Wallet.UpdateWalletByID)]
+        public async Task<IActionResult> UpdateWallet(int id, [FromBody] UpdateWalletDTO wallet)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            wallet.WalletId = id;
+
+            try
+            {
+                await _service.UpdateWallet(wallet);
+                var updatedWallet = await _service.GetWalletByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Wallet updated successfully.",
+                    Data = updatedWallet
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Wallet not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
         }
     }
 }
