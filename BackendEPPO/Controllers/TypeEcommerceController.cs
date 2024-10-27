@@ -1,4 +1,6 @@
 ﻿using BackendEPPO.Extenstion;
+using DTOs.TypeEcommerce;
+using DTOs.Wallet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -51,6 +53,57 @@ namespace BackendEPPO.Controllers
                 Message = "Request was successful",
                 Data = _typeEcommerce
             });
+        }
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPost(ApiEndPointConstant.TypeEcommerce.CreateTypeEcommerce)]
+        public async Task<IActionResult> CreateTypeEcommerce([FromBody] CreateTypeEcommerceDTO typeEcommerce)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _service.CreateTypeEcommerce(typeEcommerce);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "TypeEcommerce created successfully",
+                Data = typeEcommerce
+            });
+        }
+
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.TypeEcommerce.UpdateTypeEcommerceID)]
+        public async Task<IActionResult> UpdateTypeEcommerce(int id, [FromBody] UpdateTypeEcommerceDTO typeEcommerce)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            typeEcommerce.TypeEcommerceId = id;
+
+            try
+            {
+                await _service.UpdateTypeEcommerce(typeEcommerce);
+                var updatedTypeEcommerce = await _service.GetTypeEcommerceByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "TypeEcommerce updated successfully.",
+                    Data = updatedTypeEcommerce
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "TypeEcommerce not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
         }
     }
 }

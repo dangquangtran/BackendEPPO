@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.TypeEcommerce;
+using DTOs.Wallet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +14,7 @@ namespace Service.Interfaces
 
         Task<IEnumerable<TypeEcommerce>> GetListTypeEcommerce(int page, int size);
         Task<TypeEcommerce> GetTypeEcommerceByID(int Id);
+        Task UpdateTypeEcommerce(UpdateTypeEcommerceDTO typeEcommerce);
+        Task CreateTypeEcommerce(CreateTypeEcommerceDTO typeEcommerce); 
     }
 }

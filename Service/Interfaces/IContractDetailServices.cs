@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.ContractDetails;
+using DTOs.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,8 @@ namespace Service.Interfaces
     {
         Task<IEnumerable<ContractDetail>> GetListContractDetail(int page, int size);
         Task<ContractDetail> GetContractDetailByID(int Id);
+
+        Task UpdateContractDetail(UpdateContractDetailDTO contractDetail);
+        Task CreateContractDetail(CreateContractDetailDTO contractDetail); 
     }
 }
