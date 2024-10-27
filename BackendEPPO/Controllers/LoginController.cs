@@ -19,7 +19,7 @@ namespace BackendEPPO.Controllers
     //2-manage
     //3-staff
     //4-customer
-    //5-owwner
+    //5-owner
     public class LoginController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -62,6 +62,7 @@ namespace BackendEPPO.Controllers
                 response = Ok(new
                 {
                     token = tokenString,
+                    roleName = user.Role.NameRole,
                 });
             }
             return response;
