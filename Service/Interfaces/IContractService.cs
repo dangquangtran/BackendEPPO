@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Contracts;
+using DTOs.Wallet;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,5 +10,7 @@ namespace Service.Interfaces
     {
         Task<IEnumerable<Contract>> GetListContract(int page, int size);
         Task<Contract> GetContractByID(int Id);
+        Task UpdateContract(UpdateContractDTO contract);
+        Task CreateContract(CreateContractDTO contract);
     }
 }

@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.ContractDetails;
+using DTOs.Contracts;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -26,6 +28,39 @@ namespace Service.Implements
         public async Task<ContractDetail> GetContractDetailByID(int Id)
         {
             return await Task.FromResult(_unitOfWork.ContractDetailRepository.GetByID(Id));
+        }
+        public async Task UpdateContractDetail(UpdateContractDetailDTO contractDetail)
+        {
+            var entity = await Task.FromResult(_unitOfWork.ContractDetailRepository.GetByID(contractDetail.ContractDetailId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Contract Detail Detail with ID {contractDetail.ContractDetailId} not found.");
+            }
+            contractDetail.ContractId = contractDetail.ContractId;
+            contractDetail.PlantId = contractDetail.PlantId;
+            contractDetail.Quantity = contractDetail.Quantity;
+            contractDetail.TotalPrice = contractDetail.TotalPrice;
+            contractDetail.IsActive = contractDetail.IsActive;
+            contractDetail.Status = contractDetail.Status;
+
+            _unitOfWork.ContractDetailRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task CreateContractDetail(CreateContractDetailDTO contractDetail)
+        {
+            var entity = new ContractDetail
+            {
+                ContractId = contractDetail.ContractId,
+                PlantId = contractDetail.PlantId,
+                Quantity = contractDetail.Quantity,
+                TotalPrice = contractDetail.TotalPrice,
+                IsActive = contractDetail.IsActive,
+                Status = 1,
+            };
+            _unitOfWork.ContractDetailRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Category;
+using DTOs.Wallet;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -26,6 +28,33 @@ namespace Service.Implements
         {
             return await Task.FromResult(_unitOfWork.CategoriesRepository.GetByID(id));
         }
- 
+        public async Task CreateCategory(CreateCategoryDTO category)
+        {
+            var entity = new Category
+            {    
+                Title = category.Title,
+                Description = category.Description,
+                CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
+                Status = 1,
+            };
+            _unitOfWork.CategoriesRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
+        }
+        public async Task UpdateCategory(UpdateCategoryDTO category)
+        {
+
+            var entity = await Task.FromResult(_unitOfWork.CategoriesRepository.GetByID(category.CategoryId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Category with ID {category.CategoryId} not found.");
+            }
+            category.Title = category.Title;
+            category.ModificationDate = DateTime.Now;
+            category.Status = category.Status;
+            _unitOfWork.CategoriesRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
     }
 }

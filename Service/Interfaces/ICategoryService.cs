@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Category;
+using DTOs.Wallet;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +14,8 @@ namespace Service.Interfaces
     {
         Task<IEnumerable<Category>> GetListCategory(int page, int size);
         Task<Category> GetCategoryByID(int Id);
-      
+        Task CreateCategory(CreateCategoryDTO category);
+        Task UpdateCategory(UpdateCategoryDTO category);
+  
     }
 }

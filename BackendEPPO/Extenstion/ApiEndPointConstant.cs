@@ -55,6 +55,8 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListContract_Endpoint = ApiEndpoint + "/GetList/Contracts";
             public const string GetContractByID = GetListContract_Endpoint + "/Id";
+            public const string CreateContract = GetListContract_Endpoint + "/Create/Contract";
+            public const string UpdateContractID = GetListContract_Endpoint + "/Update/Contract/Id";
         }
         // Do Huu Thuan
         public static class RoomParticipant
@@ -67,6 +69,8 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListContractDetails_Endpoint = ApiEndpoint + "/GetList/ContractDetails";
             public const string GetContractDetailsByID = GetListContractDetails_Endpoint + "/Id";
+            public const string CreateContractDetails = GetListContractDetails_Endpoint + "/Create/ContractDetail";
+            public const string UpdateContractDetailsID = GetListContractDetails_Endpoint + "/Update/ContractDetail/Id";
         }
         // Do Huu Thuan
         public static class Address
@@ -75,7 +79,7 @@ namespace BackendEPPO.Extenstion
             public const string GetAddressByID = GetListAddress_Endpoint + "/Id";
 
             public const string CreateAddress = GetListAddress_Endpoint + "/CreateAddress";
-            public const string UpdateAddress = GetListAddress_Endpoint + "/UpdateAddress/AddressId";
+            public const string UpdateAddress = GetListAddress_Endpoint + "/UpdateAddress/Address/Id";
 
         }
         // Do Huu Thuan
@@ -84,13 +88,15 @@ namespace BackendEPPO.Extenstion
             public const string GetListNotification_Endpoint = ApiEndpoint + "/GetList/Notification";
             public const string GetNotificationByID = GetListNotification_Endpoint + "/Id";
             public const string CreateNotificationByID = GetListNotification_Endpoint + "/Create/Notification";
-            public const string UpdateNotificationByID = GetListNotification_Endpoint + "/Update/Notification";
+            public const string UpdateNotificationByID = GetListNotification_Endpoint + "/Update/Notification/Id";
         }
         // Do Huu Thuan
         public static class TypeEcommerce
         {
             public const string GetListTypeEcommerce_Endpoint = ApiEndpoint + "/GetList/TypeEcommerce";
             public const string GetTypeEcommerceByID = GetListTypeEcommerce_Endpoint + "/Id";
+            public const string CreateTypeEcommerce = GetListTypeEcommerce_Endpoint + "/Create/TypeEcommerce";
+            public const string UpdateTypeEcommerceID = GetListTypeEcommerce_Endpoint + "/Update/TypeEcommerce/Id";
         }
         // Do Huu Thuan
         public static class Wallet
@@ -98,7 +104,7 @@ namespace BackendEPPO.Extenstion
             public const string GetListWallet_Endpoint = ApiEndpoint + "/GetList/Wallet";
             public const string GetWalletByID = GetListWallet_Endpoint + "/Id";
             public const string CreateWallet = GetListWallet_Endpoint + "/Create/Wallet";
-            public const string UpdateWalletByID = GetListWallet_Endpoint + "/Update/Wallet";
+            public const string UpdateWalletByID = GetListWallet_Endpoint + "/Update/Wallet/Id";
         }
         // Do Huu Thuan
         public static class Blog
@@ -111,6 +117,8 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListFeedback_Endpoint = ApiEndpoint + "/GetList/Feedback";
             public const string GetFeedbackByID = GetListFeedback_Endpoint + "/Id";
+            public const string CreateFeedback = GetListFeedback_Endpoint + "/Create/Feedback";
+            public const string UpdateFeedbackID = GetListFeedback_Endpoint + "/Update/Feedback/Id";
         }
         // Do Huu Thuan
         public static class Accessory
@@ -139,6 +147,8 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListCategory_Endpoint = ApiEndpoint + "/GetList/Categories";
             public const string GetCategoriesByID = GetListCategory_Endpoint + "/Id";
+            public const string CreateCategories = GetListCategory_Endpoint + "/Create/Categories";
+            public const string UpdateCategoriesID = GetListCategory_Endpoint + "/Update/Categories/Id";
         }
         // Do Huu Thuan
         public static class Rank
