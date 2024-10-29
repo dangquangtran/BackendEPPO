@@ -72,6 +72,12 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         }
     };
+})
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
+    options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
+    options.SaveTokens = true;
 });
 
 // Add bearn to using the Authorization
