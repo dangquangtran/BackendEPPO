@@ -12,5 +12,7 @@ namespace Service.Interfaces
         Task<Contract> GetContractByID(int Id);
         Task UpdateContract(UpdateContractDTO contract);
         Task CreateContract(CreateContractDTO contract);
+      //  Task<string> GenerateContractPdfAsync(CreateContractDTO contract);
+
     }
 }

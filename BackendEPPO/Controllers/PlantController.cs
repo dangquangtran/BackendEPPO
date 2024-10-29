@@ -107,5 +107,12 @@ namespace BackendEPPO.Controllers
         {
             return Ok(_plantService.GetPlantsByCategoryId(categoryId,pageIndex, pageSize));
         }
+
+
+        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceId)]
+        public IActionResult GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId)
+        {
+            return Ok(_plantService.GetListPlantsByTypeEcommerceId(pageIndex, pageSize, typeEcommerceId));
+        }
     }
 }

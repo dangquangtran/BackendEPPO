@@ -18,7 +18,6 @@ namespace DTOs.ContractDetails
     }
     public class CreateContractDetailDTO
     {
-        public int ContractDetailId { get; set; }
         public int? ContractId { get; set; }
         public int? PlantId { get; set; }
         public int? Quantity { get; set; }

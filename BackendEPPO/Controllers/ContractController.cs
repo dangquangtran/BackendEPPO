@@ -5,7 +5,9 @@ using DTOs.Wallet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PdfSharp;
 using Service.Interfaces;
+using System.Reflection.Metadata;
 using static BackendEPPO.Extenstion.ApiEndPointConstant;
 
 namespace BackendEPPO.Controllers
@@ -108,5 +110,8 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+
+       
     }
 }
