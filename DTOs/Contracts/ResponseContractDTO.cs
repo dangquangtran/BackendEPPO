@@ -25,7 +25,6 @@ namespace DTOs.Contracts
     }
     public class CreateContractDTO
     {
-        public int ContractId { get; set; }
         public int? UserId { get; set; }
         public int? ContractNumber { get; set; }
         public string? Description { get; set; }

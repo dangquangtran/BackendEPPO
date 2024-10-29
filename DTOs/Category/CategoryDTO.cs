@@ -18,7 +18,6 @@ namespace DTOs.Category
     }
     public class CreateCategoryDTO
     {
-        public int CategoryId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime? CreationDate { get; set; }

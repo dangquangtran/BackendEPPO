@@ -15,7 +15,6 @@ namespace DTOs.TypeEcommerce
     }
     public class CreateTypeEcommerceDTO
     {
-        public int TypeEcommerceId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public int? Status { get; set; }

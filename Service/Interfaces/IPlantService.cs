@@ -19,5 +19,6 @@ namespace Service.Interfaces
         Task CreatePlant(CreatePlantDTO createPlant, List<IFormFile> imageFiles);
         void UpdatePlant(UpdatePlantDTO updatePlant);
         IEnumerable<PlantVM> GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize);
+        IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId);
     }
 }

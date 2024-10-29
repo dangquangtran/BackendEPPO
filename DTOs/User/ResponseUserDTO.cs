@@ -31,7 +31,6 @@ namespace DTOs.User
     }
     public class CreateAccountByCustomerDTO
     {
-        public int UserId { get; set; }
         public string? UserName { get; set; }
         public string Password { get; set; }
         public string FullName { get; set; }
@@ -53,7 +52,6 @@ namespace DTOs.User
     }
     public class CreateAccountByOwnerDTO
     {
-        public int UserId { get; set; }
         public string? UserName { get; set; }
         public string Password { get; set; }
         public string FullName { get; set; }
@@ -75,7 +73,6 @@ namespace DTOs.User
     }
     public class CreateAccountByAdminDTO
     {
-        public int UserId { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string FullName { get; set; }

@@ -1,8 +1,12 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Contracts;
+using PdfSharp;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace Service
@@ -53,6 +57,9 @@ namespace Service
 
         public async Task CreateContract(CreateContractDTO contract)
         {
+            string pdfUrl = await GenerateContractPdfAsync(contract);
+            contract.ContractUrl = pdfUrl;
+
             var entity = new Contract
             {
                 UserId = contract.UserId,
@@ -70,6 +77,38 @@ namespace Service
             };
             _unitOfWork.ContractRepository.Insert(entity);
             await _unitOfWork.SaveAsync();
+        }
+
+
+        private async Task<string> GenerateContractPdfAsync(CreateContractDTO contract)
+        {
+            string fileName = $"Contract_{contract.ContractNumber}_{DateTime.Now.Ticks}.pdf";
+            string pdfPath = Path.Combine("wwwroot/contracts", fileName);
+      
+            Directory.CreateDirectory(Path.GetDirectoryName(pdfPath));
+
+            using (PdfDocument pdfDoc = new PdfDocument())
+            {
+                pdfDoc.Info.Title = $"Contract {contract.ContractNumber}";
+
+                PdfPage page = pdfDoc.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+             //   XFont font = new XFont("Arial", 12, XFontStyle.Regular);
+                XFont font = new XFont("Arial", 12);
+
+                gfx.DrawString($"Contract Number: {contract.ContractNumber}", font, XBrushes.Black, new XPoint(40, 50));
+                gfx.DrawString($"User ID: {contract.UserId}", font, XBrushes.Black, new XPoint(40, 80));
+                gfx.DrawString($"Description: {contract.Description}", font, XBrushes.Black, new XPoint(40, 110));
+                gfx.DrawString($"Start Date: {contract.CreationContractDate:yyyy-MM-dd}", font, XBrushes.Black, new XPoint(40, 140));
+                gfx.DrawString($"End Date: {contract.EndContractDate:yyyy-MM-dd}", font, XBrushes.Black, new XPoint(40, 170));
+                gfx.DrawString($"Total Amount: {contract.TotalAmount:C}", font, XBrushes.Black, new XPoint(40, 200));
+                gfx.DrawString($"Type: {contract.TypeContract}", font, XBrushes.Black, new XPoint(40, 230));
+              
+
+                pdfDoc.Save(pdfPath);
+            }
+
+            return $"/contracts/{fileName}"; 
         }
     }
     

@@ -8,7 +8,6 @@ namespace DTOs.Wallet
 {
     public class WalletDTO
     {
-        public int WalletId { get; set; }
         public double? NumberBalance { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }

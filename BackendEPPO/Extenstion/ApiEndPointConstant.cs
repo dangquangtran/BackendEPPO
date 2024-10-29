@@ -140,6 +140,7 @@ namespace BackendEPPO.Extenstion
             public const string GetPlantByID = GetListPlants_Endpoint + "/Id";
             public const string GetPlantByCategory = GetListPlants_Endpoint + "/CategoryId";
 
+            public const string GetListPlantsByTypeEcommerceId = GetListPlants_Endpoint + "/Filter/ByTypeEcommerceId";
 
         }
         // Do Huu Thuan
