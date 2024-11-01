@@ -22,8 +22,8 @@ namespace Repository.Interfaces
         IGenericRepository<TypeEcommerce> TypeEcommerceRepository { get; }
         IGenericRepository<Feedback> FeedbackRepository { get; }
         IGenericRepository<ImageFeedback> ImageFeedbackRepository { get; }
-        
 
+        IGenericRepository<UserRoom> UserRoomRepository { get; }
         Task SaveAsync(); 
 
         IGenericRepository<Transaction> TransactionRepository { get; }

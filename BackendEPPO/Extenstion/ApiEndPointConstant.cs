@@ -49,6 +49,16 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListRoom_Endpoint = ApiEndpoint + "/GetList/Rooms";
             public const string GetRoomByID = GetListRoom_Endpoint + "/Id";
+            public const string CreateRoom = GetListRoom_Endpoint + "/Create/Room";
+            public const string UpdateRoomByID = GetListRoom_Endpoint + "/Update/Room/Id";
+        }
+        // Do Huu Thuan
+        public static class UserRoom
+        {
+            public const string GetListUserRoom_Endpoint = ApiEndpoint + "/GetList/UserRoom";
+            public const string GetUserRoomByID = GetListUserRoom_Endpoint + "/Id";
+            public const string CreateUserRoom = GetListUserRoom_Endpoint + "/Create/UserRoom";
+            public const string UpdateUserRoomByID = GetListUserRoom_Endpoint + "/Update/UserRoom/Id";
         }
         // Do Huu Thuan
         public static class Contract

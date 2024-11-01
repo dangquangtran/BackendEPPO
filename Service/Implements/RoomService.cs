@@ -1,4 +1,6 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Room;
+using DTOs.Wallet;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -26,6 +28,40 @@ namespace Service.Implements
         public async Task<Room> GetRoomByID(int Id)
         {
             return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id));
+        }
+        public async Task CreateRoom(CreateRoomDTO room)
+        {
+            var entity = new Room
+            {
+                PlantId = room.PlantId,
+                CreationDate = DateTime.Now,
+                ActiveDate = room.ActiveDate,
+                EndDate = room.EndDate,
+                ModificationDate = room.ModificationDate,
+                ModificationBy = room.ModificationBy,
+                Status = 1,
+            };
+            _unitOfWork.RoomRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
+        }
+        public async Task UpdateRoom(UpdateRoomDTO room)
+        {
+
+            var entity = await Task.FromResult(_unitOfWork.RoomRepository.GetByID(room.RoomId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Room with ID {room.RoomId} not found.");
+            }
+            room.PlantId = room.PlantId;
+            room.CreationDate = room.CreationDate;
+            room.ActiveDate = room.ActiveDate;
+            room.EndDate = room.EndDate;
+            room.ModificationDate = room.ModificationDate;
+            room.ModificationBy = room.ModificationBy;
+            room.Status = room.Status;
+            _unitOfWork.RoomRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
         }
     }
 }
