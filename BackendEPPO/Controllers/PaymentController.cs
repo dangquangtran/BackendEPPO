@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ZaloPay.Helper.Crypto;
 using ZaloPay.Helper;
+using Service.Interfaces;
+using Mysqlx.Crud;
+using DTOs.Order;
+using Service.Implements;
 
 namespace BackendEPPO.Controllers
 {
@@ -13,15 +17,23 @@ namespace BackendEPPO.Controllers
         private readonly string app_id = "2553";
         private readonly string key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
         private readonly string create_order_url = "https://sb-openapi.zalopay.vn/v2/create";
-        private readonly string redirectUrl = "https://localhost:7170/api/Product/GetAllProducts";
-        public PaymentController()
+        private string redirectUrl = "https://sep490ne-001-site1.atempurl.com/api/v1/Payment/Callback/";
+        private readonly IOrderService _orderService;
+        public PaymentController(IOrderService orderService)
         {
+            _orderService = orderService;
         }
 
 
+
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrder()
+        public async Task<IActionResult> CreateOrder(int orderId)
         {
+            var order = _orderService.GetOrderById(orderId);
+            if (order == null)
+            {
+                return NotFound("Order không tồn tại.");
+            }
 
             Random rnd = new Random();
             var embed_data = new { redirecturl = redirectUrl };
@@ -30,15 +42,15 @@ namespace BackendEPPO.Controllers
             var app_trans_id = rnd.Next(1000000); // Generate a random order's ID.
 
             param.Add("app_id", app_id);
-            param.Add("app_user", "user123");
+            param.Add("app_user", "user" + order.UserId);
             param.Add("app_time", Utils.GetTimeStamp().ToString());
-            param.Add("amount", "50000");
+            param.Add("amount", order.FinalPrice.ToString());
             param.Add("app_trans_id", DateTime.Now.ToString("yyMMdd") + "_" + app_trans_id); // mã giao dich có định dạng yyMMdd_xxxx
             param.Add("embed_data", JsonConvert.SerializeObject(embed_data));
             param.Add("item", JsonConvert.SerializeObject(items));
-            param.Add("description", "Lazada - Thanh toán đơn hàng #" + app_trans_id);
+            param.Add("description", "Thanh toán đơn hàng #" + orderId + app_trans_id);
             param.Add("bank_code", "zalopayapp");
-            //param.Add("callback_url", "https://0b6a-2402-800-be09-c3d2-b125-ecd8-6f5b-b158.ngrok-free.app/odata/Callback/" + order.OrderID);
+            param.Add("callback_url", redirectUrl + order.OrderId);
 
             var data = app_id + "|" + param["app_trans_id"] + "|" + param["app_user"] + "|" + param["amount"] + "|"
                 + param["app_time"] + "|" + param["embed_data"] + "|" + param["item"];
@@ -71,8 +83,9 @@ namespace BackendEPPO.Controllers
                 // merchant cập nhật trạng thái cho đơn hàng
                 var dataJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataStr);
                 Console.WriteLine("update order's status = success where app_trans_id = {0}", dataJson["app_trans_id"]);
-                //_orderService.UpdatePaymentSuccess(id);
-
+                var order = _orderService.GetOrderById(id);
+                order.PaymentStatus = "Đã thanh toán";
+                //_orderService.UpdateOrder(order);
                 result["return_code"] = 1;
                 result["return_message"] = "success";
 
