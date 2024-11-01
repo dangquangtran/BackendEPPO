@@ -21,7 +21,7 @@ namespace Repository.Implements
         private IGenericRepository<TypeEcommerce> typeEcommerceRepository;
         private IGenericRepository<Feedback> feedbackRepository;
         private IGenericRepository<ImageFeedback> imageFeedbackRepository;
-
+        private IGenericRepository<UserRoom> userRoomRepository;
 
         private IGenericRepository<Transaction> transactionRepository;
         private IGenericRepository<Conversation> conversationRepository;
@@ -33,7 +33,14 @@ namespace Repository.Implements
         {
             this.context = context;
         }
-
+        //Do Huu Thuan
+        public IGenericRepository<UserRoom> UserRoomRepository
+        {
+            get
+            {
+                return userRoomRepository ??= new GenericRepository<UserRoom>(context);
+            }
+        }
         //Do Huu Thuan
         public IGenericRepository<ImageFeedback> ImageFeedbackRepository
         {

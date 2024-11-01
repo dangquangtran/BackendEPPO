@@ -44,6 +44,7 @@ builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<ITypeEcommerceService, TypeEcommerceService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IImageFeedbackService, ImageFeedbackService>();
+builder.Services.AddScoped<IUserRoomService, UserRoomService>();
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
