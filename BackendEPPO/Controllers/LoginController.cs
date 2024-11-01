@@ -1,6 +1,9 @@
 ﻿using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
 using DTOs.Login;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +11,7 @@ using Service.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static Org.BouncyCastle.Asn1.Cmp.Challenge;
+using DTOs.User;
 
 namespace BackendEPPO.Controllers
 {
@@ -110,6 +113,49 @@ namespace BackendEPPO.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("signin-google")]
+        public IActionResult SignInWithGoogle()
+        {
+            // Redirects to Google for login
+            var redirectUrl = Url.Action("GoogleResponse", "Login");
+            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GoogleResponse")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (result?.Principal == null)
+                return BadRequest("Error signing in with Google");
+
+            var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+
+            var user = _userService.GetAllUsers().FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                // Optionally, create a new user if one does not already exist
+                var newUser = new ResponseUserDTO
+                {
+                    Email = email,
+                    FullName = name,
+                    UserName = email, // or any other unique identifier
+                    CreationDate = DateTime.Now,
+                    IsActive = true,
+                    Status = 1,
+                    RoleId = 4
+                };
+                _userService.CreateUserAccount(newUser);
+            }
+
+            var tokenString = GenerateJSONWebToken(user);
+            return Ok(new { token = tokenString });
         }
     }
 }

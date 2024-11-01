@@ -83,12 +83,50 @@ namespace Service
             _unitOfWork.PlantRepository.Insert(plant);
             _unitOfWork.Save();
         }
-        public void UpdatePlant(UpdatePlantDTO updatePlant)
+        public async Task UpdatePlant(UpdatePlantDTO updatePlant, List<IFormFile> newImageFiles)
         {
-            Plant plant = _mapper.Map<Plant>(updatePlant);
+            // Lấy thông tin plant từ DB
+            var plant = _unitOfWork.PlantRepository.GetByID(updatePlant.PlantId, includeProperties: "ImagePlants");
+            if (plant == null) throw new Exception("Plant không tồn tại");
+
+            // Cập nhật các thuộc tính của plant
+            _mapper.Map(updatePlant, plant);
             plant.ModificationDate = DateTime.Now;
+
+            // Tạo một danh sách để lưu các URL ảnh cần xóa
+            var existingImageUrls = plant.ImagePlants.Select(ip => ip.ImageUrl).ToList();
+
+            // Nếu có ảnh mới, kiểm tra và thêm các ảnh đó
+            if (newImageFiles != null && newImageFiles.Count > 0)
+            {
+                var newImageUrls = new List<string>();
+
+                foreach (var imageFile in newImageFiles)
+                {
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload ảnh mới lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadImageAsync(stream, fileName);
+
+                    // Thêm URL vào danh sách ảnh mới và plant
+                    newImageUrls.Add(imageUrl);
+                    plant.ImagePlants.Add(new ImagePlant { PlantId = plant.PlantId, ImageUrl = imageUrl });
+                }
+
+                // Xác định các ảnh cần xóa (ảnh cũ mà không có trong danh sách ảnh mới)
+                var imagesToRemove = plant.ImagePlants.Where(ip => !newImageUrls.Contains(ip.ImageUrl)).ToList();
+
+                foreach (var image in imagesToRemove)
+                {
+                    await _firebaseStorageService.DeleteImageAsync(image.ImageUrl); // Xóa ảnh khỏi Firebase
+                    plant.ImagePlants.Remove(image); // Xóa ảnh khỏi DB
+                }
+            }
+
+            // Lưu cập nhật vào DB
             _unitOfWork.PlantRepository.Update(plant);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
         }
         public IEnumerable<PlantVM> GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize)
         {
