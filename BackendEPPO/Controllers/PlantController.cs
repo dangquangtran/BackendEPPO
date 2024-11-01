@@ -96,9 +96,9 @@ namespace BackendEPPO.Controllers
 
         [Authorize]
         [HttpPut]
-        public IActionResult UpdatePlant([FromBody] UpdatePlantDTO updatePlant)
+        public async Task<IActionResult> UpdatePlant([FromForm] UpdatePlantDTO updatePlant)
         {
-            _plantService.UpdatePlant(updatePlant);
+            await _plantService.UpdatePlant(updatePlant, updatePlant.ImageFiles);
             return Ok("Đã cập nhật thành công");
         }
 

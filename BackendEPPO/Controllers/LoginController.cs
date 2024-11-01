@@ -11,7 +11,7 @@ using Service.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static Org.BouncyCastle.Asn1.Cmp.Challenge;
+using DTOs.User;
 
 namespace BackendEPPO.Controllers
 {
@@ -113,13 +113,17 @@ namespace BackendEPPO.Controllers
             if (user == null)
             {
                 // Optionally, create a new user if one does not already exist
-                user = new User
+                var newUser = new ResponseUserDTO
                 {
                     Email = email,
                     FullName = name,
-                    UserName = email // or any other unique identifier
+                    UserName = email, // or any other unique identifier
+                    CreationDate = DateTime.Now,
+                    IsActive = true,
+                    Status = 1,
+                    RoleId = 4
                 };
-                //_userService.CreateUserAccount(user);
+                _userService.CreateUserAccount(newUser);
             }
 
             var tokenString = GenerateJSONWebToken(user);

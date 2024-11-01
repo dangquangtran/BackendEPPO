@@ -17,6 +17,6 @@ namespace DTOs.Plant
         public double FinalPrice { get; set; }
         public int? CategoryId { get; set; }
         public int? TypeEcommerceId { get; set; }
-        public List<IFormFile> ImageFiles { get; set; }
+        public List<IFormFile>? ImageFiles { get; set; }
     }
 }

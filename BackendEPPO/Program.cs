@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -49,6 +51,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;  // Thêm dòng này
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Thêm dòng này
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters()
@@ -73,10 +77,12 @@ builder.Services.AddAuthentication(options =>
         }
     };
 })
+.AddCookie()
 .AddGoogle(options =>
 {
     options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
     options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
+    options.CallbackPath = "/api/Login/GoogleResponse";
     options.SaveTokens = true;
 });
 

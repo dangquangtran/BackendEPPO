@@ -36,5 +36,17 @@ namespace Service.Implements
 
             return uploadTask;
         }
+
+        public async Task DeleteImageAsync(string imageUrl)
+        {
+            // Lấy tên tệp từ URL
+            var fileName = imageUrl.Split(new string[] { "imagesPlant%2F" }, StringSplitOptions.None)[1].Split('?')[0];
+
+            // Xóa tệp từ Firebase Storage
+            await _firebaseStorage
+                .Child("imagesPlant")
+                .Child(fileName)
+                .DeleteAsync();
+        }
     }
 }
