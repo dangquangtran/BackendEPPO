@@ -19,7 +19,7 @@ namespace BackendEPPO.Controllers
             _roomService = IService;
         }
 
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+
         [HttpGet(ApiEndPointConstant.Room.GetListRoom_Endpoint)]
         public async Task<IActionResult> GetListRooms(int page, int size)
         {
@@ -36,7 +36,24 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Room.GetListRoomByDateNow_Endpoint)]
+        public async Task<IActionResult> GetListRoomsByDateNow(int page, int size)
+        {
+          
+            var room = await _roomService.GetListRoomsByDateNow(page, size);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound("No room found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = room
+            });
+        }
+
         [HttpGet(ApiEndPointConstant.Room.GetRoomByID)]
         public async Task<IActionResult> GetRoomByID(int id)
         {
@@ -53,7 +70,7 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpPost(ApiEndPointConstant.Room.CreateRoom)]
         public async Task<IActionResult> CreateRoom([FromBody] CreateRoomDTO room)
         {
@@ -72,8 +89,7 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
-
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpPut(ApiEndPointConstant.Room.UpdateRoomByID)]
         public async Task<IActionResult> UpdateRoom(int id, [FromBody] UpdateRoomDTO room)
         {
