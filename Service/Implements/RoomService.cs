@@ -19,15 +19,25 @@ namespace Service.Implements
         {
             _unitOfWork = unitOfWork;
         }
-
         public async Task<IEnumerable<Room>> GetListRooms(int page, int size)
         {
-            return await _unitOfWork.RoomRepository.GetAsync(pageIndex: page, pageSize: size);
+            return await _unitOfWork.RoomRepository.GetAsync(pageIndex: page, pageSize: size, includeProperties: "Plant");
         }
-
+        public async Task<IEnumerable<Room>> GetListRoomsByDateNow(int page, int size)
+        {
+            DateTime currentDate = DateTime.UtcNow;
+            return await _unitOfWork.RoomRepository.GetAsync(
+               pageIndex: page,
+               pageSize: size,
+               includeProperties: "Plant",
+               orderBy: q => q.OrderByDescending(r => r.ActiveDate),
+               filter: r => r.ActiveDate <= currentDate 
+           );
+           // return await _unitOfWork.RoomRepository.GetAsync(pageIndex: page, pageSize: size, orderBy: q => q.OrderByDescending(r => r.ActiveDate));
+        }
         public async Task<Room> GetRoomByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id));
+            return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant"));
         }
         public async Task CreateRoom(CreateRoomDTO room)
         {

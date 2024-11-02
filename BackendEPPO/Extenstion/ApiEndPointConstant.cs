@@ -48,6 +48,7 @@ namespace BackendEPPO.Extenstion
         public static class Room
         {
             public const string GetListRoom_Endpoint = ApiEndpoint + "/GetList/Rooms";
+            public const string GetListRoomByDateNow_Endpoint = ApiEndpoint + "/GetList/Rooms/FilterDate";
             public const string GetRoomByID = GetListRoom_Endpoint + "/Id";
             public const string CreateRoom = GetListRoom_Endpoint + "/Create/Room";
             public const string UpdateRoomByID = GetListRoom_Endpoint + "/Update/Room/Id";
