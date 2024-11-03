@@ -13,6 +13,7 @@ namespace Service.Interfaces
 
 
         Task CreateUserAccount(ResponseUserDTO user);
+        User GetUserByID(int id);
 
     }
 }

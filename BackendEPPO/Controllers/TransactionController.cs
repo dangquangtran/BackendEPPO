@@ -27,12 +27,12 @@ namespace BackendEPPO.Controllers
             return Ok(_transactionService.GetTransactionById(id));
         }
 
-        [HttpPost]
-        public IActionResult CreateTransaction([FromBody] CreateTransactionDTO createTransaction)
-        {
-            _transactionService.CreateTransaction(createTransaction);
-            return Ok("Đã tạo thành công");
-        }
+        //[HttpPost]
+        //public IActionResult CreateTransaction([FromBody] CreateTransactionDTO createTransaction)
+        //{
+        //    _transactionService.CreateTransaction(createTransaction);
+        //    return Ok("Đã tạo thành công");
+        //}
 
         [HttpPut]
         public IActionResult UpdateTransaction([FromBody] UpdateTransactionDTO updateTransaction)

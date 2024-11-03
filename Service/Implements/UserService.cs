@@ -50,5 +50,10 @@ namespace Service
         {
             return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id));
         }
+
+        public User GetUserByID(int id)
+        {
+            return _unitOfWork.UserRepository.GetByID(id);
+        }
     }
 }

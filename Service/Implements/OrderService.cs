@@ -42,6 +42,7 @@ namespace Service.Implements
             order.Status = 1;
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
+            order.PaymentStatus = "Chưa thanh toán";
             // 2. Tính tổng tiền và giá cuối cùng nếu có voucher
             //order.TotalPrice = CalculateTotalPrice(createOrderDTO);
             //order.FinalPrice = ApplyVoucher(order.TotalPrice, order.UserVoucherId, order.PlantVoucherId);
