@@ -12,7 +12,9 @@ namespace Service.Interfaces
     {
         IEnumerable<TransactionVM> GetAllTransactions();
         Transaction GetTransactionById(int id);
-        void CreateTransaction(CreateTransactionDTO createTransaction);
+        void CreateRechargeTransaction(CreateTransactionDTO createTransaction);
+        void CreateWithdrawTransaction(CreateTransactionDTO createTransaction);
+        void CreatePaymentTransaction(CreateTransactionDTO createTransaction, int orderId);
         void UpdateTransaction(UpdateTransactionDTO updateTransaction);
     }
 }

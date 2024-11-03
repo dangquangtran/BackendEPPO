@@ -14,6 +14,7 @@ namespace Service.Interfaces
         Task CreateAccountByCustomer(CreateAccountByCustomerDTO customer);
         Task CreateAccountByOwner(CreateAccountByOwnerDTO owner);
         Task CreateAccountByAdmin(CreateAccountByAdminDTO admin);
+        User GetUserByID(int id);
 
         Task UpdateUserAccount(UpdateAccount account);
         Task ChangePasswordAccount(ChangePassword account);

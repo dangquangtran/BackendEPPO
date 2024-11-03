@@ -216,5 +216,9 @@ namespace Service
             await _unitOfWork.SaveAsync();
         }
 
+        public User GetUserByID(int id)
+        {
+            return _unitOfWork.UserRepository.GetByID(id);
+        }
     }
 }

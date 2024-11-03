@@ -31,12 +31,44 @@ namespace Service.Implements
             return _unitOfWork.TransactionRepository.GetByID(id);
         }
 
-        public void CreateTransaction(CreateTransactionDTO createTransaction)
+        public void CreateRechargeTransaction(CreateTransactionDTO createTransaction)
         {
+            
             Transaction transaction = _mapper.Map<Transaction>(createTransaction);
             transaction.CreationDate = DateTime.Now;
             transaction.Status = 1;
             transaction.IsActive = true;
+            transaction.Description = "Nạp tiền vào ví";
+            transaction.RechargeDate = DateTime.Now;
+
+            _unitOfWork.TransactionRepository.Insert(transaction);
+            _unitOfWork.Save();
+        }
+
+        public void CreateWithdrawTransaction(CreateTransactionDTO createTransaction)
+        {
+           
+            Transaction transaction = _mapper.Map<Transaction>(createTransaction);
+            transaction.CreationDate = DateTime.Now;
+            transaction.Status = 1;
+            transaction.IsActive = true;
+            transaction.WithdrawDate = DateTime.Now;
+            transaction.Description = "Rút tiền từ ví";
+
+            _unitOfWork.TransactionRepository.Insert(transaction);
+            _unitOfWork.Save();
+        }
+
+        public void CreatePaymentTransaction(CreateTransactionDTO createTransaction, int orderId)
+        {
+            
+            Transaction transaction = _mapper.Map<Transaction>(createTransaction);
+            transaction.CreationDate = DateTime.Now;
+            transaction.Status = 1;
+            transaction.IsActive = true;
+            transaction.WithdrawDate = DateTime.Now;
+            transaction.Description = "Thanh toán đơn hàng "+orderId;
+
             _unitOfWork.TransactionRepository.Insert(transaction);
             _unitOfWork.Save();
         }
