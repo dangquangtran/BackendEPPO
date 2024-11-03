@@ -153,6 +153,37 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.User.ChangePassword)]
+        public async Task<IActionResult> ChangePasswordAccount(int id, [FromBody] ChangePassword accountDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            accountDTO.UserId = id;
+
+            try
+            {
+                await _userService.ChangePasswordAccount(accountDTO);
+                var updatedUser = await _userService.GetUsersByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "User account updated successfully.",
+                    Data = updatedUser
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
 
 
 

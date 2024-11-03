@@ -115,4 +115,9 @@ namespace DTOs.User
         public int? ModificationBy { get; set; }
         public int? Status { get; set; }
     }
+    public class ChangePassword
+    {
+        public int UserId { get; set; }
+        public string Password { get; set; }
+    }
 }
