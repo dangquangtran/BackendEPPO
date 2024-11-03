@@ -43,6 +43,7 @@ namespace BackendEPPO.Extenstion
             public const string CreateAccountByAdmin = ApiEndpointByAdmin + "/CreateAccount";
 
             public const string UpdateAccount = GetUserEndpoint + "/UpdateAccount/Id";
+            public const string ChangePassword = GetUserEndpoint + "/UpdateAccount/ChangePassword/Id";
         }
         // Do Huu Thuan
         public static class Room

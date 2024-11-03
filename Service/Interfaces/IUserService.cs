@@ -16,6 +16,7 @@ namespace Service.Interfaces
         Task CreateAccountByAdmin(CreateAccountByAdminDTO admin);
 
         Task UpdateUserAccount(UpdateAccount account);
+        Task ChangePasswordAccount(ChangePassword account);
 
         Task<bool> CheckAccountExists(string email, string userName);
     }

@@ -199,6 +199,22 @@ namespace Service
             return existingUser != null;
         }
 
+        public async Task ChangePasswordAccount(ChangePassword account)
+        {
+            var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(account.UserId));
+            if (userEntity == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+            if (string.IsNullOrWhiteSpace(account.Password))
+            {
+                throw new ArgumentException("Password not null.");
+            }
+            userEntity.Password = account.Password;
+            userEntity.ModificationDate = DateTime.Now;
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.SaveAsync();
+        }
 
     }
 }
