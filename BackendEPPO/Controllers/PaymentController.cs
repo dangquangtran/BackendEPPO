@@ -50,7 +50,7 @@ namespace BackendEPPO.Controllers
             param.Add("item", JsonConvert.SerializeObject(items));
             param.Add("description", "Thanh toán đơn hàng #" + orderId + app_trans_id);
             param.Add("bank_code", "zalopayapp");
-            param.Add("callback_url", redirectUrl + order.OrderId);
+            param.Add("callback_url", redirectUrl + orderId);
 
             var data = app_id + "|" + param["app_trans_id"] + "|" + param["app_user"] + "|" + param["amount"] + "|"
                 + param["app_time"] + "|" + param["embed_data"] + "|" + param["item"];
@@ -83,9 +83,7 @@ namespace BackendEPPO.Controllers
                 // merchant cập nhật trạng thái cho đơn hàng
                 var dataJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataStr);
                 Console.WriteLine("update order's status = success where app_trans_id = {0}", dataJson["app_trans_id"]);
-                var order = _orderService.GetOrderById(id);
-                order.PaymentStatus = "Đã thanh toán";
-                //_orderService.UpdateOrder(order);
+                _orderService.UpdatePaymentStatus(id, "Đã thanh toán");
                 result["return_code"] = 1;
                 result["return_message"] = "success";
 

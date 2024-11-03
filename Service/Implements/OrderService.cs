@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Order;
+using Repository.Implements;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -117,5 +118,16 @@ namespace Service.Implements
 
         //    return finalPrice;
         //}
+        public void UpdatePaymentStatus(int orderId, string paymentStatus)
+        {
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order != null)
+            {
+                order.PaymentStatus = paymentStatus; // Giả sử bạn có thuộc tính PaymentStatus trong Order
+                order.ModificationDate = DateTime.Now; // Cập nhật ngày sửa đổi
+                _unitOfWork.OrderRepository.Update(order);
+                _unitOfWork.Save();
+            }
+        }
     }
 }
