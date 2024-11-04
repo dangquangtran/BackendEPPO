@@ -39,6 +39,17 @@ namespace Service
         }
         public async Task CreateAccountByCustomer(CreateAccountByCustomerDTO customer)
         {
+            var walletEntity = new Wallet
+            {
+                NumberBalance = 0,              
+                CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
+                Status = 1,
+            };
+
+            _unitOfWork.WalletRepository.Insert(walletEntity);
+            await _unitOfWork.SaveAsync();
+
             var customerEntity = new User
             {
                 UserName= customer.UserName,
@@ -46,6 +57,7 @@ namespace Service
                 PhoneNumber = customer.PhoneNumber,
                 Email = customer.Email,
                 Password = customer.Password,
+                WalletId = walletEntity.WalletId,
                 RoleId = 5,
                 CreationDate = DateTime.Now,
                 IsActive = true,
@@ -59,6 +71,14 @@ namespace Service
 
         public async Task CreateAccountByOwner(CreateAccountByOwnerDTO owner)
         {
+            var walletEntity = new Wallet
+            {
+                NumberBalance = 0,
+                CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
+                Status = 1,
+            };
+
             var customerEntity = new User
             {
                 UserName = owner.UserName,
@@ -66,6 +86,7 @@ namespace Service
                 PhoneNumber = owner.PhoneNumber,
                 Email = owner.Email,
                 Password = owner.Password,
+                WalletId = walletEntity.WalletId,
                 RoleId = 4,
                 CreationDate = DateTime.Now,
                 IsActive = true,
@@ -79,6 +100,14 @@ namespace Service
 
         public async Task CreateAccountByAdmin(CreateAccountByAdminDTO admin)
         {
+            var walletEntity = new Wallet
+            {
+                NumberBalance = 0,
+                CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
+                Status = 1,
+            };
+
             var customerEntity = new User
             {
                 UserName = admin.UserName,
@@ -86,6 +115,7 @@ namespace Service
                 PhoneNumber = admin.PhoneNumber,
                 Email = admin.Email,
                 Password = admin.Password,
+                WalletId = walletEntity.WalletId,
                 RoleId = 3,
                 CreationDate = DateTime.Now,
                 IsActive = true,
