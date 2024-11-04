@@ -57,7 +57,7 @@ namespace BackendEPPO.Controllers
 
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Feedback.CreateFeedback)]
-        public async Task<IActionResult> CreateFeedback([FromBody] CreateFeedbackDTO feedback)
+        public async Task<IActionResult> CreateFeedback([FromForm] CreateFeedbackDTO feedback)
         {
 
             if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ namespace BackendEPPO.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _service.CreateFeedback(feedback);
+            await _service.CreateFeedback(feedback, feedback.ImageFiles);
 
             return Ok(new
             {

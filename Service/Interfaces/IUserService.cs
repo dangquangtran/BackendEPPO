@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.User;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace Service.Interfaces
         Task CreateAccountByAdmin(CreateAccountByAdminDTO admin);
         User GetUserByID(int id);
 
-        Task UpdateUserAccount(UpdateAccount account);
+        Task UpdateUserAccount(UpdateAccount account, IFormFile imageFile);
         Task ChangePasswordAccount(ChangePassword account);
 
         Task<bool> CheckAccountExists(string email, string userName);

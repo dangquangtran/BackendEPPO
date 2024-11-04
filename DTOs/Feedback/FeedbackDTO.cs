@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,7 @@ namespace DTOs.Feedback
         public DateTime? ModificationDate { get; set; }
         public int? ModificationByUserId { get; set; }
         public int? Status { get; set; }
+        public List<IFormFile>? ImageFiles { get; set; }
     }
     public class UpdateFeedbackDTO
     {
