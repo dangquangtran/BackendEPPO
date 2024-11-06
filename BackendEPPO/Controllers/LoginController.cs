@@ -65,6 +65,7 @@ namespace BackendEPPO.Controllers
                 response = Ok(new
                 {
                     token = tokenString,
+                    userID = user.UserId,
                     roleName = user.Role.NameRole,
                 });
             }
