@@ -56,13 +56,14 @@ namespace BackendEPPO.Controllers
         [HttpPost(ApiEndPointConstant.UserRoom.CreateUserRoom)]
         public async Task<IActionResult> CreateUserRoom([FromBody] CreateUserRoomDTO userRoom)
         {
-
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _service.CreateUserRoom(userRoom);
+            await _service.CreateUserRoom(userRoom, userId);
 
             return Ok(new
             {

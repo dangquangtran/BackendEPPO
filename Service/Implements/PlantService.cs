@@ -151,5 +151,17 @@ namespace Service
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
+
+        public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId)
+        {
+               var plants = _unitOfWork.PlantRepository.Get(
+               filter: c => c.TypeEcommerceId == typeEcommerceId && c.CategoryId == categoryId && c.Status != 0,
+               pageIndex: pageIndex,
+               pageSize: pageSize,
+               includeProperties: "ImagePlants"
+           );
+
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
     }
 }

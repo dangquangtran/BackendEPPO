@@ -93,6 +93,8 @@ namespace BackendEPPO.Extenstion
             public const string CreateAddress = GetListAddress_Endpoint + "/CreateAddress";
             public const string UpdateAddress = GetListAddress_Endpoint + "/UpdateAddress/Address/Id";
 
+            public const string GetListAddressByUserID_Endpoint = ApiEndpoint + "/GetList/Address/OfByUserID";
+
         }
         // Do Huu Thuan
         public static class Notification
@@ -153,6 +155,8 @@ namespace BackendEPPO.Extenstion
             public const string GetPlantByCategory = GetListPlants_Endpoint + "/CategoryId";
 
             public const string GetListPlantsByTypeEcommerceId = GetListPlants_Endpoint + "/Filter/ByTypeEcommerceId";
+
+            public const string GetListPlantsByTypeEcommerceAndCategory = GetListPlants_Endpoint + "/Filter/TypeEcommerceIdAndCategoryId";
 
         }
         // Do Huu Thuan

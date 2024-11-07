@@ -1,5 +1,8 @@
-﻿using BusinessObjects.Models;
+﻿using AutoMapper;
+using BusinessObjects.Models;
 using DTOs.Address;
+using DTOs.Plant;
+using PdfSharp;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -13,29 +16,38 @@ namespace Service.Implements
     public class AddressService : IAddressService
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public AddressService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public AddressService(IUnitOfWork unitOfWork , IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Address>> GetLisAddress(int page, int size)
         {
             return await _unitOfWork.AddressRepository.GetAsync(pageIndex: page, pageSize: size);
         }
+        public async Task<IEnumerable<Address>> GetLisAddressByUserID(int userID)
+        {
+            var address = _unitOfWork.AddressRepository.Get(
+                filter: c => c.UserId == userID && c.Status != 0
+            );
+            return _mapper.Map<IEnumerable<Address>>(address);
+        }
+
         public async Task<Address> GetAddressByID(int Id)
         {
             return await Task.FromResult(_unitOfWork.AddressRepository.GetByID(Id));
         }
-        public async Task CreateAddress(RequestAddress address)
+        public async Task CreateAddress(CreateAddressDTO address , int userID)
         {
             var entity = new Address
             {
-             UserId = address.UserId,
-             CreationDate = DateTime.Now,
-             Description = address.Description, 
-             ModificationDate = DateTime.Now,  
-             Status = 1,
+                 UserId = userID,
+                 CreationDate = DateTime.Now,
+                 Description = address.Description, 
+                 ModificationDate = DateTime.Now,  
+                 Status = 1,
             };
 
             _unitOfWork.AddressRepository.Insert(entity);
