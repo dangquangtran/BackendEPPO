@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using BusinessObjects.Models;
 using DTOs.Plant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -102,19 +103,30 @@ namespace BackendEPPO.Controllers
             return Ok("Đã cập nhật thành công");
         }
 
-        [HttpGet("GetPlantsByCategoryId")]
-        public IActionResult GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize)
+        /// <summary>
+        /// Get list Plant by Category Id with the page and the size.
+        /// </summary>
+        /// <returns> Get Plant by category id with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
+        public IActionResult GetPlantsByCategoryId( int pageIndex, int pageSize, int categoryId)
         {
-            return Ok(_plantService.GetPlantsByCategoryId(categoryId,pageIndex, pageSize));
+            return Ok(_plantService.GetPlantsByCategoryId(pageIndex, pageSize, categoryId));
         }
 
-
+        /// <summary>
+        /// Get list Plant by Type Ecommerce id with the page and the size.
+        /// </summary>
+        /// <returns>Get Plant by Type Ecommerce id with the page and the size.</returns>
         [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceId)]
         public IActionResult GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId)
         {
             return Ok(_plantService.GetListPlantsByTypeEcommerceId(pageIndex, pageSize, typeEcommerceId));
         }
 
+        /// <summary>
+        /// Get list Plant by Category Id and Type Ecommerce Id with the page and the size.
+        /// </summary>
+        /// <returns>Get list Plant by Category Id and Type Ecommerce Id with the page and the size.</returns>
         [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceAndCategory)]
         public IActionResult GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId)
         {

@@ -19,6 +19,10 @@ namespace BackendEPPO.Controllers
             _service = IService;
         }
 
+        /// <summary>
+        /// Get list all Type Ecommerce in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Type Ecommerce in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.TypeEcommerce.GetListTypeEcommerce_Endpoint)]
         public async Task<IActionResult> GetListTypeEcommerce(int page, int size)
@@ -37,6 +41,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Get Type Ecommerce by Type Ecommerce Id with all role.
+        /// </summary>
+        /// <returns>Get Type Ecommerce by Type Ecommerce Id with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.TypeEcommerce.GetTypeEcommerceByID)]
         public async Task<IActionResult> GetTypeEcommerceByID(int id)
@@ -54,7 +62,12 @@ namespace BackendEPPO.Controllers
                 Data = _typeEcommerce
             });
         }
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+
+        /// <summary>
+        /// Create Type Ecommerce with role manager and staff.
+        /// </summary>
+        /// <returns>Create Type Ecommerce with role manager and staff.</returns>
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpPost(ApiEndPointConstant.TypeEcommerce.CreateTypeEcommerce)]
         public async Task<IActionResult> CreateTypeEcommerce([FromBody] CreateTypeEcommerceDTO typeEcommerce)
         {
@@ -74,7 +87,11 @@ namespace BackendEPPO.Controllers
             });
         }
 
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        /// <summary>
+        /// Update Type Ecommerce with role manager and staff.
+        /// </summary>
+        /// <returns>Update Type Ecommerce with role manager and staff.</returns>
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpPut(ApiEndPointConstant.TypeEcommerce.UpdateTypeEcommerceID)]
         public async Task<IActionResult> UpdateTypeEcommerce(int id, [FromBody] UpdateTypeEcommerceDTO typeEcommerce)
         {

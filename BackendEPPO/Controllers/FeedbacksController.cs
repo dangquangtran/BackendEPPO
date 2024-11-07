@@ -19,6 +19,10 @@ namespace BackendEPPO.Controllers
             _service = IService;
         }
 
+        /// <summary>
+        /// Get list all Feedbacks in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Feedbacks in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Feedback.GetListFeedback_Endpoint)]
         public async Task<IActionResult> GetListFeedback(int page, int size)
@@ -37,6 +41,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Get feedback by feedback id.
+        /// </summary>
+        /// <returns>Get feedback by feedback id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Feedback.GetFeedbackByID)]
         public async Task<IActionResult> GetFeedbackByID(int id)
@@ -55,6 +63,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Create feedback with all role.
+        /// </summary>
+        /// <returns>Create feedback with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Feedback.CreateFeedback)]
         public async Task<IActionResult> CreateFeedback([FromBody] CreateFeedbackDTO feedback)
@@ -75,6 +87,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Update feedback with all role.
+        /// </summary>
+        /// <returns>Update feedback with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Feedback.UpdateFeedbackID)]
         public async Task<IActionResult> UpdateFeedback(int id, [FromBody] UpdateFeedbackDTO feedback)

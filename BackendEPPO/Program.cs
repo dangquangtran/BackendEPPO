@@ -11,6 +11,7 @@ using Repository.Interfaces;
 using Service;
 using Service.Implements;
 using Service.Interfaces;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using static BackendEPPO.Extenstion.ApiEndPointConstant;
@@ -93,6 +94,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddSwaggerGen(option =>
 {
     option.DescribeAllParametersInCamelCase();
+
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -119,6 +121,13 @@ builder.Services.AddSwaggerGen(option =>
               new List<string>()
         }
     });
+
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    option.IncludeXmlComments(xmlPath);
+
+
 });
 
 

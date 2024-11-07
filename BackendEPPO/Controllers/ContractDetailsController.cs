@@ -20,6 +20,10 @@ namespace BackendEPPO.Controllers
             _contractDetailsService = IService;
         }
 
+        /// <summary>
+        /// Get list all Contract details in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Contract details in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.ContractDetails.GetListContractDetails_Endpoint)]
         public async Task<IActionResult> GetListContractDetail(int page, int size)
@@ -37,6 +41,11 @@ namespace BackendEPPO.Controllers
                 Data = contractDetail
             });
         }
+
+        /// <summary>
+        /// Get Contract details by contract detail id.
+        /// </summary>
+        /// <returns>Get Contract details by contract detail id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.ContractDetails.GetContractDetailsByID)]
         public async Task<IActionResult> GetContractDetailByID(int id)
@@ -54,6 +63,11 @@ namespace BackendEPPO.Controllers
                 Data = contractDetail
             });
         }
+
+        /// <summary>
+        /// Create Contract details with all role.
+        /// </summary>
+        /// <returns>Create Contract details with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.ContractDetails.CreateContractDetails)]
         public async Task<IActionResult> CreateContractDetail([FromBody] CreateContractDetailDTO contractDetail)
@@ -74,6 +88,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Update Contract details with all role.
+        /// </summary>
+        /// <returns>Update Contract details with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.ContractDetails.UpdateContractDetailsID)]
         public async Task<IActionResult> UpdateContractDetail(int id, [FromBody] UpdateContractDetailDTO contractDetail)

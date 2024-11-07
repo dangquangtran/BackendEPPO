@@ -20,6 +20,10 @@ namespace BackendEPPO.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Get list all Users in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Users in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff")]
         [HttpGet(ApiEndPointConstant.User.GetListUsers_Endpoint)]
         public async Task<IActionResult> GetListUsers(int page, int size)
@@ -38,6 +42,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Get information User by userID.
+        /// </summary>
+        /// <returns>Get information User by userID.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.User.GetUserByID)]
         public async Task<IActionResult> GetUsersByID(int id)
@@ -56,6 +64,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Create account user for customer and guest by role customer.
+        /// </summary>
+        /// <returns> Create account user for customer and guest by role customer.</returns>
         [HttpPost(ApiEndPointConstant.User.CreateAccountByCustomer)]
         public async Task<IActionResult> CreateAccountByCustomers([FromBody] CreateAccountByCustomerDTO customer)
         {
@@ -84,6 +96,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Create account user for owner by role owner.
+        /// </summary>
+        /// <returns>Create account user for owner by role owner.</returns>
         [HttpPost(ApiEndPointConstant.User.CreateAccountByOwner)]
         public async Task<IActionResult> CreateAccountByOwner([FromBody] CreateAccountByOwnerDTO owner)
         {
@@ -102,7 +118,12 @@ namespace BackendEPPO.Controllers
                 Data = owner
             });
         }
-  
+
+
+        /// <summary>
+        /// Create account user for staff by role admin.
+        /// </summary>
+        /// <returns>Create account user for staff by role admin.</returns>
         [HttpPost(ApiEndPointConstant.User.CreateAccountByAdmin)]
         public async Task<IActionResult> CreateAccountByAdmin([FromBody] CreateAccountByAdminDTO admin)
         {
@@ -122,6 +143,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Update information account by all role.
+        /// </summary>
+        /// <returns>Update information account by all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.User.UpdateAccount)]
         public async Task<IActionResult> UpdateUserAccount(int id, [FromBody] UpdateAccount accountDTO)
@@ -153,6 +178,11 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Change password of account by all role.
+        /// </summary>
+        /// <returns>Change password of account by all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.User.ChangePassword)]
         public async Task<IActionResult> ChangePasswordAccount(int id, [FromBody] ChangePassword accountDTO)
