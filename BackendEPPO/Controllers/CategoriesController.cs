@@ -21,6 +21,10 @@ namespace BackendEPPO.Controllers
             _IService = IService;
         }
 
+        /// <summary>
+        /// Get list all Category in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Category in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Categories.GetListCategory_Endpoint)]
         public async Task<IActionResult> GetListCategory(int page, int size)
@@ -39,6 +43,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Get Category by categoryID with all role.
+        /// </summary>
+        /// <returns>Get Category by categoryID with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Categories.GetCategoriesByID)]
         public async Task<IActionResult> GetCategoriesByID(int id)
@@ -57,7 +65,11 @@ namespace BackendEPPO.Controllers
             });
         }
 
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        /// <summary>
+        /// Create Category with role manager and staff.
+        /// </summary>
+        /// <returns>Create Category with role manager and staff.</returns>
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpPost(ApiEndPointConstant.Categories.CreateCategories)]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDTO category)
         {
@@ -77,6 +89,11 @@ namespace BackendEPPO.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Update Category with role manager and staff.
+        /// </summary>
+        /// <returns>Update Category with role manager and staff.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Categories.UpdateCategoriesID)]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDTO category)

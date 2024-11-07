@@ -33,6 +33,11 @@ namespace BackendEPPO.Controllers
             _userService = userService;
             _configuration = configuration;
         }
+
+        /// <summary>
+        /// Login with user name password or login with account email  
+        /// </summary>
+        /// <returns>Login with user name password or login with account email. </returns>
         [AllowAnonymous]
         [HttpPost(ApiEndPointConstant.User.Login_Endpoint)]
         public IActionResult Login([FromBody] LoginRequest request)

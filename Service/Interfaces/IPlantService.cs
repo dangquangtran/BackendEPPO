@@ -18,7 +18,7 @@ namespace Service.Interfaces
         PlantVM GetPlantById(int id);
         Task CreatePlant(CreatePlantDTO createPlant, List<IFormFile> imageFiles);
         Task UpdatePlant(UpdatePlantDTO updatePlant, List<IFormFile> newImageFiles);
-        IEnumerable<PlantVM> GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize);
+        IEnumerable<PlantVM> GetPlantsByCategoryId(int pageIndex, int pageSize, int categoryId);
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId);
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId);
     }

@@ -19,6 +19,10 @@ namespace BackendEPPO.Controllers
             _iNotificationService = IService;
         }
 
+        /// <summary>
+        /// Get list all Notification in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all notification in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Notification.GetListNotification_Endpoint)]
         public async Task<IActionResult> GetListNotification(int page, int size)
@@ -37,6 +41,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Get Notification by notification id.
+        /// </summary>
+        /// <returns> Get Notification by notification id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Notification.GetNotificationByID)]
         public async Task<IActionResult> GetNotificationByID(int id)
@@ -54,6 +62,11 @@ namespace BackendEPPO.Controllers
                 Data = noti
             });
         }
+
+        /// <summary>
+        /// Create Notification with all role.
+        /// </summary>
+        /// <returns> Create Notification with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Notification.CreateNotificationByID)]
         public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationDTO notification)
@@ -74,6 +87,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Update Notification with all role.
+        /// </summary>
+        /// <returns> Update Notification with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Notification.UpdateNotificationByID)]
         public async Task<IActionResult> UpdateNotification(int id, [FromBody] UpdateNotificationDTO notification)

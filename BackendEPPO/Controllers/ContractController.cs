@@ -23,6 +23,10 @@ namespace BackendEPPO.Controllers
             _contractService = IService;
         }
 
+        /// <summary>
+        /// Get list all Contracts in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Contracts in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Contract.GetListContract_Endpoint)]
         public async Task<IActionResult> GetListContracts(int page, int size)
@@ -41,9 +45,13 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Get Contracts by ContractID with all role.
+        /// </summary>
+        /// <returns>Get Contracts with ContractID with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Contract.GetContractByID)]
-        public async Task<IActionResult> GetUsersByID(int id)
+        public async Task<IActionResult> GetContractByID(int id)
         {
             var contract = await _contractService.GetContractByID(id);
 
@@ -59,6 +67,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Create Contracts with all role.
+        /// </summary>
+        /// <returns>Create Contracts with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Contract.CreateContract)]
         public async Task<IActionResult> CreateContract([FromBody] CreateContractDTO contract)
@@ -79,6 +91,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Update Contracts with all role.
+        /// </summary>
+        /// <returns>Update Contracts with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Contract.UpdateContractID)]
         public async Task<IActionResult> UpdateContract(int id, [FromBody] UpdateContractDTO contract)

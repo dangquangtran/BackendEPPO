@@ -18,6 +18,10 @@ namespace BackendEPPO.Controllers
             _service = IService;
         }
 
+        /// <summary>
+        /// Get list all user room in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all user room in database with the page and the size.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.UserRoom.GetListUserRoom_Endpoint)]
         public async Task<IActionResult> GetListUserRoom(int page, int size)
@@ -35,6 +39,11 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
+
+        /// <summary>
+        /// Get user room by user room id.
+        /// </summary>
+        /// <returns>Get user room by user room id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.UserRoom.GetUserRoomByID)]
         public async Task<IActionResult> GetUserRoomByID(int id)
@@ -52,7 +61,13 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+
+
+        /// <summary>
+        /// Register to bid with role manager, role staff and role customer
+        /// </summary>
+        /// <returns>Register to bid with role manager, role staff and role customer.</returns>
+        [Authorize(Roles = "admin, manager, staff, customer")]
         [HttpPost(ApiEndPointConstant.UserRoom.CreateUserRoom)]
         public async Task<IActionResult> CreateUserRoom([FromBody] CreateUserRoomDTO userRoom)
         {
@@ -73,7 +88,11 @@ namespace BackendEPPO.Controllers
             });
         }
 
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        /// <summary>
+        /// Update user room with role manager, role staff and role customer
+        /// </summary>
+        /// <returns>Update user room with role manager, role staff and role customer.</returns>
+        [Authorize(Roles = "admin, manager, staff, customer")]
         [HttpPut(ApiEndPointConstant.UserRoom.UpdateUserRoomByID)]
         public async Task<IActionResult> UpdateUserRoom(int id, [FromBody] UpdateUserRoomDTO userRoom)
         {

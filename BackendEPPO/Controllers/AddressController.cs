@@ -20,6 +20,10 @@ namespace BackendEPPO.Controllers
             _IService = _addressService;
         }
 
+        /// <summary>
+        /// Get list all the address in database.
+        /// </summary>
+        /// <returns>Get list all the address in database.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetListAddress_Endpoint)]
         public async Task<IActionResult> GetListAddress(int page, int size)
@@ -38,6 +42,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Get list the address of by user with userID.
+        /// </summary>
+        /// <returns>Get list the address of by user with userID.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetListAddressByUserID_Endpoint)]
         public async Task<IActionResult> GetListAddressByUserID(int userID)
@@ -56,7 +64,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
-
+        /// <summary>
+        /// Get the address by addressId.
+        /// </summary>
+        /// <returns>Get the address by addressId.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetAddressByID)]
         public async Task<IActionResult> GetAddressByID(int id)
@@ -74,6 +85,11 @@ namespace BackendEPPO.Controllers
                 Data = users
             });
         }
+
+        /// <summary>
+        /// Create the address with all role.
+        /// </summary>
+        /// <returns>Create the address with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Address.CreateAddress)]
         public async Task<IActionResult> CreateAddress([FromBody] CreateAddressDTO address)
@@ -95,6 +111,11 @@ namespace BackendEPPO.Controllers
                 Data = address
             });
         }
+
+        /// <summary>
+        /// Update the address with all role.
+        /// </summary>
+        /// <returns>Update the address with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Address.UpdateAddress)]
         public async Task<IActionResult> UpdateAddress(int id, [FromBody] UpdateAddressDTO address)

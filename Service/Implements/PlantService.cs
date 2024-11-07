@@ -128,7 +128,7 @@ namespace Service
             _unitOfWork.PlantRepository.Update(plant);
             await _unitOfWork.SaveAsync();
         }
-        public IEnumerable<PlantVM> GetPlantsByCategoryId(int categoryId, int pageIndex, int pageSize)
+        public IEnumerable<PlantVM> GetPlantsByCategoryId(int pageIndex, int pageSize, int categoryId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
                 filter: c => c.CategoryId == categoryId && c.Status != 0, 

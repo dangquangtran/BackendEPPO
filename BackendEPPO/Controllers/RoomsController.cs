@@ -19,7 +19,10 @@ namespace BackendEPPO.Controllers
             _roomService = IService;
         }
 
-
+        /// <summary>
+        /// Get list all room in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all room in database.</returns>
         [HttpGet(ApiEndPointConstant.Room.GetListRoom_Endpoint)]
         public async Task<IActionResult> GetListRooms(int page, int size)
         {
@@ -36,6 +39,33 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
+
+
+        /// <summary>
+        /// Filter the list of rooms by price and the plant prices in descending with the page and the size..
+        /// </summary>
+        /// <returns>Filter list room by price.</returns>
+        [HttpGet(ApiEndPointConstant.Room.FilterListRoomByPrice_Endpoint)]
+        public async Task<IActionResult> FilterListRoomByPrice(int page, int size, double? minPrice = null, double? maxPrice = null, bool isDescending = false)
+        {
+            var room = await _roomService.FilterListRoomByPrice(page, size, minPrice, maxPrice, isDescending);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound("No room found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = room
+            });
+        }
+
+        /// <summary>
+        /// Filter the list of rooms by date time have time near this play with the page and the size.
+        /// </summary>
+        /// <returns>Filter list room by date time.</returns>
         [HttpGet(ApiEndPointConstant.Room.GetListRoomByDateNow_Endpoint)]
         public async Task<IActionResult> GetListRoomsByDateNow(int page, int size)
         {
@@ -54,6 +84,33 @@ namespace BackendEPPO.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Search list room by date time with the page and the size.
+        /// </summary>
+        /// <returns>Search list room by date time.</returns>
+        [HttpGet(ApiEndPointConstant.Room.SearchListRoomByDate_Endpoint)]
+        public async Task<IActionResult> SearchListRoomByDate(int page, int size, string date)
+        {
+
+            var room = await _roomService.SearchListRoomByDate(page, size, date);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound("No room found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = room
+            });
+        }
+
+        /// <summary>
+        /// Get room by ID of the room.
+        /// </summary>
+        /// <returns>Get room by ID of the room.</returns>
         [HttpGet(ApiEndPointConstant.Room.GetRoomByID)]
         public async Task<IActionResult> GetRoomByID(int id)
         {
@@ -70,6 +127,11 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
+
+        /// <summary>
+        /// Create the room with role manager and staff.
+        /// </summary>
+        /// <returns> Create the room with role manager and staff.</returns>
         [Authorize(Roles = "admin, manager, staff")]
         [HttpPost(ApiEndPointConstant.Room.CreateRoom)]
         public async Task<IActionResult> CreateRoom([FromBody] CreateRoomDTO room)
@@ -89,6 +151,11 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
+
+        /// <summary>
+        /// Update the room with role manager and staff.
+        /// </summary>
+        /// <returns> Update the room with role manager and staff.</returns>
         [Authorize(Roles = "admin, manager, staff")]
         [HttpPut(ApiEndPointConstant.Room.UpdateRoomByID)]
         public async Task<IActionResult> UpdateRoom(int id, [FromBody] UpdateRoomDTO room)

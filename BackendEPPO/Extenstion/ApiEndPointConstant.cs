@@ -53,6 +53,9 @@ namespace BackendEPPO.Extenstion
             public const string GetRoomByID = GetListRoom_Endpoint + "/Id";
             public const string CreateRoom = GetListRoom_Endpoint + "/Create/Room";
             public const string UpdateRoomByID = GetListRoom_Endpoint + "/Update/Room/Id";
+
+            public const string SearchListRoomByDate_Endpoint = ApiEndpoint + "/GetList/Rooms/SearchRoomByDate";
+            public const string FilterListRoomByPrice_Endpoint = ApiEndpoint + "/GetList/Rooms/FilterListRoomByPrice";
         }
         // Do Huu Thuan
         public static class UserRoom

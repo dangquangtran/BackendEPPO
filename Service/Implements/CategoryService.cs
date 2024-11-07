@@ -36,6 +36,7 @@ namespace Service.Implements
                 Description = category.Description,
                 CreationDate = DateTime.Now,
                 ModificationDate = DateTime.Now,
+                ModificationById = category.ModificationById,
                 Status = 1,
             };
             _unitOfWork.CategoriesRepository.Insert(entity);
