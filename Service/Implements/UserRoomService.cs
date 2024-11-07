@@ -45,14 +45,14 @@ namespace Service.Implements
             _unitOfWork.UserRoomRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
-        public async Task CreateUserRoom(CreateUserRoomDTO userRoom)
+        public async Task CreateUserRoom(CreateUserRoomDTO userRoom, int userID)
         {
             var entity = new UserRoom
             {
                 RoomId = userRoom.RoomId,
-                UserId = userRoom.UserId,
-                JoinDate = userRoom.JoinDate,
-                IsActive = userRoom.IsActive,
+                UserId = userID,
+                JoinDate = DateTime.Now,
+                IsActive = true,
                 Status = 1,
             };
             _unitOfWork.UserRoomRepository.Insert(entity);

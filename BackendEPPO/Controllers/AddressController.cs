@@ -22,7 +22,7 @@ namespace BackendEPPO.Controllers
 
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetListAddress_Endpoint)]
-        public async Task<IActionResult> GetListUsers(int page, int size)
+        public async Task<IActionResult> GetListAddress(int page, int size)
         {
             var users = await _IService.GetLisAddress(page, size);
 
@@ -37,9 +37,29 @@ namespace BackendEPPO.Controllers
                 Data = users
             });
         }
+
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Address.GetListAddressByUserID_Endpoint)]
+        public async Task<IActionResult> GetListAddressByUserID(int userID)
+        {
+            var users = await _IService.GetLisAddressByUserID(userID);
+
+            if (users == null || !users.Any())
+            {
+                return NotFound("No users found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = users
+            });
+        }
+
+
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetAddressByID)]
-        public async Task<IActionResult> GetUsersByID(int id)
+        public async Task<IActionResult> GetAddressByID(int id)
         {
             var users = await _IService.GetAddressByID(id);
 
@@ -56,15 +76,17 @@ namespace BackendEPPO.Controllers
         }
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Address.CreateAddress)]
-        public async Task<IActionResult> CreateAddress([FromBody] RequestAddress address)
+        public async Task<IActionResult> CreateAddress([FromBody] CreateAddressDTO address)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _IService.CreateAddress(address);
+            await _IService.CreateAddress(address, userId);
 
             return Ok(new
             {

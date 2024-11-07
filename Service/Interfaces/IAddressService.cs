@@ -11,7 +11,9 @@ namespace Service.Interfaces
         Task<IEnumerable<Address>> GetLisAddress(int page, int size);
         Task<Address> GetAddressByID(int Id);
 
-        Task CreateAddress(RequestAddress address);
+        Task CreateAddress(CreateAddressDTO address, int userID);
         Task UpdateAddress(UpdateAddressDTO address);
+
+        Task<IEnumerable<Address>> GetLisAddressByUserID(int userID);
     }
 }

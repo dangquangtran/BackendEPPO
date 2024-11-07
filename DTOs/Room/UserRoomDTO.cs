@@ -18,10 +18,7 @@ namespace DTOs.Room
     public class CreateUserRoomDTO
     {
         public int? RoomId { get; set; }
-        public int? UserId { get; set; }
-        public DateTime? JoinDate { get; set; }
-        public bool? IsActive { get; set; }
-        public int? Status { get; set; }
+
     }
     public class UpdateUserRoomDTO
     {
