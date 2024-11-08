@@ -207,7 +207,7 @@ app.Use(async (context, next) =>
         {
             var auctionHandler = context.RequestServices.GetRequiredService<AuctionHandler>();
             var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-            //await auctionHandler.HandleAsync(webSocket);
+            await auctionHandler.HandleAsync(webSocket);
         }
         else
         {

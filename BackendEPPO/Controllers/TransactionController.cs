@@ -16,7 +16,7 @@ namespace BackendEPPO.Controllers
         private readonly string app_id = "2553";
         private readonly string key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
         private readonly string create_order_url = "https://sb-openapi.zalopay.vn/v2/create";
-        private string callbackUrl = "https://bf76-2405-4802-90b9-9850-ac34-c4f5-7f38-f12b.ngrok-free.app/api/v1/Transaction/Callback";
+        private string callbackUrl = "https://sep490ne-001-site1.atempurl.com/api/v1/Transaction/Callback";
         private readonly string redirectUrl = "https://localhost:7097/UserPage/MyOrder/OrderDetail?id=";
         private ITransactionService _transactionService;
         public TransactionController(ITransactionService transactionService)
