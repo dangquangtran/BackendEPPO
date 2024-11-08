@@ -40,6 +40,7 @@ namespace Service.Implements
             transaction.IsActive = true;
             transaction.Description = "Nạp tiền vào ví";
             transaction.RechargeDate = DateTime.Now;
+            transaction.WithdrawNumber = null;
 
             _unitOfWork.TransactionRepository.Insert(transaction);
             _unitOfWork.Save();
@@ -54,6 +55,7 @@ namespace Service.Implements
             transaction.IsActive = true;
             transaction.WithdrawDate = DateTime.Now;
             transaction.Description = "Rút tiền từ ví";
+            transaction.RechargeNumber = null;
 
             _unitOfWork.TransactionRepository.Insert(transaction);
             _unitOfWork.Save();
