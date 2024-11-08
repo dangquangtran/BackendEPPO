@@ -67,12 +67,12 @@ namespace Service
                 CreationContractDate = contract.CreationContractDate,
                 EndContractDate = contract.EndContractDate,
                 TotalAmount = contract.TotalAmount,
-                CreatedAt = contract.CreatedAt,
+                CreatedAt = DateTime.Now,
                 UpdatedAt = contract.UpdatedAt,
                 TypeContract = contract.TypeContract,
                 ContractUrl = contract.ContractUrl,
-                IsActive = contract.IsActive,
-                Status = contract.Status ?? 1,  
+                IsActive = 1,
+                Status =  1,  
             };
 
             _unitOfWork.ContractRepository.Insert(entity);
@@ -86,10 +86,10 @@ namespace Service
                     {
                         ContractId = entity.ContractId,  // Gán ContractId từ hợp đồng đã tạo
                         PlantId = contractDetail.PlantId,
-                        Quantity = contractDetail.Quantity,
+                        Quantity = 1,
                         TotalPrice = contractDetail.TotalPrice,
-                        IsActive = contractDetail.IsActive ?? true,  // Gán giá trị mặc định IsActive nếu null
-                        Status = contractDetail.Status ?? 1,  // Gán mặc định Status nếu null
+                        IsActive =  true,  // Gán giá trị mặc định IsActive nếu null
+                        Status =  1,  // Gán mặc định Status nếu null
                     };
 
                     // Lưu mỗi ContractDetail vào cơ sở dữ liệu
@@ -293,11 +293,11 @@ namespace Service
 
           
                 // Phần ký tên
-                gfx.DrawString("ĐẠI DIỆN BÊN A                                             ĐẠI DIỆN BÊN B", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString("ĐẠI DIỆN BÊN A                                          ĐẠI DIỆN BÊN B", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString("(Ký tên)                                                                      (Ký tên)", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString("(Ký tên)                                                                               (Ký tên)", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"Đỗ Hữu Thuận                                                                       {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"Đỗ Hữu Thuận                                                                               {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
 
                 // Lưu tài liệu PDF
                 pdfDoc.Save(pdfPath);

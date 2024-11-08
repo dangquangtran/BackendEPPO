@@ -32,12 +32,9 @@ namespace DTOs.Contracts
         public DateTime? CreationContractDate { get; set; }
         public DateTime? EndContractDate { get; set; }
         public double? TotalAmount { get; set; }
-        public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? TypeContract { get; set; }
         public string? ContractUrl { get; set; }
-        public ulong? IsActive { get; set; }
-        public int? Status { get; set; }
         public List<ContractDetailDTO>? ContractDetails { get; set; }
 
 
@@ -45,10 +42,9 @@ namespace DTOs.Contracts
     public class ContractDetailDTO
     {
         public int? PlantId { get; set; }
-        public int? Quantity { get; set; }
+    
         public double? TotalPrice { get; set; }
-        public bool? IsActive { get; set; }
-        public int? Status { get; set; }
+       
     }
     public class UpdateContractDTO
         {
