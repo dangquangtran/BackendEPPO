@@ -1,11 +1,11 @@
 ﻿using BackendEPPO.Extenstion;
-using BusinessObjects.Models;
 using DTOs.Contracts;
 using DTOs.Wallet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PdfSharp;
+using Service.Implements;
 using Service.Interfaces;
 using System.Reflection.Metadata;
 using static BackendEPPO.Extenstion.ApiEndPointConstant;
@@ -17,10 +17,12 @@ namespace BackendEPPO.Controllers
     public class ContractController : ControllerBase
     {
         private readonly IContractService _contractService;
+        private readonly FirebaseStorageService _firebaseStorageService;
 
-        public ContractController(IContractService IService)
+        public ContractController(IContractService IService, FirebaseStorageService firebaseStorageService)
         {
             _contractService = IService;
+            _firebaseStorageService = firebaseStorageService;
         }
 
         /// <summary>
@@ -101,18 +103,30 @@ namespace BackendEPPO.Controllers
         /// <returns>Download contract with all role.</returns>
         [HttpGet("contracts/{fileName}")]
         //[HttpGet(ApiEndPointConstant.Contract.DownLoadContract)]
-        public IActionResult DownloadContractPdf(string fileName)
+        public async Task<IActionResult> DownloadContractPdf(string fileName)
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "contracts", fileName);
+            // Chỉ định tên thư mục trên Firebase Storage
+            string folderName = "contracts";
 
-            if (!System.IO.File.Exists(filePath))
+            try
             {
-                return NotFound();
-            }
+                // Tải file từ Firebase Storage
+                var fileStream = await _firebaseStorageService.DownloadFileAsync(fileName, folderName);
 
-            var fileBytes = System.IO.File.ReadAllBytes(filePath);
-            return File(fileBytes, "application/pdf", fileName);
-        }
+                if (fileStream == null)
+                {
+                    return NotFound();
+                }
+
+                // Trả về file cho người dùng (dạng PDF)
+                return File(fileStream, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý trường hợp lỗi (nếu có)
+                return StatusCode(500, new { message = "Error downloading the contract.", error = ex.Message });
+            }
+        }                   
 
 
         /// <summary>
@@ -122,7 +136,7 @@ namespace BackendEPPO.Controllers
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Contract.UpdateContractID)]
         public async Task<IActionResult> UpdateContract(int id, [FromBody] UpdateContractDTO contract)
-        {
+        {               
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { message = "Invalid input data." });

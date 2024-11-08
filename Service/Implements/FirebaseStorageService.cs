@@ -53,7 +53,44 @@ namespace Service.Implements
         {
             return await UploadImageAsync(imageStream, fileName, "imagesFeedback");
         }
+        private async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folderName)
+        {
+            var uploadTask = await _firebaseStorage
+                .Child(folderName)
+                .Child(fileName)
+                .PutAsync(fileStream);
 
+            return uploadTask;
+        }
+
+        // Hàm upload PDF hợp đồng
+        public async Task<string> UploadContractPdfAsync(Stream pdfStream, string fileName)
+        {
+            return await UploadFileAsync(pdfStream, fileName, "contracts");
+        }
+        public async Task<Stream> DownloadFileAsync(string fileName, string folderName)
+        {
+            try
+            {
+                // Lấy URL tải về từ Firebase Storage
+                var downloadUrl = await _firebaseStorage
+                    .Child(folderName)
+                    .Child(fileName)
+                    .GetDownloadUrlAsync();
+
+                // Tạo một HttpClient để tải file từ URL
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetStreamAsync(downloadUrl);
+                    return response; // Trả về stream của file
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi (nếu có)
+                throw new Exception($"Error downloading file: {ex.Message}");
+            }
+        }
         //public async Task DeletePlantImageAsync(string imageUrl)
         //{
         //    await DeleteImageAsync(imageUrl, "imagesPlant");
