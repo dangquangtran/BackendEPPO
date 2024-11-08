@@ -83,13 +83,37 @@ namespace BackendEPPO.Controllers
 
             await _contractService.CreateContract(contract);
 
+            string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract);
+
             return Ok(new
             {
                 StatusCode = 201,
                 Message = "Contract created successfully",
-                Data = contract
+                PdfUrl = contractPdfUrl,
+                Data = contract,
+
             });
         }
+
+        /// <summary>
+        /// Download contract details with all role.
+        /// </summary>
+        /// <returns>Download contract with all role.</returns>
+        [HttpGet("contracts/{fileName}")]
+        //[HttpGet(ApiEndPointConstant.Contract.DownLoadContract)]
+        public IActionResult DownloadContractPdf(string fileName)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "contracts", fileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, "application/pdf", fileName);
+        }
+
 
         /// <summary>
         /// Update Contracts with all role.

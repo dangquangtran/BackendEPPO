@@ -72,6 +72,8 @@ namespace BackendEPPO.Extenstion
             public const string GetContractByID = GetListContract_Endpoint + "/Id";
             public const string CreateContract = GetListContract_Endpoint + "/Create/Contract";
             public const string UpdateContractID = GetListContract_Endpoint + "/Update/Contract/Id";
+
+            public const string DownLoadContract = ApiEndpoint + "/Download/Contract/{FileName}";
         }
         // Do Huu Thuan
         public static class RoomParticipant
