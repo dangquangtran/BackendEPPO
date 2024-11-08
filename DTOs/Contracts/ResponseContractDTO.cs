@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTOs.ContractDetails;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,9 +38,19 @@ namespace DTOs.Contracts
         public string? ContractUrl { get; set; }
         public ulong? IsActive { get; set; }
         public int? Status { get; set; }
+        public List<ContractDetailDTO>? ContractDetails { get; set; }
+
 
     }
-        public class UpdateContractDTO
+    public class ContractDetailDTO
+    {
+        public int? PlantId { get; set; }
+        public int? Quantity { get; set; }
+        public double? TotalPrice { get; set; }
+        public bool? IsActive { get; set; }
+        public int? Status { get; set; }
+    }
+    public class UpdateContractDTO
         {
             public int ContractId { get; set; }
             public int? UserId { get; set; }
@@ -56,4 +67,5 @@ namespace DTOs.Contracts
             public int? Status { get; set; }
 
         }
+
     }
