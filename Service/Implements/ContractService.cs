@@ -17,13 +17,13 @@ namespace Service
     public class ContractService: IContractService
     {
         private readonly IUnitOfWork _unitOfWork;
-<<<<<<< HEAD
+
         private readonly IMapper _mapper;
-        public ContractService(IUnitOfWork unitOfWork , IMapper mapper)
+        public ContractService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-=======
+        }
         private readonly FirebaseStorageService _firebaseStorageService;
 
         private string fileName = null;
@@ -33,7 +33,6 @@ namespace Service
             _unitOfWork = unitOfWork;
             _firebaseStorageService = firebaseStorageService;
 
->>>>>>> 6183afb567c6654c766006490f0aae02e83dca29
         }
 
         public async Task<IEnumerable<Contract>> GetListContract(int page, int size)
