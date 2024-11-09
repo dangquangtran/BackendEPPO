@@ -26,11 +26,11 @@ namespace Service.Implements
 
         public async Task<IEnumerable<Feedback>> GetListFeedback(int page, int size)
         {
-<<<<<<< HEAD
-            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
-=======
-            return await _unitOfWork.FeedbackRepository.GetAsync(pageIndex: page, pageSize: size, includeProperties: "ImageFeedbacks");
->>>>>>> 6183afb567c6654c766006490f0aae02e83dca29
+
+           // return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
+
+            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size, includeProperties: "ImageFeedbacks");
+
         }
         public async Task<Feedback> GetFeedbackByID(int Id)
         {
