@@ -19,19 +19,16 @@ namespace Service
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly IMapper _mapper;
-        public ContractService(IUnitOfWork unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+
         private readonly FirebaseStorageService _firebaseStorageService;
 
         private string fileName = null;
 
-        public ContractService(IUnitOfWork unitOfWork, FirebaseStorageService firebaseStorageService)
+        public ContractService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService)
         {
             _unitOfWork = unitOfWork;
             _firebaseStorageService = firebaseStorageService;
+            _mapper = mapper;
 
         }
 
