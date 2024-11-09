@@ -149,7 +149,7 @@ namespace BackendEPPO.Controllers
         /// <returns>Update information account by all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.User.UpdateAccount)]
-        public async Task<IActionResult> UpdateUserAccount(int id, [FromBody] UpdateAccount accountDTO)
+        public async Task<IActionResult> UpdateUserAccount(int id, [FromForm] UpdateAccount accountDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -159,7 +159,7 @@ namespace BackendEPPO.Controllers
 
             try
             {
-                await _userService.UpdateUserAccount(accountDTO);
+                await _userService.UpdateUserAccount(accountDTO, accountDTO.ImageFile);
                 var updatedUser = await _userService.GetUsersByID(id);
 
                 return Ok(new

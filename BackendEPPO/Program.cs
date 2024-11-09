@@ -152,6 +152,8 @@ builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>
 // WebSocket (chat service)
 builder.Services.AddSingleton<ChatHandler>();
 
+builder.Services.AddSingleton<AuctionHandler>();
+
 //Add cors for website
 builder.Services.AddCors(options =>
 {
@@ -185,6 +187,27 @@ app.Use(async (context, next) =>
             var chatHandler = context.RequestServices.GetRequiredService<ChatHandler>();
             var webSocket = await context.WebSockets.AcceptWebSocketAsync();
             await chatHandler.HandleAsync(webSocket);
+        }
+        else
+        {
+            context.Response.StatusCode = 400;
+        }
+    }
+    else
+    {
+        await next();
+    }
+});
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/ws/auction")
+    {
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            var auctionHandler = context.RequestServices.GetRequiredService<AuctionHandler>();
+            var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            //await auctionHandler.HandleAsync(webSocket);
         }
         else
         {

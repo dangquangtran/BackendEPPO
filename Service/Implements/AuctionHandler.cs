@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DTOs.Plant
+namespace Service.Implements
 {
-    class PlantDTO
+    public class AuctionHandler
     {
     }
 }

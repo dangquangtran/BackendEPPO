@@ -11,6 +11,7 @@ namespace DTOs.Plant
     {
         public string PlantName { get; set; }
         public string Description { get; set; }
+        public string Title { get; set; }
         public double Quantity { get; set; }
         public double Price { get; set; }
         public double Discounts { get; set; }

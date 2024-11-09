@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.User;
+using Microsoft.AspNetCore.Http;
 using Mysqlx.Crud;
 using Repository.Interfaces;
+using Service.Implements;
 using Service.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,11 +15,13 @@ namespace Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly FirebaseStorageService _firebaseStorageService;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _firebaseStorageService = firebaseStorageService;
         }
         public async Task CreateUserAccount(ResponseUserDTO userDto)
         {
@@ -141,7 +145,7 @@ namespace Service
             return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id));
         }
 
-        public async Task UpdateUserAccount(UpdateAccount accountDTO)
+        public async Task UpdateUserAccount(UpdateAccount accountDTO, IFormFile imageFile)
         {
             var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(accountDTO.UserId));
 
@@ -216,6 +220,22 @@ namespace Service
             if (accountDTO.Status.HasValue)
             {
                 userEntity.Status = accountDTO.Status.Value;
+            }
+
+            if (imageFile != null)
+            {
+                using var stream = imageFile.OpenReadStream();
+                string fileName = imageFile.FileName;
+
+                string newImageUrl = await _firebaseStorageService.UploadUserImageAsync(stream, fileName);
+
+                if (!string.IsNullOrWhiteSpace(userEntity.ImageUrl))
+                {
+                    //await _firebaseStorageService.DeleteUserImageAsync(userEntity.ImageUrl);
+                }
+
+                // Cập nhật URL ảnh mới vào userEntity
+                userEntity.ImageUrl = newImageUrl;
             }
 
             _unitOfWork.UserRepository.Update(userEntity);

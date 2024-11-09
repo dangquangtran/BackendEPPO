@@ -5,6 +5,7 @@ using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using Repository.Interfaces;
+using Service.Implements;
 using Service.Interfaces;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
@@ -16,11 +17,23 @@ namespace Service
     public class ContractService: IContractService
     {
         private readonly IUnitOfWork _unitOfWork;
+<<<<<<< HEAD
         private readonly IMapper _mapper;
         public ContractService(IUnitOfWork unitOfWork , IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+=======
+        private readonly FirebaseStorageService _firebaseStorageService;
+
+        private string fileName = null;
+
+        public ContractService(IUnitOfWork unitOfWork, FirebaseStorageService firebaseStorageService)
+        {
+            _unitOfWork = unitOfWork;
+            _firebaseStorageService = firebaseStorageService;
+
+>>>>>>> 6183afb567c6654c766006490f0aae02e83dca29
         }
 
         public async Task<IEnumerable<Contract>> GetListContract(int page, int size)
@@ -115,6 +128,7 @@ namespace Service
 
             string pdfUrl = await GenerateContractPdfAsync(contract);
             entity.ContractUrl = pdfUrl;
+            entity.ContractFileName = fileName;
 
             _unitOfWork.ContractRepository.Update(entity);
             await _unitOfWork.SaveAsync();
@@ -127,7 +141,8 @@ namespace Service
 
 
 
-            string fileName = $"Contract_{contract.ContractNumber}_{DateTime.Now.Ticks}.pdf";
+            fileName = $"Contract_{contract.ContractNumber}_{DateTime.Now.Ticks}.pdf";
+
             string pdfPath = Path.Combine("wwwroot", "contracts", fileName);
 
             // Tạo thư mục nếu chưa có
@@ -313,8 +328,13 @@ namespace Service
                 // Lưu tài liệu PDF
                 pdfDoc.Save(pdfPath);
             }
+            using (var pdfStream = new FileStream(pdfPath, FileMode.Open))
+            {
+                string fileUrl = await _firebaseStorageService.UploadContractPdfAsync(pdfStream, fileName);
+                return fileUrl;
+            }
 
-            return $"/contracts/{fileName}";
+            //return $"/contracts/{fileName}";
         }
 
     }

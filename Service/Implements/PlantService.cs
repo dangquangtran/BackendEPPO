@@ -67,7 +67,7 @@ namespace Service
                     string fileName = imageFile.FileName;
 
                     // Upload từng hình ảnh lên Firebase và lấy URL
-                    string imageUrl = await _firebaseStorageService.UploadImageAsync(stream, fileName);
+                    string imageUrl = await _firebaseStorageService.UploadPlantImageAsync(stream, fileName);
 
                     // Lưu đường dẫn hình ảnh vào ImagePlant
                     ImagePlant imagePlant = new ImagePlant
@@ -107,7 +107,7 @@ namespace Service
                     string fileName = imageFile.FileName;
 
                     // Upload ảnh mới lên Firebase và lấy URL
-                    string imageUrl = await _firebaseStorageService.UploadImageAsync(stream, fileName);
+                    string imageUrl = await _firebaseStorageService.UploadPlantImageAsync(stream, fileName);
 
                     // Thêm URL vào danh sách ảnh mới và plant
                     newImageUrls.Add(imageUrl);
@@ -119,8 +119,8 @@ namespace Service
 
                 foreach (var image in imagesToRemove)
                 {
-                    await _firebaseStorageService.DeleteImageAsync(image.ImageUrl); // Xóa ảnh khỏi Firebase
-                    plant.ImagePlants.Remove(image); // Xóa ảnh khỏi DB
+                    //await _firebaseStorageService.DeletePlantImageAsync(image.ImageUrl); // Xóa ảnh khỏi Firebase
+                    plant.ImagePlants.Remove(image); // Xóa ảnh khỏi DB 
                 }
             }
 
