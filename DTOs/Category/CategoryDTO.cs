@@ -34,4 +34,8 @@ namespace DTOs.Category
         public int? ModificationById { get; set; }
         public int? Status { get; set; }
     }
+    public class DeleteCategoryDTO
+    {
+        public int CategoryId { get; set; }
+    }
 }

@@ -23,7 +23,7 @@ namespace Service.Implements
 
         public async Task<IEnumerable<Feedback>> GetListFeedback(int page, int size)
         {
-            return await _unitOfWork.FeedbackRepository.GetAsync(pageIndex: page, pageSize: size);
+            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
         }
         public async Task<Feedback> GetFeedbackByID(int Id)
         {
@@ -68,5 +68,21 @@ namespace Service.Implements
             _unitOfWork.FeedbackRepository.Insert(entity);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task DeleteFeedback(DeleteFeedbackDTO feedback)
+        {
+            var entity = await Task.FromResult(_unitOfWork.FeedbackRepository.GetByID(feedback.FeedbackId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Feedback with ID {feedback.FeedbackId} not found.");
+            }
+
+            entity.Status = 0;
+
+            _unitOfWork.FeedbackRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
     }
 }

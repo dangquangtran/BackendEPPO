@@ -25,7 +25,11 @@ namespace DTOs.Address
         public int? Status { get; set; }
 
     }
+    public class DeleteAddressDTO
+    {
+        public int AddressId { get; set; }
 
+    }
     public class CreateAddressDTO
     {
         public string Description { get; set; }

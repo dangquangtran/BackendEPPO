@@ -17,5 +17,6 @@ namespace Service.Interfaces
 
         Task CreateFeedback(CreateFeedbackDTO feedback);
         Task UpdateFeedback(UpdateFeedbackDTO feedback);
+        Task DeleteFeedback(DeleteFeedbackDTO feedback);
     }
 }

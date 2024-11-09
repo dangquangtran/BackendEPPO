@@ -125,5 +125,41 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Delete Category with role manager and staff.
+        /// </summary>
+        /// <returns>Delete Category with role manager and staff.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpDelete(ApiEndPointConstant.Categories.DeleteCategoriesID)]
+        public async Task<IActionResult> DeleteCategory(int id, [FromBody] DeleteCategoryDTO category)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            category.CategoryId = id;
+
+            try
+            {
+                await _IService.DeleteCategory(category);
+                var updatedcategory = await _IService.GetCategoryByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Delete category successfully.",
+                    Data = updatedcategory
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Category not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
     }
 }

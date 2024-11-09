@@ -2,6 +2,7 @@
 using BusinessObjects.Models;
 using DTOs.Address;
 using DTOs.Plant;
+using DTOs.Room;
 using PdfSharp;
 using Repository.Interfaces;
 using Service.Interfaces;
@@ -25,7 +26,7 @@ namespace Service.Implements
 
         public async Task<IEnumerable<Address>> GetLisAddress(int page, int size)
         {
-            return await _unitOfWork.AddressRepository.GetAsync(pageIndex: page, pageSize: size);
+            return await _unitOfWork.AddressRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
         }
         public async Task<IEnumerable<Address>> GetLisAddressByUserID(int userID)
         {
@@ -67,6 +68,23 @@ namespace Service.Implements
             address.Description = address.Description;
             address.ModificationDate = DateTime.Now;
             address.Status = address.Status;
+
+            _unitOfWork.AddressRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+
+        public async Task DeleteAddress(DeleteAddressDTO address)
+        {
+
+            var entity = await Task.FromResult(_unitOfWork.AddressRepository.GetByID(address.AddressId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Address with ID {address.AddressId} not found.");
+            }
+       
+            entity.Status = 0;
 
             _unitOfWork.AddressRepository.Update(entity);
             await _unitOfWork.SaveAsync();

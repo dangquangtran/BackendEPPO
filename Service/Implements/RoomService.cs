@@ -1,6 +1,7 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Room;
 using DTOs.Wallet;
+using PdfSharp.Pdf.Filters;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -21,7 +22,7 @@ namespace Service.Implements
         }
         public async Task<IEnumerable<Room>> GetListRooms(int page, int size)
         {
-            return await _unitOfWork.RoomRepository.GetAsync(pageIndex: page, pageSize: size, includeProperties: "Plant");
+            return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size, includeProperties: "Plant");
         }
         public async Task<IEnumerable<Room>> GetListRoomsByDateNow(int page, int size)
         {
@@ -31,7 +32,7 @@ namespace Service.Implements
                pageSize: size,
                includeProperties: "Plant",
                orderBy: q => q.OrderByDescending(r => r.ActiveDate),
-               filter: r => r.ActiveDate <= currentDate 
+               filter: r => r.ActiveDate <= currentDate &&  r.Status != 0
            );
         }
 
@@ -44,7 +45,7 @@ namespace Service.Implements
             }
 
             return await _unitOfWork.RoomRepository.GetAsync(
-                filter: r => r.ActiveDate.HasValue && r.ActiveDate.Value.Date == parsedDate.Date,
+                filter: r => r.Status != 0 && r.ActiveDate.HasValue && r.ActiveDate.Value.Date == parsedDate.Date,
                 pageIndex: page,
                 pageSize: size,
                 includeProperties: "Plant"
@@ -53,7 +54,7 @@ namespace Service.Implements
         public async Task<IEnumerable<Room>> FilterListRoomByPrice(int page, int size, double? minPrice = null, double? maxPrice = null, bool isDescending = false)
         {
             return await _unitOfWork.RoomRepository.GetAsync(
-                filter: r =>
+                filter: r => r.Status != 0 &&
                              (!minPrice.HasValue || r.Plant.Price >= minPrice.Value) &&
                              (!maxPrice.HasValue || r.Plant.Price <= maxPrice.Value),
                 pageIndex: page,
@@ -75,6 +76,19 @@ namespace Service.Implements
         }
         public async Task CreateRoom(CreateRoomDTO room)
         {
+            var plant =  _unitOfWork.PlantRepository.GetByID(room.PlantId.Value);
+
+            if (plant == null)
+            {
+                throw new Exception("Plant not found");
+            }
+
+            if (plant.TypeEcommerceId != 3)
+            {
+                throw new Exception("Type Ecommerce not is Auction.");
+            }
+
+
             var entity = new Room
             {
                 PlantId = room.PlantId,
@@ -104,6 +118,20 @@ namespace Service.Implements
             room.ModificationDate = room.ModificationDate;
             room.ModificationBy = room.ModificationBy;
             room.Status = room.Status;
+            _unitOfWork.RoomRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task DeleteRoom(DeleteRoomDTO room)
+        {
+
+            var entity = await Task.FromResult(_unitOfWork.RoomRepository.GetByID(room.RoomId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Room with ID {room.RoomId} not found.");
+            }
+            entity.Status = 0;
             _unitOfWork.RoomRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }

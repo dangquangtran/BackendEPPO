@@ -44,4 +44,8 @@ namespace DTOs.Feedback
         public int? ModificationByUserId { get; set; }
         public int? Status { get; set; }
     }
+    public class DeleteFeedbackDTO
+    {
+        public int FeedbackId { get; set; }
+    }
 }

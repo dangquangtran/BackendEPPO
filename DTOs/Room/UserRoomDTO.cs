@@ -20,6 +20,11 @@ namespace DTOs.Room
         public int? RoomId { get; set; }
 
     }
+    public class DeleteUserRoomDTO
+    {
+        public int UserRoomId { get; set; }
+
+    }
     public class UpdateUserRoomDTO
     {
         public int UserRoomId { get; set; }

@@ -4,9 +4,11 @@ using DTOs.Plant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service;
 using Service.Implements;
 using Service.Interfaces;
+using System.Drawing;
 
 namespace BackendEPPO.Controllers
 {
@@ -130,7 +132,18 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceAndCategory)]
         public IActionResult GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId)
         {
-            return Ok(_plantService.GetListPlantsByTypeEcommerceAndCategory(pageIndex, pageSize, typeEcommerceId, categoryId));
+            var plant = _plantService.GetListPlantsByTypeEcommerceAndCategory(pageIndex, pageSize, typeEcommerceId, categoryId);
+
+            if (plant == null || !plant.Any())
+            {
+                return NotFound("No plant found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = plant
+            });
         }
     }
 }
