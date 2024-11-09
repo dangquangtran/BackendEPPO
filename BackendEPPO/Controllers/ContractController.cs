@@ -26,6 +26,28 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
+        /// Get list all Contracts of UserId in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Contracts in database with the page and the size.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Contract.GetContractOfUser_Endpoint)]
+        public async Task<IActionResult> GetContractOfUser(int userID)
+        {
+            var users = await _contractService.GetContractOfUser(userID);
+
+            if (users == null || !users.Any())
+            {
+                return NotFound("No users found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = users
+            });
+        }
+
+        /// <summary>
         /// Get list all Contracts in database with the page and the size.
         /// </summary>
         /// <returns>Get list all Contracts in database with the page and the size.</returns>

@@ -147,5 +147,41 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Delete the address with all role.
+        /// </summary>
+        /// <returns>Delete the address with all role.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpDelete(ApiEndPointConstant.Address.DeleteAddress)]
+        public async Task<IActionResult> DeleteAddress(int id, [FromBody] DeleteAddressDTO address)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            address.AddressId = id;
+
+            try
+            {
+                await _IService.DeleteAddress(address);
+                var updatedRank = await _IService.GetAddressByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Address updated successfully.",
+                    Data = updatedRank
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Address not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
     }
 }

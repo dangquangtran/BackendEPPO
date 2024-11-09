@@ -13,6 +13,7 @@ namespace Service.Interfaces
         Task<IEnumerable<UserRoom>> GetListUserRoom(int page, int size);
         Task<UserRoom> GetUserRoomByID(int Id);
         Task UpdateUserRoom(UpdateUserRoomDTO userRoom);
+        Task DeleteUserRoom(DeleteUserRoomDTO userRoom);
         Task CreateUserRoom(CreateUserRoomDTO userRoom, int userID);
     }
 }

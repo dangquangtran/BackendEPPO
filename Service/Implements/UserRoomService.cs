@@ -17,11 +17,11 @@ namespace Service.Implements
         {
             _unitOfWork = unitOfWork;
         }
-   
+
 
         public async Task<IEnumerable<UserRoom>> GetListUserRoom(int page, int size)
         {
-            return await _unitOfWork.UserRoomRepository.GetAsync(pageIndex: page, pageSize: size); 
+            return await _unitOfWork.UserRoomRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
         }
 
         public async Task<UserRoom> GetUserRoomByID(int Id)
@@ -56,6 +56,20 @@ namespace Service.Implements
                 Status = 1,
             };
             _unitOfWork.UserRoomRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task DeleteUserRoom(DeleteUserRoomDTO userRoom)
+        {
+            var entity = await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(userRoom.UserRoomId));
+
+            if (entity == null)
+            {
+                throw new Exception($"User Room with ID {userRoom.UserRoomId} not found.");
+            }
+
+            entity.Status = 0;
+            _unitOfWork.UserRoomRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
     }

@@ -16,6 +16,6 @@ namespace Service.Interfaces
         Task<Category> GetCategoryByID(int Id);
         Task CreateCategory(CreateCategoryDTO category);
         Task UpdateCategory(UpdateCategoryDTO category);
-  
+        Task DeleteCategory(DeleteCategoryDTO category);
     }
 }

@@ -123,5 +123,42 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+
+        /// <summary>
+        /// Delete user room with role manager, role staff and role customer
+        /// </summary>
+        /// <returns>Delete user room with role manager, role staff and role customer.</returns>
+        [Authorize(Roles = "admin, manager, staff, customer")]
+        [HttpDelete(ApiEndPointConstant.UserRoom.DelteUserRoomByID)]
+        public async Task<IActionResult> DeleteUserRoom(int id, [FromBody] DeleteUserRoomDTO userRoom)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            userRoom.UserRoomId = id;
+
+            try
+            {
+                await _service.DeleteUserRoom(userRoom);
+                var updatedcRoom = await _service.GetUserRoomByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "User room updated successfully.",
+                    Data = updatedcRoom
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "User room not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
     }
 }
