@@ -9,6 +9,7 @@ namespace Service.Interfaces
     public interface IContractService
     {
         Task<IEnumerable<Contract>> GetListContract(int page, int size);
+        Task<IEnumerable<Contract>> GetContractOfUser(int userID);
         Task<Contract> GetContractByID(int Id);
         Task UpdateContract(UpdateContractDTO contract);
         Task CreateContract(CreateContractDTO contract);

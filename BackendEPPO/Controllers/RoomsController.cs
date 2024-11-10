@@ -13,7 +13,7 @@ namespace BackendEPPO.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly IRoomService _roomService;
-
+  
         public RoomsController(IRoomService IService)
         {
             _roomService = IService;
@@ -137,19 +137,30 @@ namespace BackendEPPO.Controllers
         public async Task<IActionResult> CreateRoom([FromBody] CreateRoomDTO room)
         {
 
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _roomService.CreateRoom(room);
-
-            return Ok(new
+            try
             {
-                StatusCode = 201,
-                Message = "Room created successfully",
-                Data = room
-            });
+                await _roomService.CreateRoom(room);
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Room created successfully",
+                    Data = room
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = ex.Message
+                });
+            }
         }
 
         /// <summary>
@@ -169,13 +180,49 @@ namespace BackendEPPO.Controllers
             try
             {
                 await _roomService.UpdateRoom(room);
-                var updatedcRoom = await _roomService.GetRoomByID(id);
+                var updatedRoom = await _roomService.GetRoomByID(id);
 
                 return Ok(new
                 {
                     StatusCode = 201,
                     Message = "Room updated successfully.",
-                    Data = updatedcRoom
+                    Data = updatedRoom
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Room not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Delete the room with role manager and staff to update status is zero.
+        /// </summary>
+        /// <returns>Delete the room with role manager and staff to update status is zero.</returns>
+        [Authorize(Roles = "admin, manager, staff")]
+        [HttpDelete(ApiEndPointConstant.Room.DeleteRoomByID)]
+        public async Task<IActionResult> DeleteRoom(int id, [FromBody] DeleteRoomDTO room)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            room.RoomId = id;
+
+            try
+            {
+                await _roomService.DeleteRoom(room);
+                var updatedRoom = await _roomService.GetRoomByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Delete room successfully.",
+                    Data = updatedRoom
                 });
             }
             catch (KeyNotFoundException)

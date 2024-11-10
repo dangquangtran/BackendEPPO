@@ -122,5 +122,41 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Delete feedback with all role.
+        /// </summary>
+        /// <returns>Delete feedback with all role.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpDelete(ApiEndPointConstant.Feedback.DeleteFeedbackID)]
+        public async Task<IActionResult> DeleteFeedback(int id, [FromBody] DeleteFeedbackDTO feedback)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            feedback.FeedbackId = id;
+
+            try
+            {
+                await _service.DeleteFeedback(feedback);
+                var updatedFeedback = await _service.GetFeedbackByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Feedback updated successfully.",
+                    Data = updatedFeedback
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Feedback not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
     }
 }

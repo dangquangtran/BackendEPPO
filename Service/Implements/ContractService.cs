@@ -1,4 +1,5 @@
-﻿using BusinessObjects.Models;
+﻿using AutoMapper;
+using BusinessObjects.Models;
 using DTOs.Contracts;
 using PdfSharp;
 using PdfSharp.Drawing;
@@ -16,20 +17,33 @@ namespace Service
     public class ContractService: IContractService
     {
         private readonly IUnitOfWork _unitOfWork;
+
+        private readonly IMapper _mapper;
+
         private readonly FirebaseStorageService _firebaseStorageService;
 
         private string fileName = null;
 
-        public ContractService(IUnitOfWork unitOfWork, FirebaseStorageService firebaseStorageService)
+        public ContractService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService)
         {
             _unitOfWork = unitOfWork;
             _firebaseStorageService = firebaseStorageService;
+            _mapper = mapper;
 
         }
 
         public async Task<IEnumerable<Contract>> GetListContract(int page, int size)
         {
-            return await _unitOfWork.ContractRepository.GetAsync(includeProperties: "User", pageIndex: page, pageSize: size);
+            return await _unitOfWork.ContractRepository.GetAsync(filter: c => c.Status != 0, includeProperties: "User", pageIndex: page, pageSize: size);
+        }
+
+        public async Task<IEnumerable<Contract>> GetContractOfUser(int userID)
+        {
+            var contract = _unitOfWork.ContractRepository.Get(
+                filter: c => c.UserId == userID && c.Status != 0
+            );
+            return _mapper.Map<IEnumerable<Contract>>(contract);
+        //    return await _unitOfWork.ContractRepository.GetAsync(filter: c => c.Status != 0, includeProperties: "User", pageIndex: page, pageSize: size);
         }
 
         public async Task<Contract> GetContractByID(int Id)

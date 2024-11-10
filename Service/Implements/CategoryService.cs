@@ -22,7 +22,7 @@ namespace Service.Implements
 
         public async Task<IEnumerable<Category>> GetListCategory(int page, int size)
         {
-            return await _unitOfWork.CategoriesRepository.GetAsync(pageIndex: page, pageSize: size);
+            return await _unitOfWork.CategoriesRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
         }
         public async Task<Category> GetCategoryByID(int id)
         {
@@ -54,6 +54,20 @@ namespace Service.Implements
             category.Title = category.Title;
             category.ModificationDate = DateTime.Now;
             category.Status = category.Status;
+            _unitOfWork.CategoriesRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task DeleteCategory(DeleteCategoryDTO category)
+        {
+
+            var entity = await Task.FromResult(_unitOfWork.CategoriesRepository.GetByID(category.CategoryId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Category with ID {category.CategoryId} not found.");
+            }
+            entity.Status = 0;
             _unitOfWork.CategoriesRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }

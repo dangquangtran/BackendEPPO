@@ -54,6 +54,8 @@ namespace BackendEPPO.Extenstion
             public const string CreateRoom = GetListRoom_Endpoint + "/Create/Room";
             public const string UpdateRoomByID = GetListRoom_Endpoint + "/Update/Room/Id";
 
+            public const string DeleteRoomByID = GetListRoom_Endpoint + "/Delete/Room/Id";
+
             public const string SearchListRoomByDate_Endpoint = ApiEndpoint + "/GetList/Rooms/SearchRoomByDate";
             public const string FilterListRoomByPrice_Endpoint = ApiEndpoint + "/GetList/Rooms/FilterListRoomByPrice";
         }
@@ -64,6 +66,7 @@ namespace BackendEPPO.Extenstion
             public const string GetUserRoomByID = GetListUserRoom_Endpoint + "/Id";
             public const string CreateUserRoom = GetListUserRoom_Endpoint + "/Create/UserRoom";
             public const string UpdateUserRoomByID = GetListUserRoom_Endpoint + "/Update/UserRoom/Id";
+            public const string DelteUserRoomByID = GetListUserRoom_Endpoint + "/Delete/UserRoom/Id";
         }
         // Do Huu Thuan
         public static class Contract
@@ -72,7 +75,7 @@ namespace BackendEPPO.Extenstion
             public const string GetContractByID = GetListContract_Endpoint + "/Id";
             public const string CreateContract = GetListContract_Endpoint + "/Create/Contract";
             public const string UpdateContractID = GetListContract_Endpoint + "/Update/Contract/Id";
-
+            public const string GetContractOfUser_Endpoint = ApiEndpoint + "/GetList/Contracts/UserId";
             public const string DownLoadContract = ApiEndpoint + "/Download/Contract/{FileName}";
         }
         // Do Huu Thuan
@@ -97,6 +100,8 @@ namespace BackendEPPO.Extenstion
 
             public const string CreateAddress = GetListAddress_Endpoint + "/CreateAddress";
             public const string UpdateAddress = GetListAddress_Endpoint + "/UpdateAddress/Address/Id";
+
+            public const string DeleteAddress = GetListAddress_Endpoint + "/Delete/Address/Id";
 
             public const string GetListAddressByUserID_Endpoint = ApiEndpoint + "/GetList/Address/OfByUserID";
 
@@ -138,6 +143,7 @@ namespace BackendEPPO.Extenstion
             public const string GetFeedbackByID = GetListFeedback_Endpoint + "/Id";
             public const string CreateFeedback = GetListFeedback_Endpoint + "/Create/Feedback";
             public const string UpdateFeedbackID = GetListFeedback_Endpoint + "/Update/Feedback/Id";
+            public const string DeleteFeedbackID = GetListFeedback_Endpoint + "/Delete/Feedback/Id";
         }
         // Do Huu Thuan
         public static class Accessory
@@ -171,6 +177,7 @@ namespace BackendEPPO.Extenstion
             public const string GetCategoriesByID = GetListCategory_Endpoint + "/Id";
             public const string CreateCategories = GetListCategory_Endpoint + "/Create/Categories";
             public const string UpdateCategoriesID = GetListCategory_Endpoint + "/Update/Categories/Id";
+            public const string DeleteCategoriesID = GetListCategory_Endpoint + "/Delete/Categories/Id";
         }
         // Do Huu Thuan
         public static class Rank

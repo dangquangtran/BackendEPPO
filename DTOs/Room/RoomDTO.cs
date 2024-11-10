@@ -25,7 +25,6 @@ namespace DTOs.Room
         public DateTime? EndDate { get; set; }
         public DateTime? ModificationDate { get; set; }
         public int? ModificationBy { get; set; }
-        public int? Status { get; set; }
     }
     public class UpdateRoomDTO
     {
@@ -37,5 +36,10 @@ namespace DTOs.Room
         public DateTime? ModificationDate { get; set; }
         public int? ModificationBy { get; set; }
         public int? Status { get; set; }
+    }
+
+    public class DeleteRoomDTO
+    {
+        public int RoomId { get; set; }
     }
 }

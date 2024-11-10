@@ -18,5 +18,6 @@ namespace Service.Interfaces
 
         Task CreateFeedback(CreateFeedbackDTO feedback, List<IFormFile> imageFiles);
         Task UpdateFeedback(UpdateFeedbackDTO feedback);
+        Task DeleteFeedback(DeleteFeedbackDTO feedback);
     }
 }
