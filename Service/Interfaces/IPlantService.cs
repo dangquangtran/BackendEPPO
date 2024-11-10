@@ -21,5 +21,6 @@ namespace Service.Interfaces
         IEnumerable<PlantVM> GetPlantsByCategoryId(int pageIndex, int pageSize, int categoryId);
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId);
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId);
+        IEnumerable<PlantVM> SearchPlants(string keyword, int pageIndex, int pageSize);
     }
 }

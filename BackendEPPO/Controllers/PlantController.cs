@@ -132,5 +132,13 @@ namespace BackendEPPO.Controllers
         {
             return Ok(_plantService.GetListPlantsByTypeEcommerceAndCategory(pageIndex, pageSize, typeEcommerceId, categoryId));
         }
+
+        [HttpGet("search")]
+        public IActionResult SearchPlants(string keyword, int pageIndex, int pageSize)
+        {
+            var plants = _plantService.SearchPlants(keyword, pageIndex, pageSize);
+            
+            return Ok(plants);
+        }
     }
 }
