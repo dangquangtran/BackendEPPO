@@ -46,6 +46,12 @@ namespace DTOs.Contracts
         public double? TotalPrice { get; set; }
        
     }
+
+    public class ContractDetailDTOOwner
+    {
+   
+
+    }
     public class UpdateContractDTO
         {
             public int ContractId { get; set; }
@@ -64,4 +70,18 @@ namespace DTOs.Contracts
 
         }
 
+
+
+    public class CreateContractPartnershipDTO
+    {
+        public int? ContractNumber
+        {
+            get; set;
+        } 
+        public string? ContractUrl { get; set; }
+        public List<ContractDetailDTOOwner>? ContractDetails { get; set; }
+
+
     }
+
+}

@@ -120,8 +120,6 @@ namespace Service
 
 
 
-
-
             string pdfUrl = await GenerateContractPdfAsync(contract);
             entity.ContractUrl = pdfUrl;
             entity.ContractFileName = fileName;
@@ -129,6 +127,63 @@ namespace Service
             _unitOfWork.ContractRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
+
+
+        public async Task CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID)
+        {
+            
+
+
+            var entity = new Contract
+            {
+                UserId = userID,
+                ContractNumber = contract.ContractNumber,
+                Description = "Hợp Tác Kinh Doanh",
+                CreationContractDate = DateTime.UtcNow,
+                EndContractDate = DateTime.UtcNow.AddYears(2),
+                TotalAmount = 1,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.UtcNow,
+                TypeContract = "Hợp Tác Kinh Doanh",
+                ContractUrl = contract.ContractUrl,
+                IsActive = 1,
+                Status = 1,
+            };
+
+            _unitOfWork.ContractRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
+
+            if (contract.ContractDetails != null && contract.ContractDetails.Any())
+            {
+                foreach (var contractDetail in contract.ContractDetails)
+                {
+                    var contractDetailEntity = new ContractDetail
+                    {
+                        ContractId = entity.ContractId,  
+                        PlantId = 1,
+                        Quantity = 1,
+                        TotalPrice = 1,
+                        IsActive = true,  // Gán giá trị mặc định IsActive nếu null
+                        Status = 1,  // Gán mặc định Status nếu null
+                    };
+
+                    // Lưu mỗi ContractDetail vào cơ sở dữ liệu
+                    _unitOfWork.ContractDetailRepository.Insert(contractDetailEntity);
+                }
+                await _unitOfWork.SaveAsync();
+            }
+
+
+
+            string pdfUrl = await GenerateBusinessPartnershipContractPdfAsync(contract , userID);
+            entity.ContractUrl = pdfUrl;
+            entity.ContractFileName = fileName;
+
+            _unitOfWork.ContractRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+
 
 
         public async Task<string> GenerateContractPdfAsync(CreateContractDTO contract)
@@ -331,6 +386,139 @@ namespace Service
             }
 
             //return $"/contracts/{fileName}";
+        }
+
+
+        public async Task<string> GenerateBusinessPartnershipContractPdfAsync(CreateContractPartnershipDTO contract , int userID)
+        {
+
+            // Define file path and name
+            string fileName = $"BusinessPartnershipContract_{DateTime.Now.Ticks}.pdf";
+            string pdfPath = Path.Combine("wwwroot", "contracts", fileName);
+
+            // Create the directory if it doesn't exist
+            Directory.CreateDirectory(Path.GetDirectoryName(pdfPath));
+
+            // Initialize PDF document and page
+            using (PdfDocument pdfDoc = new PdfDocument())
+            {
+                pdfDoc.Info.Title = $"Business Partnership Contract";
+                PdfPage page = pdfDoc.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XFont font = new XFont("Arial", 10);
+                XFont titleFont = new XFont("Arial", 14);
+
+                double margin = 50;
+                int lineHeight = 20;
+                double yPoint = margin;
+                double pageHeightLimit = page.Height - margin;
+                double pageWidth = page.Width;
+
+                // Function to create a new page if content overflows
+                void CreateNewPage()
+                {
+                    page = pdfDoc.AddPage();
+                    gfx = XGraphics.FromPdfPage(page);
+                    yPoint = margin;
+                }
+
+                // Title of the contract
+                double textWidth = gfx.MeasureString("HỢP ĐỒNG HỢP TÁC KINH DOANH VỀ CHO THUÊ CÂY", titleFont).Width;
+                double centerX = (pageWidth - textWidth) / 2;
+                gfx.DrawString("HỢP ĐỒNG HỢP TÁC KINH DOANH VỀ CHO THUÊ CÂY", titleFont, XBrushes.Black, new XPoint(centerX, yPoint));
+                yPoint += lineHeight;
+
+                // Legal basis
+                gfx.DrawString("Căn cứ vào:", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Luật Dân sự Việt Nam năm 2015", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Các quy định pháp lý khác có liên quan", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Mong muốn hợp tác kinh doanh giữa " + userID + " và Hệ Thống EPPO" , font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Date and location
+                gfx.DrawString($"Hôm nay, ngày {DateTime.Now.ToString("dd")} tháng {DateTime.Now.ToString("MM")} năm {DateTime.Now.ToString("yyyy")}, tại {userID}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+
+                // Party B (Bên Thuê)
+                gfx.DrawString("BÊN THUÊ A (CÔNG TY HOẶC CÁ NHÂN THUÊ CÂY):", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Tên: EPPO", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Địa chỉ: 299 Đ. Liên Phường, Phường Phú Hữu, Thủ Đức, Hồ Chí Minh ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Mã số thuế: 483874098128723", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Điện thoại: 0333888257", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Đại diện: Ông Đỗ Hữu Thuận (CEO)", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+
+                // Party A (Bên Cho Thuê)
+                gfx.DrawString("BÊN CHO THUÊ B (CHỦ SỞ HỮU):", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Tên: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with userID
+                yPoint += lineHeight;
+                gfx.DrawString($"• Địa chỉ: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                yPoint += lineHeight;
+                gfx.DrawString($"• Mã số thuế: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                yPoint += lineHeight;
+                gfx.DrawString($"• Điện thoại: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                yPoint += lineHeight;
+                gfx.DrawString($"• Đại diện: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                yPoint += lineHeight;
+        
+
+              
+
+                // Article 1: Purpose of the contract
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                gfx.DrawString("Điều 1: Mục đích hợp tác", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"Bên cho thuê cam kết cho bên thuê mượn cây cối, hoa, cảnh (các loại cây) để phục vụ cho nhu cầu kinh doanh, trang trí, sự kiện, hoặc các mục đích hợp pháp khác của bên thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"Bên thuê cam kết sử dụng cây cối đúng mục đích và chịu trách nhiệm bảo vệ cây trong suốt thời gian thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Article 2: Rental time and location
+                gfx.DrawString("Điều 2: Thời gian và địa điểm cho thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"Địa điểm giao nhận cây: 299 Đ. Liên Phường, Phường Phú Hữu, Thủ Đức, Hồ Chí Minh.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Article 3: Rights and obligations of Party A (Bên Cho Thuê)
+                gfx.DrawString("Điều 3: Quyền và nghĩa vụ của bên cho thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Cung cấp cây cối đúng chất lượng, số lượng như đã thỏa thuận.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Đảm bảo cây cối được chăm sóc, bảo dưỡng tốt trước khi giao cho bên thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Cung cấp dịch vụ bảo trì, sửa chữa cây cối khi có sự cố xảy ra (nếu có thỏa thuận).", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+
+
+                // Phần ký tên
+                gfx.DrawString("ĐẠI DIỆN BÊN A                                          ĐẠI DIỆN BÊN B", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("(Ký tên)                                                                               (Ký tên)", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"Đỗ Hữu Thuận                                                                               {userID}", font, XBrushes.Red, new XPoint(margin, yPoint));
+
+                // Lưu tài liệu PDF
+                // Saving the PDF document
+                pdfDoc.Save(pdfPath);
+            }
+
+             using (var pdfStream = new FileStream(pdfPath, FileMode.Open))
+            {
+                string fileUrl = await _firebaseStorageService.UploadContractPdfAsync(pdfStream, fileName);
+                return fileUrl;
+            }
         }
 
     }

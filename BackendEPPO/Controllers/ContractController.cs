@@ -92,9 +92,9 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Create Contracts with all role.
+        /// Create Contracts with all role for Renting.
         /// </summary>
-        /// <returns>Create Contracts with all role.</returns>
+        /// <returns>Create Contracts with all role for Renting.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Contract.CreateContract)]
         public async Task<IActionResult> CreateContract([FromBody] CreateContractDTO contract)
@@ -118,6 +118,37 @@ namespace BackendEPPO.Controllers
 
             });
         }
+
+        /// <summary>
+        /// Create Contracts with role register owner.
+        /// </summary>
+        /// <returns>Create Contracts with role register owner.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner")]
+        [HttpPost(ApiEndPointConstant.Contract.CreatePartnershipContract)]
+        public async Task<IActionResult> CreatePartnershipContract([FromBody] CreateContractPartnershipDTO contracts)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _contractService.CreatePartnershipContract(contracts, userId);
+
+            string contractPdfUrl = await _contractService.GenerateBusinessPartnershipContractPdfAsync(contracts, userId);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "Contract created successfully",
+                PdfUrl = contractPdfUrl,
+                Data = contracts,
+
+            });
+        }
+
 
         /// <summary>
         /// Download contract details with all role.
