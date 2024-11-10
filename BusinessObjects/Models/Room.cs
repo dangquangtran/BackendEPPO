@@ -13,6 +13,10 @@ namespace BusinessObjects.Models
 
         public int RoomId { get; set; }
         public int? PlantId { get; set; }
+        public DateTime? RegistrationOpenDate { get; set; }
+        public DateTime? RegistrationEndDate { get; set; }
+        public double? RegistrationFee { get; set; }
+        public double? PriceStep { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ActiveDate { get; set; }
         public DateTime? EndDate { get; set; }

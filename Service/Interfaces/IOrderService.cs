@@ -14,7 +14,7 @@ namespace Service.Interfaces
         OrderVM GetOrderById(int id);
         void CreateOrder(CreateOrderDTO createOrder, int userId);
         void UpdateOrder(UpdateOrderDTO updateOrder);
-        IEnumerable<OrderVM> GetOrdersByUserId(int userId, int pageIndex, int pageSize);
+        IEnumerable<OrderVM> GetOrdersByUserId(int userId, int pageIndex, int pageSize, int status);
         void UpdatePaymentStatus(int orderId, string paymentStatus);
     }
 }

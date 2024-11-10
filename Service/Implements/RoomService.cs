@@ -78,6 +78,10 @@ namespace Service.Implements
             var entity = new Room
             {
                 PlantId = room.PlantId,
+                RegistrationOpenDate = room.RegistrationOpenDate,
+                RegistrationEndDate = room.RegistrationEndDate,
+                RegistrationFee = room.RegistrationFee,
+                PriceStep = room.PriceStep,
                 CreationDate = DateTime.Now,
                 ActiveDate = room.ActiveDate,
                 EndDate = room.EndDate,
