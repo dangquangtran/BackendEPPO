@@ -39,14 +39,14 @@ namespace BusinessObjects.Models
         public virtual DbSet<UserRoom> UserRooms { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySQL("Server=bef4qvhxkgrn0oa7ipg0-mysql.services.clever-cloud.com;Uid=us2diblhg4zawg4d\n;Pwd=babZ7q3tl6uyTqzKCRF6;Database=bef4qvhxkgrn0oa7ipg0");
-            }
-        }
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseMySQL("Server=bef4qvhxkgrn0oa7ipg0-mysql.services.clever-cloud.com;Uid=us2diblhg4zawg4d\n;Pwd=babZ7q3tl6uyTqzKCRF6;Database=bef4qvhxkgrn0oa7ipg0");
+//            }
+//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -512,6 +512,10 @@ namespace BusinessObjects.Models
                 entity.Property(e => e.ModificationDate).HasColumnType("datetime");
 
                 entity.Property(e => e.PlantId).HasColumnName("PlantID");
+
+                entity.Property(e => e.RegistrationEndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.RegistrationOpenDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.ModificationByNavigation)
                     .WithMany(p => p.Rooms)

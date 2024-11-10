@@ -152,7 +152,7 @@ builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>
 // WebSocket (chat service)
 builder.Services.AddSingleton<ChatHandler>();
 
-builder.Services.AddSingleton<AuctionHandler>();
+//builder.Services.AddSingleton<AuctionHandler>();
 
 //Add cors for website
 builder.Services.AddCors(options =>

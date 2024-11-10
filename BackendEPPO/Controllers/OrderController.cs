@@ -49,11 +49,11 @@ namespace BackendEPPO.Controllers
         }
         [Authorize]
         [HttpGet("GetOrdersByUser")]
-        public IActionResult GetOrdersByUserId(int pageIndex, int pageSize)
+        public IActionResult GetOrdersByUserId(int pageIndex, int pageSize, int status)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
-            return Ok(_orderService.GetOrdersByUserId(userId,pageIndex, pageSize));
+            return Ok(_orderService.GetOrdersByUserId(userId,pageIndex, pageSize, status));
         }
 
     }
