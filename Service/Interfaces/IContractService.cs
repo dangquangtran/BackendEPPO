@@ -15,5 +15,7 @@ namespace Service.Interfaces
         Task CreateContract(CreateContractDTO contract);
         Task<string> GenerateContractPdfAsync(CreateContractDTO contract);
 
+        Task CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID);
+        Task<string> GenerateBusinessPartnershipContractPdfAsync(CreateContractPartnershipDTO contract , int userID);
     }
 }

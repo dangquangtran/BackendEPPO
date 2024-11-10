@@ -116,12 +116,17 @@ namespace Service.Implements
                 throw new Exception($"Room with ID {room.RoomId} not found.");
             }
             room.PlantId = room.PlantId;
+            room.RegistrationOpenDate = room.RegistrationOpenDate;
+            room.RegistrationEndDate = room.RegistrationEndDate;
+            room.RegistrationFee = room.RegistrationFee;
+            room.PriceStep = room.PriceStep;
             room.CreationDate = room.CreationDate;
             room.ActiveDate = room.ActiveDate;
             room.EndDate = room.EndDate;
-            room.ModificationDate = room.ModificationDate;
+            room.ModificationDate = DateTime.Now;
             room.ModificationBy = room.ModificationBy;
             room.Status = room.Status;
+
             _unitOfWork.RoomRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
