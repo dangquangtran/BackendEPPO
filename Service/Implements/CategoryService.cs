@@ -51,9 +51,9 @@ namespace Service.Implements
             {
                 throw new Exception($"Category with ID {category.CategoryId} not found.");
             }
-            category.Title = category.Title;
-            category.ModificationDate = DateTime.Now;
-            category.Status = category.Status;
+            entity.Title = category.Title;
+            entity.ModificationDate = DateTime.Now;
+            entity.Status = category.Status;
             _unitOfWork.CategoriesRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }

@@ -54,13 +54,13 @@ namespace Service.Implements
             {
                 throw new Exception($"Notification with ID {NotificationDTO.NotificationId} not found.");
             }
-            NotificationDTO.UserId = NotificationDTO.UserId;
-            NotificationDTO.Title = NotificationDTO.Title;
-            NotificationDTO.Description = NotificationDTO.Description;
-            NotificationDTO.IsRead = NotificationDTO.IsRead;
-            NotificationDTO.IsNotifications = NotificationDTO.IsNotifications;
-            NotificationDTO.UpdatedDate = DateTime.Now;
-            NotificationDTO.Status = NotificationDTO.Status;
+            entity.UserId = NotificationDTO.UserId;
+            entity.Title = NotificationDTO.Title;
+            entity.Description = NotificationDTO.Description;
+            entity.IsRead = NotificationDTO.IsRead;
+            entity.IsNotifications = NotificationDTO.IsNotifications;
+            entity.UpdatedDate = DateTime.Now;
+            entity.Status = NotificationDTO.Status;
 
             _unitOfWork.NotificationRepository.Update(entity);
             await _unitOfWork.SaveAsync();

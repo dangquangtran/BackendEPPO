@@ -37,12 +37,12 @@ namespace Service.Implements
             {
                 throw new Exception($"Contract Detail Detail with ID {contractDetail.ContractDetailId} not found.");
             }
-            contractDetail.ContractId = contractDetail.ContractId;
-            contractDetail.PlantId = contractDetail.PlantId;
-            contractDetail.Quantity = contractDetail.Quantity;
-            contractDetail.TotalPrice = contractDetail.TotalPrice;
-            contractDetail.IsActive = contractDetail.IsActive;
-            contractDetail.Status = contractDetail.Status;
+            entity.ContractId = contractDetail.ContractId;
+            entity.PlantId = contractDetail.PlantId;
+            entity.Quantity = contractDetail.Quantity;
+            entity.TotalPrice = contractDetail.TotalPrice;
+            entity.IsActive = contractDetail.IsActive;
+            entity.Status = contractDetail.Status;
 
             _unitOfWork.ContractDetailRepository.Update(entity);
             await _unitOfWork.SaveAsync();
