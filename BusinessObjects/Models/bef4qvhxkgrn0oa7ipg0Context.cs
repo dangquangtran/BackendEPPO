@@ -377,8 +377,6 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.DeliveryAddress).HasMaxLength(255);
 
-                entity.Property(e => e.Description).HasMaxLength(255);
-
                 entity.Property(e => e.ModificationDate).HasColumnType("datetime");
 
                 entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
