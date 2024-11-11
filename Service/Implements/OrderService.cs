@@ -43,11 +43,26 @@ namespace Service.Implements
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
             order.PaymentStatus = "Chưa thanh toán";
+            // 2. Tính tổng tiền và giá cuối cùng nếu có voucher
+            //order.TotalPrice = CalculateTotalPrice(createOrderDTO);
+            //order.FinalPrice = ApplyVoucher(order.TotalPrice, order.UserVoucherId, order.PlantVoucherId);
 
+            //// 3. Thêm các chi tiết đơn hàng (OrderDetails) và sub chi tiết (SubOrderDetails)
             //foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
             //{
-            //    orderDetailDTO.PlantId
-                
+            //    OrderDetail orderDetail = _mapper.Map<OrderDetail>(orderDetailDTO);
+            //    orderDetail.CreationDate = DateTime.Now;
+            //    orderDetail.Status = 1; // Giả sử trạng thái "1" là chi tiết đơn hàng mới
+            //    orderDetail.OrderId = order.OrderId; // Gắn OrderId vào OrderDetail
+            //    order.OrderDetails.Add(orderDetail);
+
+            //    // 4. Thêm các SubOrderDetails
+            //    foreach (var subOrderDetailDTO in orderDetailDTO.SubOrderDetails)
+            //    {
+            //        SubOrderDetail subOrderDetail = _mapper.Map<SubOrderDetail>(subOrderDetailDTO);
+            //        subOrderDetail.OrderDetailId = orderDetail.OrderDetailId; // Gắn OrderDetailId vào SubOrderDetail
+            //        orderDetail.SubOrderDetails.Add(subOrderDetail);
+            //    }
             //}
 
             _unitOfWork.OrderRepository.Insert(order);
