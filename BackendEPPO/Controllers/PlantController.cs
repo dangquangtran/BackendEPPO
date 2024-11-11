@@ -147,9 +147,9 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult SearchPlants(string keyword, int pageIndex, int pageSize)
+        public IActionResult SearchPlants(string keyword,int typeEcommerceId, int pageIndex, int pageSize)
         {
-            var plants = _plantService.SearchPlants(keyword, pageIndex, pageSize);
+            var plants = _plantService.SearchPlants(keyword, typeEcommerceId,pageIndex, pageSize);
             
             return Ok(plants);
         }

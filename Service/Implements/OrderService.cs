@@ -37,12 +37,43 @@ namespace Service.Implements
 
         public void CreateOrder(CreateOrderDTO createOrderDTO, int userId)
         {
+            var user = _unitOfWork.UserRepository.GetByID(userId);
+            var walletId = user.WalletId;
+            var wallet = _unitOfWork.WalletRepository.GetByID(walletId);
+            if (wallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng.");
+            }
+
+            // Tính tổng số tiền cần thanh toán cho order
+            double finalPrice = createOrderDTO.TotalPrice + createOrderDTO.DeliveryFee;
+            if (wallet.NumberBalance < finalPrice)
+            {
+                throw new Exception("Số dư trong ví không đủ để thanh toán.");
+            }
+            wallet.NumberBalance -= finalPrice;
+            _unitOfWork.WalletRepository.Update(wallet);
+
+            Transaction transaction = new Transaction
+            {
+                WalletId = walletId,
+                Description = "Thanh toán đơn hàng",
+                WithdrawNumber = finalPrice,
+                RechargeNumber = null,
+                WithdrawDate = DateTime.Now,
+                CreationDate = DateTime.Now,
+                PaymentId = 2,
+                Status = 1,
+                IsActive = true
+            };
+            _unitOfWork.TransactionRepository.Insert(transaction);
+
             Order order = _mapper.Map<Order>(createOrderDTO);
             order.CreationDate = DateTime.Now;
             order.Status = 1;
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
-            order.PaymentStatus = "Chưa thanh toán";
+            order.PaymentStatus = "Đã thanh toán";
             // 2. Tính tổng tiền và giá cuối cùng nếu có voucher
             //order.TotalPrice = CalculateTotalPrice(createOrderDTO);
             //order.FinalPrice = ApplyVoucher(order.TotalPrice, order.UserVoucherId, order.PlantVoucherId);
