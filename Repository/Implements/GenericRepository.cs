@@ -127,6 +127,22 @@ namespace Repository.Implements
 
             return query.FirstOrDefault(e => EF.Property<object>(e, keyPropertyName).Equals(id));
         }
+        public virtual async Task<TEntity> GetByIDAsync(object id, string includeProperties = "")
+        {
+            IQueryable<TEntity> query = dbSet;
+
+            // Include related properties if any
+            foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            // Retrieve the key name from the model
+            var keyPropertyName = context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties[0].Name;
+
+            // Perform the query asynchronously and return the result
+            return await query.FirstOrDefaultAsync(e => EF.Property<object>(e, keyPropertyName).Equals(id));
+        }
 
         public virtual void Insert(TEntity entity)
         {
@@ -153,5 +169,8 @@ namespace Repository.Implements
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;
         }
+
+      
+
     }
 }

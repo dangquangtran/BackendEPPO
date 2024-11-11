@@ -12,7 +12,7 @@ namespace Service.Interfaces
         Task<IEnumerable<Contract>> GetContractOfUser(int userID);
         Task<Contract> GetContractByID(int Id);
         Task UpdateContract(UpdateContractDTO contract);
-        Task CreateContract(CreateContractDTO contract);
+        Task CreateContract(CreateContractDTO contract, int userID);
         Task<string> GenerateContractPdfAsync(CreateContractDTO contract);
 
         Task CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID);

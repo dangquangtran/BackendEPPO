@@ -38,5 +38,6 @@ namespace Repository.Interfaces
 
         Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> filter);
         Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter);
+
     }
 }
