@@ -53,12 +53,21 @@ namespace Service
             return _mapper.Map<PlantVM>(plant);
         }
 
-        public async Task CreatePlant(CreatePlantDTO createPlant, List<IFormFile> imageFiles)
+        public async Task CreatePlant(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles)
         {
             Plant plant = _mapper.Map<Plant>(createPlant);
             plant.CreationDate = DateTime.Now;
             plant.Status = 1;
             plant.IsActive = true;
+            if (mainImageFile != null)
+            {
+                using var mainImageStream = mainImageFile.OpenReadStream();
+                string mainImageFileName = mainImageFile.FileName;
+
+                string mainImageUrl = await _firebaseStorageService.UploadPlantImageAsync(mainImageStream, mainImageFileName);
+
+                plant.MainImage = mainImageUrl;
+            }
             if (imageFiles != null && imageFiles.Count > 0)
             {
                 foreach (var imageFile in imageFiles)
@@ -83,7 +92,7 @@ namespace Service
             _unitOfWork.PlantRepository.Insert(plant);
             _unitOfWork.Save();
         }
-        public async Task UpdatePlant(UpdatePlantDTO updatePlant, List<IFormFile> newImageFiles)
+        public async Task UpdatePlant(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles)
         {
             // Lấy thông tin plant từ DB
             var plant = _unitOfWork.PlantRepository.GetByID(updatePlant.PlantId, includeProperties: "ImagePlants");
@@ -92,6 +101,23 @@ namespace Service
             // Cập nhật các thuộc tính của plant
             _mapper.Map(updatePlant, plant);
             plant.ModificationDate = DateTime.Now;
+
+            // Cập nhật ảnh chính nếu có
+            if (mainImageFile != null)
+            {
+                using var mainImageStream = mainImageFile.OpenReadStream();
+                string mainImageFileName = mainImageFile.FileName;
+
+                // Upload ảnh chính mới lên Firebase và lấy URL
+                string mainImageUrl = await _firebaseStorageService.UploadPlantImageAsync(mainImageStream, mainImageFileName);
+
+                // Gán URL mới vào MainImage và xử lý việc xóa ảnh chính cũ nếu cần
+                if (!string.IsNullOrEmpty(plant.MainImage))
+                {
+                    //await _firebaseStorageService.DeletePlantImageAsync(plant.MainImage); // Xóa ảnh chính cũ khỏi Firebase nếu cần
+                }
+                plant.MainImage = mainImageUrl;
+            }
 
             // Tạo một danh sách để lưu các URL ảnh cần xóa
             var existingImageUrls = plant.ImagePlants.Select(ip => ip.ImageUrl).ToList();
