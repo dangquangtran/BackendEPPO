@@ -89,7 +89,7 @@ namespace Service
                 TotalAmount = contract.TotalAmount,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                TypeContract = contract.TypeContract,
+                TypeContract = "Thuê Cây",
                 ContractUrl = contract.ContractUrl,
                 IsActive = 1,
                 Status = 1,
@@ -120,7 +120,7 @@ namespace Service
 
 
 
-            string pdfUrl = await GenerateContractPdfAsync(contract);
+            string pdfUrl = await GenerateContractPdfAsync(contract, userId);
             entity.ContractUrl = pdfUrl;
             entity.ContractFileName = fileName;
 
@@ -186,28 +186,12 @@ namespace Service
 
 
 
-        public async Task<string> GenerateContractPdfAsync(CreateContractDTO contract)
+        public async Task<string> GenerateContractPdfAsync(CreateContractDTO contract , int userId)
         {
-            var user = await Task.FromResult(_unitOfWork.UserRepository.GetByID(contract.UserId));
+            var user = await Task.FromResult(_unitOfWork.UserRepository.GetByID(userId));
             if (user == null)
             {
                 throw new Exception("No data user.");
-            }
-
-            var plant = user.Plants.FirstOrDefault();
-            if (plant == null)
-            {
-                throw new Exception("No plant data found for this user.");
-            }
-            int plantId = plant.PlantId;
-
-
-
-
-            var address = await Task.FromResult(_unitOfWork.AddressRepository.GetAsync(a => a.UserId == contract.UserId && a.Status == 1));
-            if (address == null)
-            {
-                throw new Exception("No data address.");
             }
 
 
@@ -255,7 +239,7 @@ namespace Service
                 yPoint += lineHeight;
 
                 // Căn cứ vào các quy định pháp luật
-                gfx.DrawString($"Căn cứ vào:", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"Căn cứ vào:", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 gfx.DrawString("• Bộ luật Dân sự nước Cộng hòa Xã hội Chủ nghĩa Việt Nam năm 2015.", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
@@ -263,11 +247,11 @@ namespace Service
                 yPoint += lineHeight;
 
                 // Thông tin bên A và bên B
-                gfx.DrawString($"Hôm nay, ngày {contract.CreationContractDate?.ToString("dd")} tháng {contract.CreationContractDate?.ToString("MM")} năm {contract.CreationContractDate?.ToString("yyyy")}, tại {contract.UserId}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"Hôm nay, ngày {contract.CreationContractDate?.ToString("dd")} tháng {contract.CreationContractDate?.ToString("MM")} năm {contract.CreationContractDate?.ToString("yyyy")}", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
 
                 // Viết nội dung vào PDF
-                gfx.DrawString("BÊN CHO THUÊ (Bên A):", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString("BÊN CHO THUÊ (Bên A):", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 gfx.DrawString($"• Họ và tên: Ông Đỗ Hữu Thuận", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
@@ -275,13 +259,13 @@ namespace Service
                 yPoint += lineHeight;
                 gfx.DrawString($"• Số điện thoại: 0333888257", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"• Chứng minh nhân dân/Căn cước công dân: 01213123132", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"• Chứng minh nhân dân/Căn cước công dân: 074202112390", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 gfx.DrawString($"• Email: EPPO.HCM@gmail.com", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
 
                 // Thông tin Bên B
-                gfx.DrawString("BÊN THUÊ (Bên B):", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString("BÊN THUÊ (Bên B):", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 gfx.DrawString($"• Họ và tên: {user.FullName}", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
@@ -305,43 +289,49 @@ namespace Service
                 // Điều 1: Đối tượng hợp đồng
                 gfx.DrawString("Điều 1: Đối Tượng Hợp Đồng", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"1. Mô tả cây {contract.UserId} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"1. Mô tả cây {user.Gender} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"   • Số lượng: {contract.UserId}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"   • Số lượng: {user.Gender}", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"   • Mô tả chi tiết: {contract.UserId}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"   • Mô tả chi tiết: {user.Gender}", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"   • Giá trị của cây (ước tính): {contract.UserId} VNĐ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"   • Giá trị của cây (ước tính): {user.Gender} VNĐ", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
+                if (contract.ContractDetails != null && contract.ContractDetails.Any())
+                {
+                    foreach (var contractDetail in contract.ContractDetails)
+                    {
 
+                        // Điều 2: Thời gian thuê
+                        gfx.DrawString("Điều 2: Thời gian thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"• Thời gian thuê cây mai bắt đầu từ ngày {contract.CreationContractDate:yyyy-MM-dd} đến ngày {contract.EndContractDate:yyyy-MM-dd}.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"• Bên B có quyền gia hạn hợp đồng thuê nếu có thỏa thuận và sự đồng ý của Bên A.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
 
-                // Điều 2: Thời gian thuê
-                gfx.DrawString("Điều 2: Thời gian thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"• Thời gian thuê cây mai bắt đầu từ ngày {contract.UserId:yyyy-MM-dd} đến ngày {contract.UserId:yyyy-MM-dd}.", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"• Bên B có quyền gia hạn hợp đồng thuê nếu có thỏa thuận và sự đồng ý của Bên A.", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
+                        // Điều 3: Giá thuê và phương thức thanh toán
+                        gfx.DrawString("Điều 3: Giá thuê và phương thức thanh toán", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"1. Giá thuê: {contract.TotalAmount} VND/tháng", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"• Tổng giá trị hợp đồng thuê trong {contract.TotalAmount} tháng là  {contract.CreationContractDate:MM-dd}.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"2. Phương thức thanh toán:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"• Bên B thanh toán qua chuyển khoản vào tài khoản của Bên A:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"  - Số tài khoản: 040704070013100", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"  - Ngân hàng: HDBank", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"  - Chủ tài khoản: ĐỖ HỮU THUẬN", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"• Thanh toán sẽ được thực hiện vào ngày  {contract.CreationContractDate:dd} hàng tháng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
 
-                // Điều 3: Giá thuê và phương thức thanh toán
-                gfx.DrawString("Điều 3: Giá thuê và phương thức thanh toán", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"1. Giá thuê: {contract.UserId:C}/tháng", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"• Tổng giá trị hợp đồng thuê trong {contract.UserId} tháng là {contract.UserId:C}.", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"2. Phương thức thanh toán:", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"• Bên B thanh toán qua chuyển khoản vào tài khoản của Bên A:", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"  - Số tài khoản: {contract.UserId}", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"  - Ngân hàng: {contract.UserId}", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"  - Chủ tài khoản: {contract.UserId}", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"• Thanh toán sẽ được thực hiện vào ngày {contract.UserId} hàng tháng.", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
+                    }
+                }
                 if (yPoint >= pageHeightLimit) CreateNewPage();
 
                 // Điều 4: Quyền và nghĩa vụ của Bên A
@@ -394,9 +384,7 @@ namespace Service
                 // Phần ký tên
                 gfx.DrawString("ĐẠI DIỆN BÊN A                                          ĐẠI DIỆN BÊN B", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString("(Ký tên)                                                                               (Ký tên)", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"Đỗ Hữu Thuận                                                                               {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"Đỗ Hữu Thuận                                                                               {user.FullName}", font, XBrushes.Red, new XPoint(margin, yPoint));
 
                 // Lưu tài liệu PDF
                 pdfDoc.Save(pdfPath);
