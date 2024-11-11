@@ -146,6 +146,28 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Search list Plant by key word and Type Ecommerce with the page and the size.
+        /// </summary>
+        /// <returns>Search list Plant by key word and Type Ecommerce with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.SearchPlantByKeyWord)]
+        public async Task<IActionResult> SearchPlantKeyType(int pageIndex, int pageSize, int typeEcommerceId, string keyword)
+        {
+            var plants = await _plantService.SearchPlantKeyType(pageIndex, pageSize, typeEcommerceId, keyword);
+
+            if (plants == null || !plants.Any())
+            {
+                return NotFound("No plant found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = plants
+            });
+        
+        }
+
         [HttpGet("search")]
         public IActionResult SearchPlants(string keyword, int pageIndex, int pageSize)
         {

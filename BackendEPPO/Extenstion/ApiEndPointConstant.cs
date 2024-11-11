@@ -172,6 +172,7 @@ namespace BackendEPPO.Extenstion
 
             public const string GetListPlantsByTypeEcommerceAndCategory = GetListPlants_Endpoint + "/Filter/TypeEcommerceIdAndCategoryId";
 
+            public const string SearchPlantByKeyWord = GetListPlants_Endpoint + "/Search/Keyword";
         }
         // Do Huu Thuan
         public static class Categories
