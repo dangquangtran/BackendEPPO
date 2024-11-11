@@ -28,6 +28,7 @@ namespace Repository.Implements
         private IGenericRepository<Message> messageRepository;
         private IGenericRepository<Order> orderRepository;
         private IGenericRepository<OrderDetail> orderDetailRepository;
+        private IGenericRepository<HistoryBid>historyBidRepository;
 
         public UnitOfWork(bef4qvhxkgrn0oa7ipg0Context context)
         {
@@ -179,7 +180,15 @@ namespace Repository.Implements
             }
         }
 
-       
+        public IGenericRepository<HistoryBid> HistoryBidRepository
+        {
+            get
+            {
+                return historyBidRepository ??= new GenericRepository<HistoryBid>(context);
+            }
+        }
+
+
         public void Save()
         {
             context.SaveChanges();

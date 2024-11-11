@@ -145,5 +145,13 @@ namespace BackendEPPO.Controllers
                 Data = plant
             });
         }
+
+        [HttpGet("search")]
+        public IActionResult SearchPlants(string keyword, int pageIndex, int pageSize)
+        {
+            var plants = _plantService.SearchPlants(keyword, pageIndex, pageSize);
+            
+            return Ok(plants);
+        }
     }
 }

@@ -163,5 +163,19 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
+
+        public IEnumerable<PlantVM> SearchPlants(string keyword, int pageIndex, int pageSize)
+        {
+            // Tìm kiếm cây theo từ khóa (có thể là tên hoặc một thuộc tính khác)
+            var plants = _unitOfWork.PlantRepository.Get(
+                filter: c => (c.PlantName.Contains(keyword) || c.Description.Contains(keyword)) && c.Status != 0,
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "ImagePlants"
+            );
+
+            // Ánh xạ từ Plant sang PlantVM bằng AutoMapper
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
     }
 }

@@ -31,6 +31,7 @@ namespace Repository.Interfaces
         IGenericRepository<Message> MessageRepository { get; }
         IGenericRepository<Order> OrderRepository { get; }
         IGenericRepository<OrderDetail> OrderDetailRepository { get; }
+        IGenericRepository<HistoryBid> HistoryBidRepository { get; }
         void Save();
     }
 }

@@ -46,6 +46,8 @@ builder.Services.AddScoped<ITypeEcommerceService, TypeEcommerceService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IImageFeedbackService, ImageFeedbackService>();
 builder.Services.AddScoped<IUserRoomService, UserRoomService>();
+builder.Services.AddScoped<IHistoryBidService, HistoryBidService>();
+
 
 // AutoMapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -152,7 +154,7 @@ builder.Services.AddDbContext<bef4qvhxkgrn0oa7ipg0Context>(options =>
 // WebSocket (chat service)
 builder.Services.AddSingleton<ChatHandler>();
 
-//builder.Services.AddSingleton<AuctionHandler>();
+builder.Services.AddSingleton<AuctionHandler>();
 
 //Add cors for website
 builder.Services.AddCors(options =>

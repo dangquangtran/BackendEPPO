@@ -9,6 +9,7 @@ namespace BusinessObjects.Models
         public int? UserId { get; set; }
         public int? RoomId { get; set; }
         public double? BidAmount { get; set; }
+        public double? PriceAuctionNext { get; set; }
         public DateTime? BidTime { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? EndDate { get; set; }
