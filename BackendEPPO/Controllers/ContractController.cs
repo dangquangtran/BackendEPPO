@@ -110,7 +110,7 @@ namespace BackendEPPO.Controllers
             }
 
             await _contractService.CreateContract(contract, userId);
-            string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract);
+            string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract, userId);
   
 
             return Ok(new
