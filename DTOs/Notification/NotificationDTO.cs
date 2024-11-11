@@ -14,6 +14,8 @@ namespace DTOs.Notification
         public string Description { get; set; }
         public bool? IsRead { get; set; }
         public bool? IsNotifications { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
         public int? Status { get; set; }
     }
     public class CreateNotificationDTO
@@ -35,6 +37,7 @@ namespace DTOs.Notification
         public string Description { get; set; }
         public bool? IsRead { get; set; }
         public bool? IsNotifications { get; set; }
+        public DateTime? UpdatedDate { get; set; }
         public int? Status { get; set; }
     }
 }

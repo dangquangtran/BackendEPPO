@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using BusinessObjects.Models;
 using DTOs.Contracts;
 using DTOs.Wallet;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using PdfSharp;
 using Service.Implements;
 using Service.Interfaces;
+using System.Collections.Generic;
 using System.Reflection.Metadata;
 using static BackendEPPO.Extenstion.ApiEndPointConstant;
 
@@ -99,15 +101,17 @@ namespace BackendEPPO.Controllers
         [HttpPost(ApiEndPointConstant.Contract.CreateContract)]
         public async Task<IActionResult> CreateContract([FromBody] CreateContractDTO contract)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _contractService.CreateContract(contract);
-
+            await _contractService.CreateContract(contract, userId);
             string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract);
+  
 
             return Ok(new
             {

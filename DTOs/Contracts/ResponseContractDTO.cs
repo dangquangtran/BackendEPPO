@@ -32,7 +32,7 @@ namespace DTOs.Contracts
         public DateTime? CreationContractDate { get; set; }
         public DateTime? EndContractDate { get; set; }
         public double? TotalAmount { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+
         public string? TypeContract { get; set; }
         public string? ContractUrl { get; set; }
         public List<ContractDetailDTO>? ContractDetails { get; set; }
