@@ -20,40 +20,84 @@ namespace BackendEPPO.Controllers
         [HttpGet]
         public IActionResult GetAllOrders(int pageIndex, int pageSize)
         {
-            return Ok(_orderService.GetAllOrders(pageIndex, pageSize));
+            try
+            {
+                var result = _orderService.GetAllOrders(pageIndex, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetOrderById(int id)
         {
-            return Ok(_orderService.GetOrderById(id));
+            try
+            {
+                var result = _orderService.GetOrderById(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize]
         [HttpPost]
         public IActionResult CreateOrder([FromBody] CreateOrderDTO createOrder)
         {
-            var userIdClaim = User.FindFirst("userId")?.Value;
-            int userId = int.Parse(userIdClaim);
-            _orderService.CreateOrder(createOrder, userId);
-            return Ok("Đã tạo thành công");
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+
+                _orderService.CreateOrder(createOrder, userId);
+
+                return Ok(new { message = "Đã tạo thành công" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize]
         [HttpPut]
+        [Authorize]
+        [HttpPut]
         public IActionResult UpdateOrder([FromBody] UpdateOrderDTO updateOrder)
         {
-            _orderService.UpdateOrder(updateOrder);
-            return Ok("Đã cập nhật thành công");
+            try
+            {
+                _orderService.UpdateOrder(updateOrder);
+                return Ok(new { message = "Đã cập nhật thành công" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
         [Authorize]
         [HttpGet("GetOrdersByUser")]
         public IActionResult GetOrdersByUserId(int pageIndex, int pageSize, int status)
         {
-            var userIdClaim = User.FindFirst("userId")?.Value;
-            int userId = int.Parse(userIdClaim);
-            return Ok(_orderService.GetOrdersByUserId(userId,pageIndex, pageSize, status));
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+
+                var result = _orderService.GetOrdersByUserId(userId, pageIndex, pageSize, status);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
     }

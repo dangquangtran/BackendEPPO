@@ -74,27 +74,26 @@ namespace Service.Implements
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
             order.PaymentStatus = "Đã thanh toán";
-            // 2. Tính tổng tiền và giá cuối cùng nếu có voucher
-            //order.TotalPrice = CalculateTotalPrice(createOrderDTO);
-            //order.FinalPrice = ApplyVoucher(order.TotalPrice, order.UserVoucherId, order.PlantVoucherId);
 
-            //// 3. Thêm các chi tiết đơn hàng (OrderDetails) và sub chi tiết (SubOrderDetails)
-            //foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
-            //{
-            //    OrderDetail orderDetail = _mapper.Map<OrderDetail>(orderDetailDTO);
-            //    orderDetail.CreationDate = DateTime.Now;
-            //    orderDetail.Status = 1; // Giả sử trạng thái "1" là chi tiết đơn hàng mới
-            //    orderDetail.OrderId = order.OrderId; // Gắn OrderId vào OrderDetail
-            //    order.OrderDetails.Add(orderDetail);
+            foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+            {
+                if (orderDetailDTO.PlantId.HasValue)
+                {
+                    var plant = _unitOfWork.PlantRepository.GetByID(orderDetailDTO.PlantId.Value);
+                    if (plant != null)
+                    {
+                        // Kiểm tra trạng thái isActive của cây
+                        if ((bool)!plant.IsActive)
+                        {
+                            throw new Exception($"Cây với ID {plant.PlantId} không thể được đặt vì đã ngừng hoạt động.");
+                        }
 
-            //    // 4. Thêm các SubOrderDetails
-            //    foreach (var subOrderDetailDTO in orderDetailDTO.SubOrderDetails)
-            //    {
-            //        SubOrderDetail subOrderDetail = _mapper.Map<SubOrderDetail>(subOrderDetailDTO);
-            //        subOrderDetail.OrderDetailId = orderDetail.OrderDetailId; // Gắn OrderDetailId vào SubOrderDetail
-            //        orderDetail.SubOrderDetails.Add(subOrderDetail);
-            //    }
-            //}
+                        // Cập nhật trạng thái của cây
+                        plant.IsActive = false;
+                        _unitOfWork.PlantRepository.Update(plant);
+                    }
+                }
+            }
 
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
