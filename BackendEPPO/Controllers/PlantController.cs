@@ -168,6 +168,28 @@ namespace BackendEPPO.Controllers
         
         }
 
+        /// <summary>
+        ///  Check Plant in to the cart is new value.
+        /// </summary>
+        /// <returns>Check Plant in to the cart is new value.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.CheckPlantInCart)]
+        public async Task<IActionResult> CheckPlantInCart(List<int> plantId)
+        {
+            var plants = await _plantService.CheckPlantInCart(plantId);
+
+            if (plants == null || !plants.Any())
+            {
+                return NotFound("No plant found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = plants
+            });
+
+        }
+
         [HttpGet("search")]
         public IActionResult SearchPlants(string keyword, int pageIndex, int pageSize)
         {

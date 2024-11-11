@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using DTOs.Contracts;
 using DTOs.User;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Service.Interfaces
     {
         Task<IEnumerable<User>> GetListUsers(int page, int size);
         Task<User> GetUsersByID(int Id);
+        //Task<User> GetInformationByID(int Id);
         IQueryable<User> GetAllUsers();
         Task CreateUserAccount(ResponseUserDTO user);
         Task CreateAccountByCustomer(CreateAccountByCustomerDTO customer);
@@ -18,6 +20,7 @@ namespace Service.Interfaces
         User GetUserByID(int id);
 
         Task UpdateUserAccount(UpdateAccount account, IFormFile imageFile);
+        Task UpdateInformationAccount(UpdateInformation contract, IFormFile imageFile);
         Task ChangePasswordAccount(ChangePassword account);
 
         Task<bool> CheckAccountExists(string email, string userName);

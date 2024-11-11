@@ -34,6 +34,8 @@ namespace BackendEPPO.Extenstion
             public const string Login_Endpoint = ApiEndpoint + "/Users/Login";
             public const string GetUserByID = GetUserEndpoint + "/Id";
 
+            public const string GetInformationByID = GetUserEndpoint + "/Information/UserID";
+
             public const string CreateUserAccount = ApiEndpoint + "/UsersAccount/CreateAccount";
 
             public const string CreateAccountByCustomer = ApiEndpointByCustomer + "/CreateAccount";
@@ -43,6 +45,9 @@ namespace BackendEPPO.Extenstion
             public const string CreateAccountByAdmin = ApiEndpointByAdmin + "/CreateAccount";
 
             public const string UpdateAccount = GetUserEndpoint + "/UpdateAccount/Id";
+
+            public const string UpdateInformationAccount = GetUserEndpoint + "/Update/Information/Id";
+
             public const string ChangePassword = GetUserEndpoint + "/UpdateAccount/ChangePassword/Id";
         }
         // Do Huu Thuan
@@ -173,6 +178,8 @@ namespace BackendEPPO.Extenstion
             public const string GetListPlantsByTypeEcommerceAndCategory = GetListPlants_Endpoint + "/Filter/TypeEcommerceIdAndCategoryId";
 
             public const string SearchPlantByKeyWord = GetListPlants_Endpoint + "/Search/Keyword";
+
+            public const string CheckPlantInCart = GetListPlants_Endpoint + "/Cart/Check/PlantId";
         }
         // Do Huu Thuan
         public static class Categories

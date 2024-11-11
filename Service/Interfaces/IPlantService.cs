@@ -22,7 +22,9 @@ namespace Service.Interfaces
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId);
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId);
         IEnumerable<PlantVM> SearchPlants(string keyword, int pageIndex, int pageSize);
-
         Task<IEnumerable<PlantVM>> SearchPlantKeyType(int pageIndex, int pageSize, int typeEcommerceId, string keyword);
+
+
+        Task<IEnumerable<PlantVM>> CheckPlantInCart(List<int> PlantId);
     }
 }

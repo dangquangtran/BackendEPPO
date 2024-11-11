@@ -217,5 +217,18 @@ namespace Service
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
+        public async Task<IEnumerable<PlantVM>> CheckPlantInCart(List<int> plantId)
+        {
+            var plantsInCart = await _unitOfWork.PlantRepository.GetAsync(
+         filter: p => plantId.Contains(p.PlantId) && p.Status == 1, 
+         includeProperties: "ImagePlants"
+     );
+
+            // Map the result to PlantVM
+            var plantVMs = _mapper.Map<IEnumerable<PlantVM>>(plantsInCart);
+
+            return plantVMs;
+        }
+
     }
 }

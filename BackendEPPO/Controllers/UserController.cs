@@ -43,10 +43,10 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Get information User by userID.
+        /// Get information User by userID for role admin, manager,staff.
         /// </summary>
-        /// <returns>Get information User by userID.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        /// <returns>Get information User by userID for role admin, manager,staff.</returns>
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpGet(ApiEndPointConstant.User.GetUserByID)]
         public async Task<IActionResult> GetUsersByID(int id)
         {
@@ -55,6 +55,32 @@ namespace BackendEPPO.Controllers
             if (users == null)
             {
                 return NotFound($"User with ID {id} not found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = users
+            });
+        }
+
+        /// <summary>
+        /// Get information by token for role customer and owner.
+        /// </summary>
+        /// <returns>Get information by token for role customer and owner.</returns>
+        [Authorize(Roles = "customer, owner")]
+        [HttpGet(ApiEndPointConstant.User.GetInformationByID)]
+        public async Task<IActionResult> GetInformationByID()
+        {
+
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            var users = await _userService.GetUsersByID(userId);
+
+            if (users == null)
+            {
+                return NotFound($"User with ID {userId} not found.");
             }
             return Ok(new
             {
@@ -144,10 +170,10 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Update information account by all role.
+        /// Update information account by all role manager.
         /// </summary>
-        /// <returns>Update information account by all role.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        /// <returns>Update information account by all role manager.</returns>
+        [Authorize(Roles = "admin, manager, staff")]
         [HttpPut(ApiEndPointConstant.User.UpdateAccount)]
         public async Task<IActionResult> UpdateUserAccount(int id, [FromForm] UpdateAccount accountDTO)
         {
@@ -161,6 +187,45 @@ namespace BackendEPPO.Controllers
             {
                 await _userService.UpdateUserAccount(accountDTO, accountDTO.ImageFile);
                 var updatedUser = await _userService.GetUsersByID(id);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "User account updated successfully.",
+                    Data = updatedUser
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Update information account by for mobile role customer and owner.
+        /// </summary>
+        /// <returns>Update information account by for mobile.</returns>
+        [Authorize(Roles = "owner, customer")]
+        [HttpPut(ApiEndPointConstant.User.UpdateInformationAccount)]
+        public async Task<IActionResult> UpdateInformationAccount([FromForm] UpdateInformation accountDTO)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            accountDTO.UserId = userId;
+
+            try
+            {
+                await _userService.UpdateInformationAccount(accountDTO, accountDTO.ImageFile);
+                var updatedUser = await _userService.GetUsersByID(userId);
 
                 return Ok(new
                 {
