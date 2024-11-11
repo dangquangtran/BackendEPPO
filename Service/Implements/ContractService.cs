@@ -188,7 +188,27 @@ namespace Service
 
         public async Task<string> GenerateContractPdfAsync(CreateContractDTO contract)
         {
-             //await Task.FromResult(_unitOfWork.UserRepository.GetByID(contract.UserId));
+            var user = await Task.FromResult(_unitOfWork.UserRepository.GetByID(contract.UserId));
+            if (user == null)
+            {
+                throw new Exception("No data user.");
+            }
+
+            var plant = user.Plants.FirstOrDefault();
+            if (plant == null)
+            {
+                throw new Exception("No plant data found for this user.");
+            }
+            int plantId = plant.PlantId;
+
+
+
+
+            var address = await Task.FromResult(_unitOfWork.AddressRepository.GetAsync(a => a.UserId == contract.UserId && a.Status == 1));
+            if (address == null)
+            {
+                throw new Exception("No data address.");
+            }
 
 
 
@@ -263,15 +283,17 @@ namespace Service
                 // Thông tin Bên B
                 gfx.DrawString("BÊN THUÊ (Bên B):", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"• Họ và tên: {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"• Họ và tên: {user.FullName}", font, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"• Địa chỉ: {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"• Giới tính: {user.Gender}", font, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"• Số điện thoại: {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"• Ngày sinh: {user.DateOfBirth}", font, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"• Chứng minh nhân dân/Căn cước công dân: {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"• Số điện thoại: {user.PhoneNumber}", font, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"• Email: {contract.UserId}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"• Chứng minh nhân dân/Căn cước công dân: {user.IdentificationCard}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Email: {user.Email}", font, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 if (yPoint >= pageHeightLimit) CreateNewPage();
 
