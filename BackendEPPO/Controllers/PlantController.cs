@@ -93,7 +93,7 @@ namespace BackendEPPO.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePlant([FromForm] CreatePlantDTO createPlant)
         {
-            await _plantService.CreatePlant(createPlant, createPlant.ImageFiles);
+            await _plantService.CreatePlant(createPlant, createPlant.MainImageFile ,createPlant.ImageFiles);
             return Ok("Đã tạo thành công");
         }
 
@@ -101,7 +101,7 @@ namespace BackendEPPO.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdatePlant([FromForm] UpdatePlantDTO updatePlant)
         {
-            await _plantService.UpdatePlant(updatePlant, updatePlant.ImageFiles);
+            await _plantService.UpdatePlant(updatePlant, updatePlant.MainImageFile, updatePlant.ImageFiles);
             return Ok("Đã cập nhật thành công");
         }
 

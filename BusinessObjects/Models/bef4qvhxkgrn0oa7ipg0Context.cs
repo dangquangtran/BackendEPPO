@@ -457,6 +457,8 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.Description).HasColumnType("text");
 
+                entity.Property(e => e.MainImage).HasMaxLength(255);
+
                 entity.Property(e => e.ModificationDate).HasColumnType("datetime");
 
                 entity.Property(e => e.PlantName)

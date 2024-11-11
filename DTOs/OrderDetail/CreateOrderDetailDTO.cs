@@ -9,7 +9,5 @@ namespace DTOs.OrderDetail
     public class CreateOrderDetailDTO
     {
         public int? PlantId { get; set; }
-        public int? Quantity { get; set; }
-        public double? TotalPrice { get; set; }
     }
 }
