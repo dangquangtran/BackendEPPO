@@ -20,6 +20,10 @@ namespace BackendEPPO.Controllers
             _service = IService;
         }
 
+        /// <summary>
+        /// Get all list wallet 
+        /// </summary>
+        /// <returns>Get all list wallet </returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Wallet.GetListWallet_Endpoint)]
         public async Task<IActionResult> GetListWallet(int page, int size)
@@ -37,7 +41,10 @@ namespace BackendEPPO.Controllers
                 Data = _wallet
             });
         }
-
+        /// <summary>
+        /// Get wallet by wallet ID for all role 
+        /// </summary>
+        /// <returns>Get wallet by wallet ID for all role </returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Wallet.GetWalletByID)]
         public async Task<IActionResult> GetWalletByID(int id)
@@ -55,6 +62,11 @@ namespace BackendEPPO.Controllers
                 Data = _wallet
             });
         }
+
+        /// <summary>
+        /// Create wallet for all role 
+        /// </summary>
+        /// <returns>Create wallet for all role</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Wallet.CreateWallet)]
         public async Task<IActionResult> CreateWallet([FromBody] CreateWalletDTO wallet)
@@ -75,6 +87,10 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Update wallet for all role 
+        /// </summary>
+        /// <returns>Update wallet for all role</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Wallet.UpdateWalletByID)]
         public async Task<IActionResult> UpdateWallet(int id, [FromBody] UpdateWalletDTO wallet)

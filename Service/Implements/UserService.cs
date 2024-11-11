@@ -238,13 +238,13 @@ namespace Service
             {
                 throw new Exception($"Contract with ID {accountDTO.UserId} not found.");
             }
-            accountDTO.FullName = accountDTO.FullName;
-            accountDTO.Gender = accountDTO.Gender;
-            accountDTO.DateOfBirth = accountDTO.DateOfBirth;
-            accountDTO.PhoneNumber = accountDTO.PhoneNumber;
-            accountDTO.Email = accountDTO.Email;
-            accountDTO.ImageUrl = accountDTO.ImageUrl;
-            accountDTO.IdentificationCard = accountDTO.IdentificationCard;
+            entity.FullName = accountDTO.FullName;
+            entity.Gender = accountDTO.Gender;
+            entity.DateOfBirth = accountDTO.DateOfBirth;
+            entity.PhoneNumber = accountDTO.PhoneNumber;
+            entity.Email = accountDTO.Email;
+            entity.ImageUrl = accountDTO.ImageUrl;
+            entity.IdentificationCard = accountDTO.IdentificationCard;
 
 
             if (imageFile != null)
@@ -260,7 +260,7 @@ namespace Service
                 }
 
                 // Cập nhật URL ảnh mới vào userEntity
-                accountDTO.ImageUrl = newImageUrl;
+                entity.ImageUrl = newImageUrl;
             }
 
 

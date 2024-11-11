@@ -49,9 +49,10 @@ namespace Service.Implements
             {
                 throw new Exception($"Wallet with ID {wallet.WalletId} not found.");
             }
-            wallet.NumberBalance = wallet.NumberBalance;
-            wallet.ModificationDate = DateTime.Now;
-            wallet.Status = wallet.Status;
+            entity.NumberBalance = wallet.NumberBalance;
+            entity.ModificationDate = DateTime.Now;
+            entity.Status = wallet.Status;
+
             _unitOfWork.WalletRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }

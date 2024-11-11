@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BackendEPPO.Controllers;
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -19,6 +20,7 @@ using static BackendEPPO.Extenstion.ApiEndPointConstant;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient();
 
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); ;
@@ -47,6 +49,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IImageFeedbackService, ImageFeedbackService>();
 builder.Services.AddScoped<IUserRoomService, UserRoomService>();
 builder.Services.AddScoped<IHistoryBidService, HistoryBidService>();
+builder.Services.AddHttpClient<DistanceController>();
 
 
 // AutoMapper configuration

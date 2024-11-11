@@ -44,15 +44,15 @@ namespace Service.Implements
             {
                 throw new Exception($"Feedback with ID {feedback.FeedbackId} not found.");
             }
-            feedback.Title = feedback.Title;
-            feedback.Description = feedback.Description;
-            feedback.CreationDate = feedback.CreationDate;
-            feedback.PlantId = feedback.PlantId;
-            feedback.Rating = feedback.Rating;
-            feedback.UserId = feedback.UserId;
-            feedback.ModificationDate = feedback.ModificationDate;
-            feedback.ModificationByUserId = feedback.ModificationByUserId;
-            feedback.Status = feedback.Status;
+            entity.Title = feedback.Title;
+            entity.Description = feedback.Description;
+            entity.CreationDate = feedback.CreationDate;
+            entity.PlantId = feedback.PlantId;
+            entity.Rating = feedback.Rating;
+            entity.UserId = feedback.UserId;
+            entity.ModificationDate = feedback.ModificationDate;
+            entity.ModificationByUserId = feedback.ModificationByUserId;
+            entity.Status = feedback.Status;
 
             _unitOfWork.FeedbackRepository.Update(entity);
             await _unitOfWork.SaveAsync();

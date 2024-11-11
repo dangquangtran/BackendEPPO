@@ -18,7 +18,6 @@ namespace Service.Implements
             _unitOfWork = unitOfWork;
         }
 
-
         public async Task<IEnumerable<UserRoom>> GetListUserRoom(int page, int size)
         {
             return await _unitOfWork.UserRoomRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
@@ -37,11 +36,11 @@ namespace Service.Implements
             {
                 throw new Exception($"User Room with ID {userRoom.UserRoomId} not found.");
             }
-            userRoom.RoomId = userRoom.RoomId;
-            userRoom.UserId = userRoom.UserId;
-            userRoom.JoinDate = userRoom.JoinDate;
-            userRoom.IsActive = userRoom.IsActive;
-            userRoom.Status = userRoom.Status;
+            //entity.RoomId = userRoom.RoomId;
+            entity.UserId = userRoom.UserId;
+            entity.JoinDate = userRoom.JoinDate;
+            entity.IsActive = userRoom.IsActive;
+            entity.Status = userRoom.Status;
             _unitOfWork.UserRoomRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
@@ -52,7 +51,7 @@ namespace Service.Implements
                 RoomId = userRoom.RoomId,
                 UserId = userID,
                 JoinDate = DateTime.Now,
-                IsActive = true,
+                IsActive = userRoom.IsActive,
                 Status = 1,
             };
             _unitOfWork.UserRoomRepository.Insert(entity);

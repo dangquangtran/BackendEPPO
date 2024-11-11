@@ -24,8 +24,7 @@ namespace DTOs.Wallet
     public class UpdateWalletDTO
     {
         public int WalletId { get; set; }
-        public double? NumberBalance { get; set; }
-        public DateTime? CreationDate { get; set; }
+        public double? NumberBalance { get; set; } 
         public DateTime? ModificationDate { get; set; }
         public int? Status { get; set; }
     }
