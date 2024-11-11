@@ -203,5 +203,32 @@ namespace Service
             // Ánh xạ từ Plant sang PlantVM bằng AutoMapper
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
+
+        public async Task<IEnumerable<PlantVM>> SearchPlantKeyType(int pageIndex, int pageSize, int typeEcommerceId, string keyword)
+        {
+            var plants = await _unitOfWork.PlantRepository.GetAsync(
+                filter: c => (c.PlantName.Contains(keyword) || c.Title.Contains(keyword) || c.Description.Contains(keyword))
+                              && c.TypeEcommerceId == typeEcommerceId
+                              && c.Status != 0,
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "ImagePlants"
+            );
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+
+        public async Task<IEnumerable<PlantVM>> CheckPlantInCart(List<int> plantId)
+        {
+            var plantsInCart = await _unitOfWork.PlantRepository.GetAsync(
+         filter: p => plantId.Contains(p.PlantId) && p.Status == 1, 
+         includeProperties: "ImagePlants"
+     );
+
+            // Map the result to PlantVM
+            var plantVMs = _mapper.Map<IEnumerable<PlantVM>>(plantsInCart);
+
+            return plantVMs;
+        }
+
     }
 }
