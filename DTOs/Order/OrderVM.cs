@@ -12,7 +12,6 @@ namespace DTOs.Order
     {
         public int OrderId { get; set; }
         public int UserId { get; set; }
-        public string Description { get; set; }
         public double? TotalPrice { get; set; }
         public double? DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }

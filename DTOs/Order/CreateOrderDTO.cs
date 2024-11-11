@@ -10,7 +10,6 @@ namespace DTOs.Order
 {
     public class CreateOrderDTO
     {
-        public string Description { get; set; }
         public double? TotalPrice { get; set; }
         public double? DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }

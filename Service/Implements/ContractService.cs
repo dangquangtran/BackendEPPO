@@ -289,21 +289,33 @@ namespace Service
                 // Điều 1: Đối tượng hợp đồng
                 gfx.DrawString("Điều 1: Đối Tượng Hợp Đồng", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"1. Mô tả cây {user.Gender} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"   • Số lượng: {user.Gender}", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"   • Mô tả chi tiết: {user.Gender}", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
-                gfx.DrawString($"   • Giá trị của cây (ước tính): {user.Gender} VNĐ", font, XBrushes.Black, new XPoint(margin, yPoint));
-                yPoint += lineHeight;
                 if (contract.ContractDetails != null && contract.ContractDetails.Any())
                 {
                     foreach (var contractDetail in contract.ContractDetails)
                     {
 
-                        // Điều 2: Thời gian thuê
-                        gfx.DrawString("Điều 2: Thời gian thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+
+                        var plant = _unitOfWork.PlantRepository.GetByID(contractDetail.PlantId);
+
+                  
+                gfx.DrawString($"1. Mô tả cây {plant.PlantName} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                        gfx.DrawString($"•  Mô tả cây {plant.Title} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"•  Mô tả cây {plant.Description} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"   • Số lượng: 1 ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+    
+                gfx.DrawString($"   • Giá trị của cây (ước tính): {plant.Price} VNĐ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                        if (yPoint >= pageHeightLimit) CreateNewPage();
+                    }
+                }
+
+                // Điều 2: Thời gian thuê
+                gfx.DrawString("Điều 2: Thời gian thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                         yPoint += lineHeight;
                         gfx.DrawString($"• Thời gian thuê cây mai bắt đầu từ ngày {contract.CreationContractDate:yyyy-MM-dd} đến ngày {contract.EndContractDate:yyyy-MM-dd}.", font, XBrushes.Black, new XPoint(margin, yPoint));
                         yPoint += lineHeight;
@@ -330,10 +342,7 @@ namespace Service
                         gfx.DrawString($"• Thanh toán sẽ được thực hiện vào ngày  {contract.CreationContractDate:dd} hàng tháng.", font, XBrushes.Black, new XPoint(margin, yPoint));
                         yPoint += lineHeight;
 
-                    }
-                }
-                if (yPoint >= pageHeightLimit) CreateNewPage();
-
+      
                 // Điều 4: Quyền và nghĩa vụ của Bên A
                 gfx.DrawString("Điều 4: Quyền và nghĩa vụ của Bên A", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
