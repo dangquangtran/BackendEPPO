@@ -345,9 +345,13 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
 
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Description).HasColumnType("text");
 
                 entity.Property(e => e.Title).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
