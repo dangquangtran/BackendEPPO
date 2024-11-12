@@ -113,6 +113,8 @@ namespace BackendEPPO.Extenstion
 
             public const string GetListAddressByUserID_Endpoint = ApiEndpoint + "/GetList/Address/OfByUserID";
 
+            public const string GetListAddressByToken_Endpoint = ApiEndpoint + "/GetList/Address/OfByUserID/ByToken";
+
         }
         // Do Huu Thuan
         public static class Notification

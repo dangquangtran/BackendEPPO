@@ -87,6 +87,31 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
+        /// Get the address by addressId for role customer and owner.
+        /// </summary>
+        /// <returns>Get the address by addressId.</returns>
+        [Authorize(Roles = "owner, customer")]
+        [HttpGet(ApiEndPointConstant.Address.GetListAddressByToken_Endpoint)]
+        public async Task<IActionResult> GetListAddressByToken()
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            var users = await _IService.GetLisAddressByUserID(userId);
+
+            if (users == null || !users.Any())
+            {
+                return NotFound("No users found.");
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Request was successful",
+                Data = users
+            });
+        }
+
+        /// <summary>
         /// Create the address with all role.
         /// </summary>
         /// <returns>Create the address with all role.</returns>
