@@ -59,18 +59,18 @@ namespace Service
             {
                 throw new Exception($"Contract with ID {contract.ContractId} not found.");
             }
-            contract.UserId = contract.UserId;
-            contract.ContractNumber = contract.ContractNumber;
-            contract.Description = contract.Description;
-            contract.CreationContractDate = contract.CreationContractDate;
-            contract.EndContractDate = contract.EndContractDate;
-            contract.TotalAmount = contract.TotalAmount;
-            contract.CreatedAt = contract.CreatedAt;
-            contract.UpdatedAt = contract.UpdatedAt;
-            contract.TypeContract = contract.TypeContract;
-            contract.ContractUrl = contract.ContractUrl;
-            contract.IsActive = contract.IsActive;
-            contract.Status = contract.Status;
+            entity.UserId = contract.UserId;
+            entity.ContractNumber = contract.ContractNumber;
+            entity.Description = contract.Description;
+            entity.CreationContractDate = contract.CreationContractDate;
+            entity.EndContractDate = contract.EndContractDate;
+            entity.TotalAmount = contract.TotalAmount;
+            entity.CreatedAt = contract.CreatedAt;
+            entity.UpdatedAt = contract.UpdatedAt;
+            entity.TypeContract = contract.TypeContract;
+            entity.ContractUrl = contract.ContractUrl;
+            entity.IsActive = contract.IsActive;
+            entity.Status = contract.Status;
 
             _unitOfWork.ContractRepository.Update(entity);
             await _unitOfWork.SaveAsync();

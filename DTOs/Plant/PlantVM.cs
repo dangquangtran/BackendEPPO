@@ -30,4 +30,9 @@ namespace DTOs.Plant
         public int? ModificationBy { get; set; }
         public virtual ICollection<ImagePlantVM> ImagePlants { get; set; }
     }
+
+    public class CheckCart
+    {
+        public int PlantId { get; set; }
+    }
 }

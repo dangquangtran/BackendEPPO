@@ -64,10 +64,10 @@ namespace Service.Implements
             {
                 throw new Exception($"Address with ID {address.AddressId} not found.");
             }
-            address.UserId = address.UserId;
-            address.Description = address.Description;
-            address.ModificationDate = DateTime.Now;
-            address.Status = address.Status;
+            entity.UserId = address.UserId;
+            entity.Description = address.Description;
+            entity.ModificationDate = DateTime.Now;
+            entity.Status = address.Status;
 
             _unitOfWork.AddressRepository.Update(entity);
             await _unitOfWork.SaveAsync();

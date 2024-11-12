@@ -48,9 +48,9 @@ namespace Service.Implements
             {
                 throw new Exception($"TypeEcommerce with ID {typeEcommerce.TypeEcommerceId} not found.");
             }
-            typeEcommerce.Title = typeEcommerce.Title;
-            typeEcommerce.Description = typeEcommerce.Description;
-            typeEcommerce.Status = typeEcommerce.Status;
+            entity.Title = typeEcommerce.Title;
+            entity.Description = typeEcommerce.Description;
+            entity.Status = typeEcommerce.Status;
             _unitOfWork.TypeEcommerceRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }

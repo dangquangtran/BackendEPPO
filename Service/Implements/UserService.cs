@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
+using DTOs.Contracts;
 using DTOs.User;
 using Microsoft.AspNetCore.Http;
 using Mysqlx.Crud;
@@ -142,7 +143,7 @@ namespace Service
         }
         public async Task<User> GetUsersByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id));
+            return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id, includeProperties: "Wallet"));
         }
 
         public async Task UpdateUserAccount(UpdateAccount accountDTO, IFormFile imageFile)
@@ -152,14 +153,6 @@ namespace Service
             if (userEntity == null)
             {
                 throw new KeyNotFoundException("User not found.");
-            }
-            if (!string.IsNullOrWhiteSpace(accountDTO.UserName))
-            {
-                userEntity.UserName = accountDTO.UserName;
-            }
-            if (!string.IsNullOrWhiteSpace(accountDTO.Password))
-            {
-                userEntity.Password = accountDTO.Password; 
             }
             if (!string.IsNullOrWhiteSpace(accountDTO.FullName))
             {
@@ -192,11 +185,6 @@ namespace Service
             if (accountDTO.WalletId.HasValue)
             {
                 userEntity.WalletId = accountDTO.WalletId.Value;
-            }
-
-            if (accountDTO.RoleId.HasValue)
-            {
-                userEntity.RoleId = accountDTO.RoleId.Value;
             }
 
             if (accountDTO.IsActive.HasValue)
@@ -241,6 +229,45 @@ namespace Service
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task UpdateInformationAccount(UpdateInformation accountDTO, IFormFile imageFile)
+        {
+            var entity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(accountDTO.UserId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Contract with ID {accountDTO.UserId} not found.");
+            }
+            entity.FullName = accountDTO.FullName;
+            entity.Gender = accountDTO.Gender;
+            entity.DateOfBirth = accountDTO.DateOfBirth;
+            entity.PhoneNumber = accountDTO.PhoneNumber;
+            entity.Email = accountDTO.Email;
+            entity.ImageUrl = accountDTO.ImageUrl;
+            entity.IdentificationCard = accountDTO.IdentificationCard;
+
+
+            if (imageFile != null)
+            {
+                using var stream = imageFile.OpenReadStream();
+                string fileName = imageFile.FileName;
+
+                string newImageUrl = await _firebaseStorageService.UploadUserImageAsync(stream, fileName);
+
+                if (!string.IsNullOrWhiteSpace(accountDTO.ImageUrl))
+                {
+                    //await _firebaseStorageService.DeleteUserImageAsync(userEntity.ImageUrl);
+                }
+
+                // Cập nhật URL ảnh mới vào userEntity
+                entity.ImageUrl = newImageUrl;
+            }
+
+
+            _unitOfWork.UserRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
         public async Task<bool> CheckAccountExists(string email, string userName)
         {
             var existingUser = await _unitOfWork.UserRepository
