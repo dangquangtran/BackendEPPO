@@ -1,14 +1,8 @@
 ﻿using BackendEPPO.Extenstion;
-using BusinessObjects.Models;
 using DTOs.Plant;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Service;
-using Service.Implements;
 using Service.Interfaces;
-using System.Drawing;
 
 namespace BackendEPPO.Controllers
 {
@@ -23,78 +17,59 @@ namespace BackendEPPO.Controllers
             _plantService = IService;
         }
 
-        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
-        //[HttpGet(ApiEndPointConstant.Plants.GetListPlants_Endpoint)]
-        //public async Task<IActionResult> GetListPlants(int page, int size)
-        //{
-        //    var _plant = await _plantService.GetListPlants(page, size);
-
-        //    if (_plant == null || !_plant.Any())
-        //    {
-        //        return NotFound("No contract found.");
-        //    }
-        //    return Ok(new
-        //    {
-        //        StatusCode = 200,
-        //        Message = "Request was successful",
-        //        Data = _plant
-        //    });
-        //}
-
-        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
-        //[HttpGet(ApiEndPointConstant.Plants.GetPlantByID)]
-        //public async Task<IActionResult> GetPlantByID(int id)
-        //{
-        //    var plant = await _plantService.GetPlantByID(id); 
-
-        //    if (plant == null)
-        //    {
-        //        return NotFound($"Plant with ID {id} not found.");
-        //    }
-        //    return Ok(new
-        //    {
-        //        StatusCode = 200,
-        //        Message = "Request was successful",
-        //        Data = plant
-        //    });
-        //}
-
-        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
-        //[HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
-        //public async Task<IActionResult> GetListPlantsByCategory(int Id)
-        //{
-        //    var _plant = await _plantService.GetListPlantByCategory(Id);
-
-        //    if (_plant == null || !_plant.Any())
-        //    {
-        //        return NotFound("No contract found.");
-        //    }
-        //    return Ok(new
-        //    {
-        //        StatusCode = 200,
-        //        Message = "Request was successful",
-        //        Data = _plant
-        //    });
-        //}
-
         [HttpGet]
         public IActionResult GetAllPlants(int pageIndex, int pageSize)
         {
-            return Ok(_plantService.GetAllPlants(pageIndex, pageSize));
+            var plants = _plantService.GetAllPlants(pageIndex, pageSize);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
         }
 
         [HttpGet("{id}")]
         public IActionResult GetPlantById(int id)
         {
-            return Ok(_plantService.GetPlantById(id));
+            var plant = _plantService.GetPlantById(id);
+            if (plant == null)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = $"Không tìm thấy cây với ID {id}.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plant
+            });
         }
 
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost]
         public async Task<IActionResult> CreatePlant([FromForm] CreatePlantDTO createPlant)
         {
-            await _plantService.CreatePlant(createPlant, createPlant.MainImageFile ,createPlant.ImageFiles);
-            return Ok("Đã tạo thành công");
+            await _plantService.CreatePlant(createPlant, createPlant.MainImageFile, createPlant.ImageFiles);
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "Đã tạo cây thành công.",
+                Data = createPlant
+            });
         }
 
         [Authorize]
@@ -102,47 +77,74 @@ namespace BackendEPPO.Controllers
         public async Task<IActionResult> UpdatePlant([FromForm] UpdatePlantDTO updatePlant)
         {
             await _plantService.UpdatePlant(updatePlant, updatePlant.MainImageFile, updatePlant.ImageFiles);
-            return Ok("Đã cập nhật thành công");
-        }
-
-        /// <summary>
-        /// Get list Plant by Category Id with the page and the size.
-        /// </summary>
-        /// <returns> Get Plant by category id with the page and the size.</returns>
-        [HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
-        public IActionResult GetPlantsByCategoryId( int pageIndex, int pageSize, int categoryId)
-        {
-            return Ok(_plantService.GetPlantsByCategoryId(pageIndex, pageSize, categoryId));
-        }
-
-        /// <summary>
-        /// Get list Plant by Type Ecommerce id with the page and the size.
-        /// </summary>
-        /// <returns>Get Plant by Type Ecommerce id with the page and the size.</returns>
-        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceId)]
-        public IActionResult GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId)
-        {
-            return Ok(_plantService.GetListPlantsByTypeEcommerceId(pageIndex, pageSize, typeEcommerceId));
-        }
-
-        /// <summary>
-        /// Get list Plant by Category Id and Type Ecommerce Id with the page and the size.
-        /// </summary>
-        /// <returns>Get list Plant by Category Id and Type Ecommerce Id with the page and the size.</returns>
-        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceAndCategory)]
-        public IActionResult GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId)
-        {
-            var plant = _plantService.GetListPlantsByTypeEcommerceAndCategory(pageIndex, pageSize, typeEcommerceId, categoryId);
-
-            if (plant == null || !plant.Any())
+            return Ok(new
             {
-                return NotFound("No plant found.");
+                StatusCode = 200,
+                Message = "Đã cập nhật cây thành công.",
+                Data = updatePlant
+            });
+        }
+
+        [HttpGet(ApiEndPointConstant.Plants.GetPlantByCategory)]
+        public IActionResult GetPlantsByCategoryId(int pageIndex, int pageSize, int categoryId)
+        {
+            var plants = _plantService.GetPlantsByCategoryId(pageIndex, pageSize, categoryId);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào trong danh mục.",
+                    Data = (object)null
+                });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
-                Data = plant
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+        }
+
+        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceId)]
+        public IActionResult GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId)
+        {
+            var plants = _plantService.GetListPlantsByTypeEcommerceId(pageIndex, pageSize, typeEcommerceId);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào theo loại thương mại điện tử.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+        }
+
+        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceAndCategory)]
+        public IActionResult GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId)
+        {
+            var plants = _plantService.GetListPlantsByTypeEcommerceAndCategory(pageIndex, pageSize, typeEcommerceId, categoryId);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào theo loại thương mại điện tử và danh mục.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
             });
         }
 
@@ -191,11 +193,24 @@ namespace BackendEPPO.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult SearchPlants(string keyword,int typeEcommerceId, int pageIndex, int pageSize)
+        public IActionResult SearchPlants(string keyword, int typeEcommerceId, int pageIndex, int pageSize)
         {
-            var plants = _plantService.SearchPlants(keyword, typeEcommerceId,pageIndex, pageSize);
-            
-            return Ok(plants);
+            var plants = _plantService.SearchPlants(keyword, typeEcommerceId, pageIndex, pageSize);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào theo từ khóa.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
         }
     }
 }

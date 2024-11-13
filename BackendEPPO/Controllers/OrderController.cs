@@ -1,8 +1,8 @@
 ﻿using DTOs.Order;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
+using System;
 
 namespace BackendEPPO.Controllers
 {
@@ -16,6 +16,7 @@ namespace BackendEPPO.Controllers
         {
             _orderService = IService;
         }
+
         [Authorize]
         [HttpGet]
         public IActionResult GetAllOrders(int pageIndex, int pageSize)
@@ -23,11 +24,30 @@ namespace BackendEPPO.Controllers
             try
             {
                 var result = _orderService.GetAllOrders(pageIndex, pageSize);
-                return Ok(result);
+                if (result == null || !result.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không tìm thấy đơn hàng nào.",
+                        Data = (object)null
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = result
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
             }
         }
 
@@ -38,11 +58,30 @@ namespace BackendEPPO.Controllers
             try
             {
                 var result = _orderService.GetOrderById(id);
-                return Ok(result);
+                if (result == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Không tìm thấy đơn hàng với ID {id}.",
+                        Data = (object)null
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = result
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
             }
         }
 
@@ -57,16 +96,24 @@ namespace BackendEPPO.Controllers
 
                 _orderService.CreateOrder(createOrder, userId);
 
-                return Ok(new { message = "Đã tạo thành công" });
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Đã tạo đơn hàng thành công.",
+                    Data = createOrder
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
             }
         }
 
-        [Authorize]
-        [HttpPut]
         [Authorize]
         [HttpPut]
         public IActionResult UpdateOrder([FromBody] UpdateOrderDTO updateOrder)
@@ -74,11 +121,21 @@ namespace BackendEPPO.Controllers
             try
             {
                 _orderService.UpdateOrder(updateOrder);
-                return Ok(new { message = "Đã cập nhật thành công" });
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã cập nhật đơn hàng thành công.",
+                    Data = updateOrder
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
             }
         }
 
@@ -92,13 +149,31 @@ namespace BackendEPPO.Controllers
                 int userId = int.Parse(userIdClaim);
 
                 var result = _orderService.GetOrdersByUserId(userId, pageIndex, pageSize, status);
-                return Ok(result);
+                if (result == null || !result.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không tìm thấy đơn hàng nào của người dùng.",
+                        Data = (object)null
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = result
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
             }
         }
-
     }
 }
