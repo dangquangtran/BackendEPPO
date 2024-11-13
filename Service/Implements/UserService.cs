@@ -232,19 +232,20 @@ namespace Service
 
         public async Task UpdateInformationAccount(UpdateInformation accountDTO, IFormFile imageFile)
         {
+
             var entity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(accountDTO.UserId));
 
             if (entity == null)
             {
-                throw new Exception($"Contract with ID {accountDTO.UserId} not found.");
+                throw new Exception($"Không tìm thấy ID {accountDTO.UserId} .");
             }
-            entity.FullName = accountDTO.FullName;
-            entity.Gender = accountDTO.Gender;
-            entity.DateOfBirth = accountDTO.DateOfBirth;
-            entity.PhoneNumber = accountDTO.PhoneNumber;
-            entity.Email = accountDTO.Email;
-            entity.ImageUrl = accountDTO.ImageUrl;
-            entity.IdentificationCard = accountDTO.IdentificationCard;
+            entity.FullName = accountDTO?.FullName;
+            entity.Gender = accountDTO?.Gender;
+            entity.DateOfBirth = accountDTO?.DateOfBirth;
+            entity.PhoneNumber = accountDTO?.PhoneNumber;
+            entity.Email = accountDTO?.Email;
+            entity.ImageUrl = accountDTO?.ImageUrl;
+            entity.IdentificationCard = accountDTO?.IdentificationCard;
 
 
             if (imageFile != null)

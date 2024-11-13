@@ -90,7 +90,7 @@ namespace BackendEPPO.Controllers
         /// Get the address by addressId for role customer and owner.
         /// </summary>
         /// <returns>Get the address by addressId.</returns>
-        [Authorize(Roles = "owner, customer")]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetListAddressByToken_Endpoint)]
         public async Task<IActionResult> GetListAddressByToken()
         {
@@ -101,12 +101,12 @@ namespace BackendEPPO.Controllers
 
             if (users == null || !users.Any())
             {
-                return NotFound("No users found.");
+                return NotFound("Không tìm thấy địa chỉ.");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = "Thành công",
                 Data = users
             });
         }
@@ -183,7 +183,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return BadRequest(new { message = "Dữ liệu không tồn tại." });
             }
             address.AddressId = id;
 
@@ -195,17 +195,56 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Address updated successfully.",
+                    Message = "Thay đổi địa chỉ thành công.",
                     Data = updatedRank
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Address not found." });
+                return NotFound(new { message = "Không tìm thấy địa chỉ" });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { message = "Lỗi 500:", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Delete the address for role customer and owner.
+        /// </summary>
+        /// <returns>Delete the address with all role.</returns>
+        [Authorize(Roles = "owner, customer")]
+        [HttpDelete(ApiEndPointConstant.Address.DeleteAddressByToken)]
+        public async Task<IActionResult> DeleteAddressByToken([FromBody] DeleteAddressDTO address)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Dữ liệu không tồn tại." });
+            }
+            address.AddressId = userId;
+
+            try
+            {
+                await _IService.DeleteAddress(address);
+                var updatedRank = await _IService.GetAddressByID(userId);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Thay đổi địa chỉ thành công.",
+                    Data = updatedRank
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Không tìm thấy địa chỉ" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi 500:", error = ex.Message });
             }
         }
     }
