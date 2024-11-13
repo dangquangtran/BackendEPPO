@@ -12,7 +12,7 @@ namespace Service.Interfaces
         Task<Address> GetAddressByID(int Id);
 
         Task CreateAddress(CreateAddressDTO address, int userID);
-        Task UpdateAddress(UpdateAddressDTO address);
+        Task UpdateAddress(UpdateAddressDTO address , int addressID , int userID);
         Task DeleteAddress(DeleteAddressDTO address);
         Task<IEnumerable<Address>> GetLisAddressByUserID(int userID);
     }

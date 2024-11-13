@@ -122,7 +122,6 @@ namespace DTOs.User
 
     public class UpdateInformation
     {
-        public int UserId { get; set; }
         public string? FullName { get; set; }
         public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
@@ -130,6 +129,13 @@ namespace DTOs.User
         public string? Email { get; set; }
         public string? ImageUrl { get; set; }
         public int? IdentificationCard { get; set; }
+        public int? ModificationBy { get; set; }
+        public int? WalletId { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public int? CreationBy { get; set; }
+        public string? RankLevel { get; set; }
+        public int? Status { get; set; }
+        public bool? IsActive { get; set; }
         public IFormFile? ImageFile { get; set; }
     }
 }
