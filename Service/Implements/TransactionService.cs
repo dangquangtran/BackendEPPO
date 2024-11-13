@@ -43,6 +43,15 @@ namespace Service.Implements
             transaction.WithdrawNumber = null;
 
             _unitOfWork.TransactionRepository.Insert(transaction);
+            var wallet = _unitOfWork.WalletRepository.GetByID(createTransaction.WalletId);
+            if (wallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng.");
+            }
+
+            wallet.NumberBalance += createTransaction.RechargeNumber; 
+
+            _unitOfWork.WalletRepository.Update(wallet);
             _unitOfWork.Save();
         }
 
@@ -58,6 +67,21 @@ namespace Service.Implements
             transaction.RechargeNumber = null;
 
             _unitOfWork.TransactionRepository.Insert(transaction);
+            var wallet = _unitOfWork.WalletRepository.GetByID(createTransaction.WalletId);
+            if (wallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng.");
+            }
+
+            if (wallet.NumberBalance < createTransaction.WithdrawNumber)
+            {
+                throw new Exception("Số dư không đủ để thực hiện giao dịch rút tiền.");
+            }
+
+            wallet.NumberBalance -= createTransaction.WithdrawNumber;
+
+
+            _unitOfWork.WalletRepository.Update(wallet);
             _unitOfWork.Save();
         }
 
@@ -79,6 +103,12 @@ namespace Service.Implements
             Transaction transaction = _mapper.Map<Transaction>(updateTransaction);
             _unitOfWork.TransactionRepository.Update(transaction);
             _unitOfWork.Save();
+        }
+
+        public IEnumerable<TransactionVM> GetAllTransactionsInWallet(int page, int size, int walletId)
+        {
+            var transactions = _unitOfWork.TransactionRepository.Get(pageIndex: page, pageSize: size, filter: c => c.Status != 0 && c.WalletId == walletId);
+            return _mapper.Map<IEnumerable<TransactionVM>>(transactions);
         }
     }
 }

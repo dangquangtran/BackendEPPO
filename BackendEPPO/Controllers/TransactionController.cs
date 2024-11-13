@@ -128,5 +128,32 @@ namespace BackendEPPO.Controllers
             return Ok("Đã cập nhật thành công");
         }
 
+        [Authorize]
+        [HttpPost("Withdraw")]
+        public IActionResult Withdraw([FromBody] CreateTransactionDTO createTransaction)
+        {
+            try
+            {
+                // Kiểm tra số tiền rút phải lớn hơn 0
+                if (createTransaction.WithdrawNumber <= 0)
+                {
+                    return BadRequest("Số tiền rút phải lớn hơn 0.");
+                }
+
+                _transactionService.CreateWithdrawTransaction(createTransaction);
+                return Ok("Giao dịch rút tiền thành công.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetAllTransactionsInWallet")]
+        [Authorize]
+        public IActionResult GetAllTransactionsInWallet([FromQuery] int page, int size, int walletId)
+        {
+            return Ok(_transactionService.GetAllTransactionsInWallet(page, size, walletId));
+        }
     }
 }
