@@ -20,7 +20,7 @@ namespace Service.Interfaces
         User GetUserByID(int id);
 
         Task UpdateUserAccount(UpdateAccount account, IFormFile imageFile);
-        Task UpdateInformationAccount(UpdateInformation account, IFormFile imageFile);
+        Task UpdateInformationAccount(UpdateInformation account, IFormFile imageFile , int useID);
         Task ChangePasswordAccount(ChangePassword account);
 
         Task<bool> CheckAccountExists(string email, string userName);

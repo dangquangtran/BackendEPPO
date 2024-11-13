@@ -143,17 +143,20 @@ namespace BackendEPPO.Controllers
         /// <returns>Update the address with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Address.UpdateAddress)]
-        public async Task<IActionResult> UpdateAddress(int id, [FromBody] UpdateAddressDTO address)
+        public async Task<IActionResult> UpdateAddress(int id, [FromForm] UpdateAddressDTO address)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { message = "Invalid input data." });
             }
-            address.AddressId = id;
+   
 
             try
             {
-                await _IService.UpdateAddress(address);
+                await _IService.UpdateAddress(address , id , userId);
                 var updatedRank = await _IService.GetAddressByID(id);
 
                 return Ok(new

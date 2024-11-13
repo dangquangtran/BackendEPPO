@@ -211,7 +211,7 @@ namespace BackendEPPO.Controllers
         /// <returns>Update information account by for mobile.</returns>
         [Authorize(Roles = "owner, customer")]
         [HttpPut(ApiEndPointConstant.User.UpdateInformationAccount)]
-        public async Task<IActionResult> UpdateInformationAccount(UpdateInformation accountDTO)
+        public async Task<IActionResult> UpdateInformationAccount([FromForm] UpdateInformation accountDTO)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
@@ -220,11 +220,10 @@ namespace BackendEPPO.Controllers
             {
                 return BadRequest(new { message = "Invalid input data." });
             }
-            accountDTO.UserId = userId;
-
+         
             try
             {
-                await _userService.UpdateInformationAccount(accountDTO, accountDTO.ImageFile);
+                await _userService.UpdateInformationAccount(accountDTO, accountDTO.ImageFile , userId);
                 var updatedUser = await _userService.GetUsersByID(userId);
 
                 return Ok(new

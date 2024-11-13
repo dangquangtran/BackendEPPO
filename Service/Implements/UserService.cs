@@ -230,23 +230,74 @@ namespace Service
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task UpdateInformationAccount(UpdateInformation accountDTO, IFormFile imageFile)
+        public async Task UpdateInformationAccount(UpdateInformation accountDTO, IFormFile imageFile, int useID)
         {
 
-            var entity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(accountDTO.UserId));
+            var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(useID));
 
-            if (entity == null)
+            if (userEntity == null)
             {
-                throw new Exception($"Không tìm thấy ID {accountDTO.UserId} .");
+                throw new KeyNotFoundException("User not found.");
             }
-            entity.FullName = accountDTO?.FullName;
-            entity.Gender = accountDTO?.Gender;
-            entity.DateOfBirth = accountDTO?.DateOfBirth;
-            entity.PhoneNumber = accountDTO?.PhoneNumber;
-            entity.Email = accountDTO?.Email;
-            entity.ImageUrl = accountDTO?.ImageUrl;
-            entity.IdentificationCard = accountDTO?.IdentificationCard;
+            if (!string.IsNullOrWhiteSpace(accountDTO.FullName))
+            {
+                userEntity.FullName = accountDTO.FullName;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.Gender))
+            {
+                userEntity.Gender = accountDTO.Gender;
+            }
+            if (accountDTO.DateOfBirth.HasValue)
+            {
+                userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.PhoneNumber))
+            {
+                userEntity.PhoneNumber = accountDTO.PhoneNumber;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.Email))
+            {
+                userEntity.Email = accountDTO.Email;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.ImageUrl))
+            {
+                userEntity.ImageUrl = accountDTO.ImageUrl;
+            }
+            if (accountDTO.IdentificationCard.HasValue)
+            {
+                userEntity.IdentificationCard = accountDTO.IdentificationCard.Value;
+            }
+            if (accountDTO.WalletId.HasValue)
+            {
+                userEntity.WalletId = accountDTO.WalletId.Value;
+            }
 
+            if (accountDTO.IsActive.HasValue)
+            {
+                userEntity.IsActive = accountDTO.IsActive.Value;
+            }
+            if (!string.IsNullOrWhiteSpace(accountDTO.RankLevel))
+            {
+                userEntity.RankLevel = accountDTO.RankLevel;
+            }
+
+            if (accountDTO.CreationDate.HasValue)
+            {
+                userEntity.CreationDate = accountDTO.CreationDate.Value;
+            }
+
+            if (accountDTO.CreationBy.HasValue)
+            {
+                userEntity.CreationBy = accountDTO.CreationBy.Value;
+            }
+
+            userEntity.ModificationDate = DateTime.Now;
+            userEntity.ModificationBy = accountDTO.ModificationBy;
+     
+            if (accountDTO.Status.HasValue)
+            {
+                userEntity.Status = accountDTO.Status.Value;
+            }
 
             if (imageFile != null)
             {
@@ -255,17 +306,13 @@ namespace Service
 
                 string newImageUrl = await _firebaseStorageService.UploadUserImageAsync(stream, fileName);
 
-                if (!string.IsNullOrWhiteSpace(accountDTO.ImageUrl))
+                if (!string.IsNullOrWhiteSpace(userEntity.ImageUrl))
                 {
                     //await _firebaseStorageService.DeleteUserImageAsync(userEntity.ImageUrl);
                 }
-
-                // Cập nhật URL ảnh mới vào userEntity
-                entity.ImageUrl = newImageUrl;
+                userEntity.ImageUrl = newImageUrl;
             }
-
-
-            _unitOfWork.UserRepository.Update(entity);
+            _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
         }
 

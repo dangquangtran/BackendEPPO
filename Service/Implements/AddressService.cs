@@ -38,7 +38,7 @@ namespace Service.Implements
 
         public async Task<Address> GetAddressByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.AddressRepository.GetByID(Id));
+            return await Task.FromResult(_unitOfWork.AddressRepository.GetByID(Id,  includeProperties: "User"));
         }
         public async Task CreateAddress(CreateAddressDTO address , int userID)
         {
@@ -55,18 +55,16 @@ namespace Service.Implements
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task UpdateAddress(UpdateAddressDTO address)
+        public async Task UpdateAddress(UpdateAddressDTO address , int addressID , int userID)
         {
 
-            var entity = await Task.FromResult(_unitOfWork.AddressRepository.GetByID(address.AddressId));
+            var entity = await Task.FromResult(_unitOfWork.AddressRepository.GetByID(addressID));
 
             if (entity == null)
             {
-                throw new Exception($"Address with ID {address.AddressId} not found.");
+                throw new Exception($"Address with ID {addressID} not found.");
             }
-
-
-            entity.UserId = address.UserId;
+            entity.UserId = userID;
             entity.Description = address.Description;
             entity.ModificationDate = DateTime.Now;
             entity.Status = address.Status;
