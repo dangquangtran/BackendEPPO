@@ -16,5 +16,6 @@ namespace Service.Interfaces
         void CreateWithdrawTransaction(CreateTransactionDTO createTransaction);
         void CreatePaymentTransaction(CreateTransactionDTO createTransaction, int orderId);
         void UpdateTransaction(UpdateTransactionDTO updateTransaction);
+        IEnumerable<TransactionVM> GetAllTransactionsInWallet(int page, int size,int walletId);
     }
 }

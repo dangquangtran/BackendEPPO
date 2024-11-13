@@ -149,5 +149,11 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        [HttpGet("GetAllTransactionsInWallet")]
+        [Authorize]
+        public IActionResult GetAllTransactionsInWallet([FromQuery] int page, int size, int walletId)
+        {
+            return Ok(_transactionService.GetAllTransactionsInWallet(page, size, walletId));
+        }
     }
 }

@@ -104,5 +104,11 @@ namespace Service.Implements
             _unitOfWork.TransactionRepository.Update(transaction);
             _unitOfWork.Save();
         }
+
+        public IEnumerable<TransactionVM> GetAllTransactionsInWallet(int page, int size, int walletId)
+        {
+            var transactions = _unitOfWork.TransactionRepository.Get(pageIndex: page, pageSize: size, filter: c => c.Status != 0 && c.WalletId == walletId);
+            return _mapper.Map<IEnumerable<TransactionVM>>(transactions);
+        }
     }
 }
