@@ -110,5 +110,11 @@ namespace Service.Implements
             var transactions = _unitOfWork.TransactionRepository.Get(pageIndex: page, pageSize: size, filter: c => c.Status != 0 && c.WalletId == walletId);
             return _mapper.Map<IEnumerable<TransactionVM>>(transactions);
         }
+
+        public async Task<IEnumerable<TransactionVM>> GetListTransactionsByToken(int page, int size, int typeEcommerce)
+        {
+            var transactions = _unitOfWork.TransactionRepository.Get(pageIndex: page, pageSize: size, filter: c => c.Status != 0 );
+            return _mapper.Map<IEnumerable<TransactionVM>>(transactions);
+        }
     }
 }

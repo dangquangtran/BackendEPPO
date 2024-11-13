@@ -121,6 +121,10 @@ namespace BackendEPPO.Extenstion
             public const string GetListAddressByToken_Endpoint = ApiEndpoint + "/GetList/Address/OfByUserID/ByToken";
 
         }
+        public static class Transaction
+        {
+            public const string GetListTransaction_Endpoint = ApiEndpoint + "/GetList/Transaction";
+        }
         // Do Huu Thuan
         public static class Notification
         {
@@ -142,6 +146,9 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListWallet_Endpoint = ApiEndpoint + "/GetList/Wallet";
             public const string GetWalletByID = GetListWallet_Endpoint + "/Id";
+
+            public const string GetListTransaction_Endpoint = GetListWallet_Endpoint + "/Transaction/Id";
+
             public const string CreateWallet = GetListWallet_Endpoint + "/Create/Wallet";
             public const string UpdateWalletByID = GetListWallet_Endpoint + "/Update/Wallet/Id";
         }

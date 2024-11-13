@@ -72,7 +72,43 @@ namespace BackendEPPO.Controllers
                 Data = _wallet
             });
         }
+        /// <summary>
+        /// Get the the transaction  with all role.
+        /// </summary>
+        /// <returns>Get the the transaction  with all role.</returns>
+      //  [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Wallet.GetListTransaction_Endpoint)]
+        public async Task<IActionResult> GetListTransactionsByWallet()
+        {
 
+            var walletIdClaim = User.FindFirst("walletId")?.Value;
+            int walletId = int.Parse(walletIdClaim);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Dữ liệu không tồn tại." });
+            }
+            try
+            {
+                var transaction = await _service.GetListTransactionsByWallet(walletId);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Truy van",
+                    Data = transaction
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Không tìm thấy địa chỉ" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi 500:", error = ex.Message });
+            }
+
+        }
 
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Wallet.CreateWallet)]
