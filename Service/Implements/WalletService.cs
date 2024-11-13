@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Notification;
+using DTOs.Transaction;
 using DTOs.Wallet;
 using Repository.Interfaces;
 using Service.Interfaces;
@@ -18,6 +19,11 @@ namespace Service.Implements
         public WalletService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+        public async Task<IEnumerable<Wallet>> GetListTransactionsByWallet(int id)
+        {
+            return await Task.FromResult(_unitOfWork.WalletRepository
+                .Get(filter: w => w.WalletId == id && w.Status != 0, includeProperties: "Transactions"));
         }
 
         public async Task<IEnumerable<Wallet>> GetListWallet(int page, int size)

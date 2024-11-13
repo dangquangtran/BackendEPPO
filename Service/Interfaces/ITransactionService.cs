@@ -17,5 +17,9 @@ namespace Service.Interfaces
         void CreatePaymentTransaction(CreateTransactionDTO createTransaction, int orderId);
         void UpdateTransaction(UpdateTransactionDTO updateTransaction);
         IEnumerable<TransactionVM> GetAllTransactionsInWallet(int page, int size,int walletId);
+
+        //thuandh
+        Task<IEnumerable<TransactionVM>> GetListTransactionsByToken(int page, int size , int typeEcommerce);
+
     }
 }

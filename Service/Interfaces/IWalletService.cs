@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessObjects.Models;
 using DTOs.Notification;
+using DTOs.Transaction;
 using DTOs.Wallet;
 namespace Service.Interfaces
 {
@@ -12,6 +13,8 @@ namespace Service.Interfaces
     {
         Task<IEnumerable<Wallet>> GetListWallet(int page, int size);
         Task<Wallet> GetWalletByID(int Id);
+        Task<IEnumerable<Wallet>> GetListTransactionsByWallet(int walletID);
+
         Task UpdateWallet(UpdateWalletDTO wallet);
         Task CreateWallet(CreateWalletDTO wallet);
     }
