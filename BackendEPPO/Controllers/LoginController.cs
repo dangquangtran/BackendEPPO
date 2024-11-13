@@ -53,15 +53,14 @@ namespace BackendEPPO.Controllers
                     x.Email.Equals(request.UsernameOrEmail, StringComparison.OrdinalIgnoreCase) ||
                     x.UserName.Equals(request.UsernameOrEmail, StringComparison.OrdinalIgnoreCase));
 
-            
+            //var user = _userService.GetAllUsers().Where(x => x.Email == request.UsernameOrEmail).FirstOrDefault();
+
+
             if (user == null || user.Password != request.Password)
             {
-                return Unauthorized(new { message = "Invalid username/email or password" });
+                return Unauthorized(new { message = "Invalid username or password" });
             }
-
-
-            //var user = _userService.GetAllUsers().Where(x => x.Email == request.Email).FirstOrDefault();
-
+       
 
             if (user != null && user.Password == request.Password)
             {
@@ -69,6 +68,8 @@ namespace BackendEPPO.Controllers
 
                 response = Ok(new
                 {
+                    StatusCode = 201,
+                    Message = "Đăng nhập thành công",
                     token = tokenString,
                     //userID = user.UserId,
                     roleName = user.Role.NameRole,

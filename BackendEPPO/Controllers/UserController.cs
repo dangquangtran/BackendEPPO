@@ -32,12 +32,12 @@ namespace BackendEPPO.Controllers
 
             if (users == null || !users.Any())
             {
-                return NotFound("No users found.");
+                return NotFound("Không tìm thấy dữ liệu.");
             }
             return Ok(new
             {
                 StatusCode = 200,  
-                Message = "Request was successful",
+                Message = "Tra cứu dữ liệu thành công.",
                 Data = users
             });
         }
@@ -46,7 +46,7 @@ namespace BackendEPPO.Controllers
         /// Get information User by userID for role admin, manager,staff.
         /// </summary>
         /// <returns>Get information User by userID for role admin, manager,staff.</returns>
-        [Authorize(Roles = "admin, manager, staff")]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.User.GetUserByID)]
         public async Task<IActionResult> GetUsersByID(int id)
         {
@@ -54,12 +54,12 @@ namespace BackendEPPO.Controllers
 
             if (users == null)
             {
-                return NotFound($"User with ID {id} not found.");
+                return NotFound($"Người dùng có Id = {id} không tồn tại.");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = "Tra cứu dữ liệu thành công.",
                 Data = users
             });
         }
@@ -80,7 +80,7 @@ namespace BackendEPPO.Controllers
 
             if (users == null)
             {
-                return NotFound($"User with ID {userId} not found.");
+                return NotFound($"Người dùng có Id = {userId} không tồn tại.");
             }
             return Ok(new
             {
@@ -117,7 +117,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Customer created successfully",
+                Message = "Tạo tài khoản thành công.",
                 Data = customer
             });
         }
@@ -173,7 +173,7 @@ namespace BackendEPPO.Controllers
         /// Update information account by all role manager.
         /// </summary>
         /// <returns>Update information account by all role manager.</returns>
-        [Authorize(Roles = "admin, manager, staff")]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.User.UpdateAccount)]
         public async Task<IActionResult> UpdateUserAccount(int id, [FromForm] UpdateAccount accountDTO)
         {
@@ -211,7 +211,7 @@ namespace BackendEPPO.Controllers
         /// <returns>Update information account by for mobile.</returns>
         [Authorize(Roles = "owner, customer")]
         [HttpPut(ApiEndPointConstant.User.UpdateInformationAccount)]
-        public async Task<IActionResult> UpdateInformationAccount([FromForm] UpdateInformation accountDTO)
+        public async Task<IActionResult> UpdateInformationAccount(UpdateInformation accountDTO)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
@@ -280,7 +280,43 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        /// <summary>
+        /// Change password of account by all role.
+        /// </summary>
+        /// <returns>Change password of account by all role.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.User.ChangePasswordByToken)]
+        public async Task<IActionResult> ChangePasswordByToken(ChangePassword accountDTO)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+            accountDTO.UserId = userId;
 
+            try
+            {
+                await _userService.ChangePasswordAccount(accountDTO);
+                var updatedUser = await _userService.GetUsersByID(userId);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "User account updated successfully.",
+                    Data = updatedUser
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
 
     }
 }

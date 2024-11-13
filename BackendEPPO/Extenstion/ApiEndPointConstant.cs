@@ -49,6 +49,7 @@ namespace BackendEPPO.Extenstion
             public const string UpdateInformationAccount = GetUserEndpoint + "/Update/Information/Id";
 
             public const string ChangePassword = GetUserEndpoint + "/UpdateAccount/ChangePassword/Id";
+            public const string ChangePasswordByToken = GetUserEndpoint + "/UpdateAccount/ChangePassword/ByToken/Id";
         }
         // Do Huu Thuan
         public static class Room
@@ -109,7 +110,11 @@ namespace BackendEPPO.Extenstion
             public const string CreateAddress = GetListAddress_Endpoint + "/CreateAddress";
             public const string UpdateAddress = GetListAddress_Endpoint + "/UpdateAddress/Address/Id";
 
-            public const string DeleteAddress = GetListAddress_Endpoint + "/Delete/Address/Id";
+            public const string UpdateAddressByToken = GetListAddress_Endpoint + "/UpdateAddress/AddressByToken/Id";
+
+            public const string DeleteAddress = GetListAddress_Endpoint + "/Delete/Address/ID";
+
+            public const string DeleteAddressByToken = GetListAddress_Endpoint + "/Delete/AddressByToken/Id";
 
             public const string GetListAddressByUserID_Endpoint = ApiEndpoint + "/GetList/Address/OfByUserID";
 
