@@ -12,6 +12,5 @@ namespace DTOs.OrderDetail
         public DateTime? RentalStartDate { get; set; }
         public DateTime? RentalEndDate { get; set; }
         public double? NumberMonth { get; set; }
-        public double? TotalPrice { get; set; }
     }
 }

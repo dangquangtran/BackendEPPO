@@ -185,13 +185,13 @@ namespace BackendEPPO.Controllers
                 var userIdClaim = User.FindFirst("userId")?.Value;
                 int userId = int.Parse(userIdClaim);
 
-                _orderService.CreateRentalOrder(createOrderRental, userId);
+                var order = _orderService.CreateRentalOrder(createOrderRental, userId);
 
                 return Ok(new
                 {
                     StatusCode = 201,
                     Message = "Đã tạo đơn hàng thành công.",
-                    Data = createOrderRental
+                    Data = order
                 });
             }
             catch (Exception ex)

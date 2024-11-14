@@ -13,6 +13,6 @@ namespace DTOs.Order
         public double DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }
         public int? PaymentId { get; set; }
-        public List<CreateOrderDetailRentalDTO> OrderDetailsRental { get; set; }
+        public CreateOrderDetailRentalDTO OrderDetail { get; set; }
     }
 }

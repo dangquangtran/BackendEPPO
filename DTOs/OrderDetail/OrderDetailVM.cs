@@ -11,6 +11,5 @@ namespace DTOs.OrderDetail
         public int OrderDetailId { get; set; }
         public int? OrderId { get; set; }
         public int? PlantId { get; set; }
-        public double? TotalPrice { get; set; }
     }
 }
