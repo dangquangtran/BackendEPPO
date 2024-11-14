@@ -1,6 +1,7 @@
 ﻿using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
 using DTOs.Contracts;
+using DTOs.Error;
 using DTOs.Wallet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,17 +36,17 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Contract.GetContractOfUser_Endpoint)]
         public async Task<IActionResult> GetContractOfUser(int userID)
         {
-            var users = await _contractService.GetContractOfUser(userID);
+            var contract = await _contractService.GetContractOfUser(userID);
 
-            if (users == null || !users.Any())
+            if (contract == null || !contract.Any())
             {
-                return NotFound("No users found.");
+                return NotFound("Dữ liệu không tồn tại.");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
-                Data = users
+                Message = " Yêu cầu đã thành công.",
+                Data = contract
             });
         }
 
@@ -61,12 +62,12 @@ namespace BackendEPPO.Controllers
 
             if (contract == null || !contract.Any())
             {
-                return NotFound("No contract found.");
+                return NotFound("Không tìm thấy dữ liệu.");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = "Yêu cầu đã thành công.",
                 Data = contract
             });
         }
@@ -77,18 +78,18 @@ namespace BackendEPPO.Controllers
         /// <returns>Get Contracts with ContractID with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Contract.GetContractByID)]
-        public async Task<IActionResult> GetContractByID(int id)
+        public async Task<IActionResult> GetContractByID(int contractId)
         {
-            var contract = await _contractService.GetContractByID(id);
+            var contract = await _contractService.GetContractByID(contractId);
 
             if (contract == null)
             {
-                return NotFound($"Contract with ID {id} not found.");
+                return NotFound($"Không tìm thấy dữ liệu {contractId}");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = "Yêu cầu đã thành công.",
                 Data = contract
             });
         }
@@ -101,8 +102,6 @@ namespace BackendEPPO.Controllers
         [HttpPost(ApiEndPointConstant.Contract.CreateContract)]
         public async Task<IActionResult> CreateContract([FromBody] CreateContractDTO contract)
         {
-       
-
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
 
@@ -113,12 +112,11 @@ namespace BackendEPPO.Controllers
 
             int contractId =  await _contractService.CreateContract(contract, userId);
             string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract, userId);
-  
 
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Tạo đơn hàng thành công",
+                Message = "Yêu cầu đã thành công.",
                 PdfUrl = contractPdfUrl,
                 ContractId = contractId,
                 Data = contract,
@@ -148,7 +146,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Contract created successfully",
+                Message = "Yêu cầu đã thành công.",
                 PdfUrl = contractPdfUrl,
                 Data = contracts,
 
@@ -164,25 +162,20 @@ namespace BackendEPPO.Controllers
         //[HttpGet(ApiEndPointConstant.Contract.DownLoadContract)]
         public async Task<IActionResult> DownloadContractPdf(string fileName)
         {
-            // Chỉ định tên thư mục trên Firebase Storage
             string folderName = "contracts";
 
             try
             {
-                // Tải file từ Firebase Storage
                 var fileStream = await _firebaseStorageService.DownloadFileAsync(fileName, folderName);
 
                 if (fileStream == null)
                 {
                     return NotFound();
                 }
-
-                // Trả về file cho người dùng (dạng PDF)
                 return File(fileStream, "application/pdf", fileName);
             }
             catch (Exception ex)
             {
-                // Xử lý trường hợp lỗi (nếu có)
                 return StatusCode(500, new { message = "Error downloading the contract.", error = ex.Message });
             }
         }                   
@@ -198,7 +191,7 @@ namespace BackendEPPO.Controllers
         {               
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return BadRequest(new { message = "Không tìm thấy dữ liệu." });
             }
             contract.ContractId = id;
 
@@ -210,13 +203,13 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Contract updated successfully.",
+                    Message = "Yêu cầu đã thành công.",
                     Data = updatedContract
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Contract not found." });
+                return NotFound(new { message = "Không tìm thấy dữ liệu." });
             }
             catch (Exception ex)
             {
@@ -225,6 +218,9 @@ namespace BackendEPPO.Controllers
         }
 
 
-       
+        
+
+
+
     }
 }

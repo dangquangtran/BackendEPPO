@@ -32,12 +32,12 @@ namespace BackendEPPO.Controllers
 
             if (contractDetail == null || !contractDetail.Any())
             {
-                return NotFound("No contract detail found.");
+                return NotFound("Không tìm thấy dữ liệu.");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = "Yêu cầu đã thành công.",
                 Data = contractDetail
             });
         }
@@ -48,18 +48,18 @@ namespace BackendEPPO.Controllers
         /// <returns>Get Contract details by contract detail id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.ContractDetails.GetContractDetailsByID)]
-        public async Task<IActionResult> GetContractDetailByID(int id)
+        public async Task<IActionResult> GetContractDetailByID(int contractDetailByID)
         {
-            var contractDetail = await _contractDetailsService.GetContractDetailByID(id);
+            var contractDetail = await _contractDetailsService.GetContractDetailByID(contractDetailByID);
 
             if (contractDetail == null)
             {
-                return NotFound($"Contract Detail with ID {id} not found.");
+                return NotFound($"Không tìm thấy dữ liệu {contractDetailByID} .");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = "Yêu cầu đã thành công.",
                 Data = contractDetail
             });
         }
@@ -83,7 +83,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Contract Detail created successfully",
+                Message = "Yêu cầu đã thành công.",
                 Data = contractDetail
             });
         }
@@ -110,13 +110,13 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Contract Detail updated successfully.",
+                    Message = "Yêu cầu đã thành công.",
                     Data = updatedContractDetail
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Contract Detail not found." });
+                return NotFound(new { message = "Không tìm thấy dữ liệu." });
             }
             catch (Exception ex)
             {
