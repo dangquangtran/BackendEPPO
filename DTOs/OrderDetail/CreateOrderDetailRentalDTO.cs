@@ -10,7 +10,6 @@ namespace DTOs.OrderDetail
     {
         public int? PlantId { get; set; }
         public DateTime? RentalStartDate { get; set; }
-        public DateTime? RentalEndDate { get; set; }
         public double? NumberMonth { get; set; }
     }
 }

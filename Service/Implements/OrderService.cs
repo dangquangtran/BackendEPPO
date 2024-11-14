@@ -73,7 +73,6 @@ namespace Service.Implements
             order.Status = 1;
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
-            order.TypeEcommerceId = 1;
             order.PaymentStatus = "Đã thanh toán";
 
             foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
@@ -166,13 +165,20 @@ namespace Service.Implements
             Order order = _mapper.Map<Order>(createOrderDTO);
             order.CreationDate = DateTime.Now;
             order.TypeEcommerceId = 2; 
-            order.Status = 1; 
+            order.Status = 1;
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
             order.PaymentStatus = "Chưa thanh toán";
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                if (orderDetail.RentalStartDate.HasValue && orderDetail.NumberMonth.HasValue)
+                {
+                    orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+                }
+            }
 
-            var orderDetailDTO = createOrderDTO.OrderDetail;
-            
+            foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+            {
                 if (orderDetailDTO.PlantId.HasValue)
                 {
                     var plant = _unitOfWork.PlantRepository.GetByID(orderDetailDTO.PlantId.Value);
@@ -187,12 +193,10 @@ namespace Service.Implements
                         _unitOfWork.PlantRepository.Update(plant);
                     }
                 }
-            
-
+            }
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
-            var orderVM = GetOrderById(order.OrderId);
-            return _mapper.Map<OrderVM>(orderVM);
+            return _mapper.Map<OrderVM>(order);
         }
 
     }
