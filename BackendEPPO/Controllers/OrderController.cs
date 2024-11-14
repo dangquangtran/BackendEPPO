@@ -141,14 +141,14 @@ namespace BackendEPPO.Controllers
 
         [Authorize]
         [HttpGet("GetOrdersByUser")]
-        public IActionResult GetOrdersByUserId(int pageIndex, int pageSize, int status)
+        public IActionResult GetOrdersByUserId(int pageIndex, int pageSize, int status, int typeEcommerceId)
         {
             try
             {
                 var userIdClaim = User.FindFirst("userId")?.Value;
                 int userId = int.Parse(userIdClaim);
 
-                var result = _orderService.GetOrdersByUserId(userId, pageIndex, pageSize, status);
+                var result = _orderService.GetOrdersByUserId(userId, pageIndex, pageSize, status, typeEcommerceId);
                 if (result == null || !result.Any())
                 {
                     return NotFound(new
@@ -163,6 +163,35 @@ namespace BackendEPPO.Controllers
                     StatusCode = 200,
                     Message = "Yêu cầu thành công.",
                     Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpPost("CreateOrderRental")]
+        public IActionResult CreateOrderRental([FromBody] CreateOrderRentalDTO createOrderRental)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+
+                _orderService.CreateRentalOrder(createOrderRental, userId);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Đã tạo đơn hàng thành công.",
+                    Data = createOrderRental
                 });
             }
             catch (Exception ex)

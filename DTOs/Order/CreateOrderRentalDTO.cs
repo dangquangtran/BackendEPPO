@@ -1,5 +1,4 @@
-﻿using BusinessObjects.Models;
-using DTOs.OrderDetail;
+﻿using DTOs.OrderDetail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace DTOs.Order
 {
-    public class CreateOrderDTO
+    public class CreateOrderRentalDTO
     {
         public double TotalPrice { get; set; }
         public double DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }
         public int? TypeEcommerceId { get; set; }
         public int? PaymentId { get; set; }
-        public List<CreateOrderDetailDTO> OrderDetails { get; set; }
+        public List<CreateOrderDetailRentalDTO> OrderDetailsRental { get; set; }
     }
 }

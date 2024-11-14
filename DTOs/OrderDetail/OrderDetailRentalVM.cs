@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BusinessObjects.Models
+namespace DTOs.OrderDetail
 {
-    public partial class OrderDetail
+    public class OrderDetailRentalVM
     {
         public int OrderDetailId { get; set; }
         public int? OrderId { get; set; }
@@ -12,8 +15,5 @@ namespace BusinessObjects.Models
         public DateTime? RentalEndDate { get; set; }
         public double? NumberMonth { get; set; }
         public double? TotalPrice { get; set; }
-
-        public virtual Order Order { get; set; }
-        public virtual Plant Plant { get; set; }
     }
 }

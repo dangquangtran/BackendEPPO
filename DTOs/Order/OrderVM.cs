@@ -16,11 +16,12 @@ namespace DTOs.Order
         public double? DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }
         public double? FinalPrice { get; set; }
+        public int? TypeEcommerceId { get; set; }
         public int? PaymentId { get; set; }
         public string PaymentStatus { get; set; }
         public int? Status { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
-        public virtual ICollection<OrderDetailVM> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetailRentalVM> OrderDetails { get; set; }
     }
 }
