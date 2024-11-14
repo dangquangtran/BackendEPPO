@@ -101,6 +101,8 @@ namespace BackendEPPO.Controllers
         [HttpPost(ApiEndPointConstant.Contract.CreateContract)]
         public async Task<IActionResult> CreateContract([FromBody] CreateContractDTO contract)
         {
+       
+
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
 
@@ -109,17 +111,17 @@ namespace BackendEPPO.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _contractService.CreateContract(contract, userId);
+            int contractId =  await _contractService.CreateContract(contract, userId);
             string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract, userId);
   
 
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Contract created successfully",
+                Message = "Tạo đơn hàng thành công",
                 PdfUrl = contractPdfUrl,
+                ContractId = contractId,
                 Data = contract,
-
             });
         }
 

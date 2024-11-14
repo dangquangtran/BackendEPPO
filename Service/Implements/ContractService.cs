@@ -76,7 +76,7 @@ namespace Service
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task CreateContract(CreateContractDTO contract , int userId)
+        public async Task<int> CreateContract(CreateContractDTO contract , int userId)
         {
 
             var entity = new Contract
@@ -126,6 +126,8 @@ namespace Service
 
             _unitOfWork.ContractRepository.Update(entity);
             await _unitOfWork.SaveAsync();
+
+            return entity.ContractId;
         }
 
 
