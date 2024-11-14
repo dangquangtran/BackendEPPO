@@ -65,6 +65,10 @@ namespace Service.Implements
                 throw new Exception($"Address with ID {addressID} not found.");
             }
             entity.UserId = userID;
+            if (!string.IsNullOrWhiteSpace(address.Description))
+            {
+                entity.Description = address.Description;
+            }
             entity.Description = address.Description;
             entity.ModificationDate = DateTime.Now;
             entity.Status = address.Status;

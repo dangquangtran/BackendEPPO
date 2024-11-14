@@ -17,7 +17,7 @@ namespace DTOs.Address
     }
     public class UpdateAddressDTO
     {
-        public string Description { get; set; }
+        public string ? Description { get; set; }
     //    public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
         public int? Status { get; set; }
