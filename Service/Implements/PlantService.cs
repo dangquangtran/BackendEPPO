@@ -50,10 +50,8 @@ namespace Service
 
         public PlantVM GetPlantById(int id)
         {
-            // Bao gồm các thuộc tính cần thiết
             var plant = _unitOfWork.PlantRepository.GetByID(id, includeProperties: "ImagePlants,ContractDetails.Contract");
 
-            // Map dữ liệu và lấy ngày hợp đồng
             var plantVM = _mapper.Map<PlantVM>(plant);
             if (plant != null)
             {
