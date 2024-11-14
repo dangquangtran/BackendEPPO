@@ -176,6 +176,7 @@ namespace BackendEPPO.Controllers
             }
         }
 
+
         /// <summary>
         /// Delete the address with all role.
         /// </summary>
@@ -227,7 +228,7 @@ namespace BackendEPPO.Controllers
             {
                 return BadRequest(new { message = "Dữ liệu không tồn tại." });
             }
-            address.AddressId = userId;
+         
 
             try
             {
