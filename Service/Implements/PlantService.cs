@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
+using DTOs.ImagePlant;
 using DTOs.Plant;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -171,10 +172,43 @@ namespace Service
                 filter: c => c.TypeEcommerceId == typeEcommerceId && c.Status != 0,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "ImagePlants"
+                includeProperties: "ImagePlants,ContractDetails.Contract"
             );
 
-            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+            var plantVMs = plants.Select(plant => new PlantVM
+            {
+                PlantId = plant.PlantId,
+                PlantName = plant.PlantName,
+                Title = plant.Title,
+                Description = plant.Description,
+                Length = plant.Length,
+                Width = plant.Width,
+                Height = plant.Height,
+                Price = plant.Price,
+                Discounts = plant.Discounts,
+                FinalPrice = plant.FinalPrice,
+                MainImage = plant.MainImage,
+                CategoryId = plant.CategoryId,
+                TypeEcommerceId = plant.TypeEcommerceId,
+                Status = plant.Status,
+                IsActive = plant.IsActive,
+                CreationDate = plant.CreationDate,
+                ModificationDate = plant.ModificationDate,
+                ModificationBy = plant.ModificationBy,
+                ImagePlants = _mapper.Map<ICollection<ImagePlantVM>>(plant.ImagePlants),
+
+                // Lấy ngày thuê và ngày hết hạn từ Contract liên quan
+                RentalStartDate = plant.ContractDetails
+             .Select(cd => cd.Contract)
+             .OrderByDescending(contract => contract.CreationContractDate)
+             .FirstOrDefault()?.CreationContractDate,
+                RentalEndDate = plant.ContractDetails
+             .Select(cd => cd.Contract)
+             .OrderByDescending(contract => contract.EndContractDate)
+             .FirstOrDefault()?.EndContractDate
+            });
+
+            return plantVMs;
         }
 
 
@@ -184,10 +218,43 @@ namespace Service
                filter: c => c.TypeEcommerceId == typeEcommerceId && c.CategoryId == categoryId && c.Status != 0,
                pageIndex: pageIndex,
                pageSize: pageSize,
-               includeProperties: "ImagePlants"
+               includeProperties: "ImagePlants,ContractDetails.Contract"
            );
 
-            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+            var plantVMs = plants.Select(plant => new PlantVM
+            {
+                PlantId = plant.PlantId,
+                PlantName = plant.PlantName,
+                Title = plant.Title,
+                Description = plant.Description,
+                Length = plant.Length,
+                Width = plant.Width,
+                Height = plant.Height,
+                Price = plant.Price,
+                Discounts = plant.Discounts,
+                FinalPrice = plant.FinalPrice,
+                MainImage = plant.MainImage,
+                CategoryId = plant.CategoryId,
+                TypeEcommerceId = plant.TypeEcommerceId,
+                Status = plant.Status,
+                IsActive = plant.IsActive,
+                CreationDate = plant.CreationDate,
+                ModificationDate = plant.ModificationDate,
+                ModificationBy = plant.ModificationBy,
+                ImagePlants = _mapper.Map<ICollection<ImagePlantVM>>(plant.ImagePlants),
+
+                // Lấy ngày thuê và ngày hết hạn từ Contract liên quan
+                RentalStartDate = plant.ContractDetails
+              .Select(cd => cd.Contract)
+              .OrderByDescending(contract => contract.CreationContractDate)
+              .FirstOrDefault()?.CreationContractDate,
+                RentalEndDate = plant.ContractDetails
+              .Select(cd => cd.Contract)
+              .OrderByDescending(contract => contract.EndContractDate)
+              .FirstOrDefault()?.EndContractDate
+            });
+
+            return plantVMs;
         }
 
         public IEnumerable<PlantVM> SearchPlants(string keyword,int typeEcommerceId, int pageIndex, int pageSize)
@@ -197,11 +264,43 @@ namespace Service
                 filter: c => (c.PlantName.Contains(keyword) || c.Description.Contains(keyword)) && c.Status != 0 && c.TypeEcommerceId == typeEcommerceId,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "ImagePlants"
+                includeProperties: "ImagePlants,ContractDetails.Contract"
             );
 
-            // Ánh xạ từ Plant sang PlantVM bằng AutoMapper
-            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+            var plantVMs = plants.Select(plant => new PlantVM
+            {
+                PlantId = plant.PlantId,
+                PlantName = plant.PlantName,
+                Title = plant.Title,
+                Description = plant.Description,
+                Length = plant.Length,
+                Width = plant.Width,
+                Height = plant.Height,
+                Price = plant.Price,
+                Discounts = plant.Discounts,
+                FinalPrice = plant.FinalPrice,
+                MainImage = plant.MainImage,
+                CategoryId = plant.CategoryId,
+                TypeEcommerceId = plant.TypeEcommerceId,
+                Status = plant.Status,
+                IsActive = plant.IsActive,
+                CreationDate = plant.CreationDate,
+                ModificationDate = plant.ModificationDate,
+                ModificationBy = plant.ModificationBy,
+                ImagePlants = _mapper.Map<ICollection<ImagePlantVM>>(plant.ImagePlants),
+
+                // Lấy ngày thuê và ngày hết hạn từ Contract liên quan
+                RentalStartDate = plant.ContractDetails
+             .Select(cd => cd.Contract)
+             .OrderByDescending(contract => contract.CreationContractDate)
+             .FirstOrDefault()?.CreationContractDate,
+                            RentalEndDate = plant.ContractDetails
+             .Select(cd => cd.Contract)
+             .OrderByDescending(contract => contract.EndContractDate)
+             .FirstOrDefault()?.EndContractDate
+                        });
+
+            return plantVMs;
         }
 
         public async Task<IEnumerable<PlantVM>> SearchPlantKeyType(int pageIndex, int pageSize, int typeEcommerceId, string keyword)
