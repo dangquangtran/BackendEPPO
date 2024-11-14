@@ -204,5 +204,35 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+
+        [Authorize]
+        [HttpPut("UpdatePaymentOrderRental")]
+        public IActionResult UpdatePaymentOrderRental(int orderId, int contractId, int paymentId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+
+                _orderService.UpdatePaymentOrderRental(orderId, contractId, userId, paymentId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Cập nhật trạng thái thanh toán đơn hàng thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
     }
 }

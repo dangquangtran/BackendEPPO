@@ -108,7 +108,7 @@ namespace Service
                 UpdatedAt = DateTime.Now,
                 TypeContract = "Thuê Cây",
                 ContractUrl = contract.ContractUrl,
-                IsActive = 1,
+                IsActive = 0,
                 Status = 1,
             };
 

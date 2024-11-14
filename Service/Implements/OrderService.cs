@@ -199,5 +199,71 @@ namespace Service.Implements
             return _mapper.Map<OrderVM>(order);
         }
 
+        public void UpdatePaymentOrderRental(int orderId, int contractId, int userId, int paymentId)
+        {
+            // Lấy thông tin hợp đồng và cập nhật
+            var contract = _unitOfWork.ContractRepository.GetByID(contractId);
+            if (contract != null)
+            {
+                contract.IsActive = 1;
+                _unitOfWork.ContractRepository.Update(contract);
+            }
+
+            // Lấy thông tin người dùng và ví
+            var user = _unitOfWork.UserRepository.GetByID(userId);
+            var walletId = user?.WalletId;
+            var wallet = _unitOfWork.WalletRepository.GetByID(walletId);
+
+            if (wallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng.");
+            }
+
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Kiểm tra paymentId để quyết định logic cần thực hiện
+            if (paymentId == 2)
+            {
+                // Kiểm tra số dư ví
+                if (wallet.NumberBalance < order.FinalPrice)
+                {
+                    throw new Exception("Số dư trong ví không đủ để thanh toán.");
+                }
+
+                // Trừ tiền từ ví và cập nhật ví
+                wallet.NumberBalance -= order.FinalPrice;
+                _unitOfWork.WalletRepository.Update(wallet);
+
+                // Tạo và thêm giao dịch mới
+                Transaction transaction = new Transaction
+                {
+                    WalletId = walletId,
+                    Description = "Thanh toán đơn hàng",
+                    WithdrawNumber = order.FinalPrice,
+                    RechargeNumber = null,
+                    WithdrawDate = DateTime.Now,
+                    CreationDate = DateTime.Now,
+                    PaymentId = 2,
+                    Status = 1,
+                    IsActive = true
+                };
+                _unitOfWork.TransactionRepository.Insert(transaction);
+
+                // Cập nhật trạng thái thanh toán đơn hàng
+                order.PaymentStatus = "Đã thanh toán";
+            }
+           
+
+            order.ModificationDate = DateTime.Now;
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
+
+
     }
 }
