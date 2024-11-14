@@ -16,6 +16,7 @@ namespace BusinessObjects.Models
         public double? DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }
         public double? FinalPrice { get; set; }
+        public int? TypeEcommerceId { get; set; }
         public int? PaymentId { get; set; }
         public string PaymentStatus { get; set; }
         public int? Status { get; set; }
@@ -26,6 +27,7 @@ namespace BusinessObjects.Models
 
         public virtual User ModificationByNavigation { get; set; }
         public virtual Payment Payment { get; set; }
+        public virtual TypeEcommerce TypeEcommerce { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

@@ -369,6 +369,8 @@ namespace BusinessObjects.Models
 
                 entity.HasIndex(e => e.PaymentId, "PaymentID");
 
+                entity.HasIndex(e => e.TypeEcommerceId, "TypeEcommerceID");
+
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
                 entity.Property(e => e.Code).HasMaxLength(50);
@@ -383,6 +385,8 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.PaymentStatus).HasMaxLength(255);
 
+                entity.Property(e => e.TypeEcommerceId).HasColumnName("TypeEcommerceID");
+
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
                 entity.HasOne(d => d.ModificationByNavigation)
@@ -396,6 +400,12 @@ namespace BusinessObjects.Models
                     .HasForeignKey(d => d.PaymentId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("Order_ibfk_2");
+
+                entity.HasOne(d => d.TypeEcommerce)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.TypeEcommerceId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("Order_ibfk_3");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -411,6 +421,10 @@ namespace BusinessObjects.Models
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
                 entity.Property(e => e.PlantId).HasColumnName("PlantID");
+
+                entity.Property(e => e.RentalEndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.RentalStartDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)

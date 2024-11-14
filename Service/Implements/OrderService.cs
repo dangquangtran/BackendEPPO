@@ -105,11 +105,11 @@ namespace Service.Implements
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
         }
-        public IEnumerable<OrderVM> GetOrdersByUserId(int userId, int pageIndex, int pageSize, int status)
+        public IEnumerable<OrderVM> GetOrdersByUserId(int userId, int pageIndex, int pageSize, int status, int typeEcommerceId)
         {
             // Lấy danh sách đơn hàng dựa theo userId và có trạng thái khác 0 (đang hoạt động)
             var orders = _unitOfWork.OrderRepository.Get(
-                filter: o => o.UserId == userId && o.Status == status, // Lọc theo userId và trạng thái đơn hàng
+                filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == typeEcommerceId, // Lọc theo userId và trạng thái đơn hàng
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "OrderDetails" // Bao gồm thông tin chi tiết đơn hàng
@@ -160,5 +160,37 @@ namespace Service.Implements
                 _unitOfWork.Save();
             }
         }
+        public void CreateRentalOrder(CreateOrderRentalDTO createOrderDTO, int userId)
+        {
+            Order order = _mapper.Map<Order>(createOrderDTO);
+            order.CreationDate = DateTime.Now;
+            order.Status = 1; // Trạng thái 'đã tạo'
+            order.UserId = userId;
+            order.FinalPrice = order.TotalPrice + order.DeliveryFee;
+            order.PaymentStatus = "Chưa thanh toán";
+
+            foreach (var orderDetailDTO in createOrderDTO.OrderDetailsRental)
+            {
+                if (orderDetailDTO.PlantId.HasValue)
+                {
+                    var plant = _unitOfWork.PlantRepository.GetByID(orderDetailDTO.PlantId.Value);
+                    if (plant != null)
+                    {
+                        if ((bool)!plant.IsActive)
+                        {
+                            throw new Exception($"Cây với ID {plant.PlantId} không thể được thuê vì đã ngừng hoạt động.");
+                        }
+
+                        plant.IsActive = false; 
+                        _unitOfWork.PlantRepository.Update(plant);
+                    }
+                }
+            }
+
+            // Thêm order vào repository và lưu thay đổi
+            _unitOfWork.OrderRepository.Insert(order);
+            _unitOfWork.Save();
+        }
+
     }
 }

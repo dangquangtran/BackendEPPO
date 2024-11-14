@@ -37,6 +37,9 @@ namespace Service.AutoMapper
             CreateMap<Order, OrderVM>().ReverseMap();
             CreateMap<CreateOrderDetailDTO, OrderDetail>();
             CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
+            CreateMap<CreateOrderRentalDTO, Order>();
+            CreateMap<CreateOrderDetailRentalDTO, OrderDetail>();
+            CreateMap<OrderDetail, OrderDetailRentalVM>().ReverseMap();
             CreateMap<ImagePlant, ImagePlantVM>().ReverseMap();
             //Do Huu Thuan
             CreateMap<Plant, ResponsePlantDTO>().ReverseMap();

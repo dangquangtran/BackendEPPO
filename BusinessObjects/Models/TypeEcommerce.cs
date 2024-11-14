@@ -7,6 +7,7 @@ namespace BusinessObjects.Models
     {
         public TypeEcommerce()
         {
+            Orders = new HashSet<Order>();
             Plants = new HashSet<Plant>();
         }
 
@@ -15,6 +16,7 @@ namespace BusinessObjects.Models
         public string Description { get; set; }
         public int? Status { get; set; }
 
+        public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Plant> Plants { get; set; }
     }
 }
