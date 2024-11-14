@@ -1,5 +1,6 @@
 ﻿using BackendEPPO.Extenstion;
 using DTOs.Category;
+using DTOs.Error;
 using DTOs.Wallet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -33,12 +34,12 @@ namespace BackendEPPO.Controllers
 
             if (_cate == null || !_cate.Any())
             {
-                return NotFound("No contract found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = _cate
             });
         }
@@ -55,12 +56,12 @@ namespace BackendEPPO.Controllers
 
             if (_cate == null)
             {
-                return NotFound($"Category with ID {id} not found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = _cate
             });
         }
@@ -84,7 +85,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Category created successfully",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = category
             });
         }
@@ -100,7 +101,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             category.CategoryId = id;
 
@@ -112,17 +113,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Category updated successfully.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedcategory
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Category not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 
@@ -136,7 +137,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             category.CategoryId = id;
 
@@ -148,17 +149,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Delete category successfully.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedcategory
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Category not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
     }

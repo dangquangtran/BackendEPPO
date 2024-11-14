@@ -171,7 +171,7 @@ namespace BackendEPPO.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 
@@ -208,7 +208,7 @@ namespace BackendEPPO.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Lỗi 500:", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 
@@ -235,17 +235,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Thay đổi địa chỉ thành công.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedAddress
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Không tìm thấy địa chỉ" });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Lỗi 500:", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
     }
