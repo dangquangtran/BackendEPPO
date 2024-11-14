@@ -1,5 +1,6 @@
 ﻿using BackendEPPO.Extenstion;
 using BusinessObjects.Models;
+using DTOs.Error;
 using DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,12 +33,12 @@ namespace BackendEPPO.Controllers
 
             if (users == null || !users.Any())
             {
-                return NotFound("Không tìm thấy dữ liệu.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
-                StatusCode = 200,  
-                Message = "Yêu cầu đã thành công.",
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = users
             });
         }
@@ -54,12 +55,12 @@ namespace BackendEPPO.Controllers
 
             if (users == null)
             {
-                return NotFound($"Người dùng có Id = {userId} không tồn tại.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = users
             });
         }
@@ -80,12 +81,12 @@ namespace BackendEPPO.Controllers
 
             if (users == null)
             {
-                return NotFound($"Người dùng có Id = {userId} không tồn tại.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = users
             });
         }
@@ -109,7 +110,7 @@ namespace BackendEPPO.Controllers
                 return Conflict(new
                 {
                     StatusCode = 409,
-                    Message = "Tài khoản mật khẩu đã tồn tại."
+                    Message = Error.CREATE_ACCOUNT_FAIL,
                 });
             }
             await _userService.CreateAccountByCustomer(customer);
@@ -117,7 +118,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Tạo tài khoản thành công.",
+                Message = Error.CREATE_ACCOUNT_SUCCESSFUL,
                 Data = customer
             });
         }
@@ -140,7 +141,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = owner
             });
         }
@@ -164,7 +165,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = admin
             });
         }
@@ -179,7 +180,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             accountDTO.UserId = id;
 
@@ -191,17 +192,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Yêu cầu đã thành công.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedUser
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Không tìm thấy dữ liệu." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 
@@ -218,7 +219,7 @@ namespace BackendEPPO.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
          
             try
@@ -229,17 +230,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "User account updated successfully.",
+                    Message = Error.UPDATE_ACCOUNT_SUCCESSFUL,
                     Data = updatedUser
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "User not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 
@@ -253,7 +254,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             accountDTO.UserId = id;
 
@@ -265,17 +266,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "User account updated successfully.",
+                    Message = Error.UPDATE_ACCOUNT_SUCCESSFUL,
                     Data = updatedUser
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "User not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 
@@ -291,10 +292,9 @@ namespace BackendEPPO.Controllers
             int userId = int.Parse(userIdClaim);
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             accountDTO.UserId = userId;
-
             try
             {
                 await _userService.ChangePasswordAccount(accountDTO);
@@ -303,17 +303,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "User account updated successfully.",
+                    Message = Error.UPDATE_ACCOUNT_SUCCESSFUL,
                     Data = updatedUser
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "User not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 

@@ -40,12 +40,12 @@ namespace BackendEPPO.Controllers
 
             if (contract == null || !contract.Any())
             {
-                return NotFound("Dữ liệu không tồn tại.");
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = " Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = contract
             });
         }
@@ -62,12 +62,12 @@ namespace BackendEPPO.Controllers
 
             if (contract == null || !contract.Any())
             {
-                return NotFound("Không tìm thấy dữ liệu.");
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = contract
             });
         }
@@ -84,12 +84,12 @@ namespace BackendEPPO.Controllers
 
             if (contract == null)
             {
-                return NotFound($"Không tìm thấy dữ liệu {contractId}");
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = contract
             });
         }
@@ -116,7 +116,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 PdfUrl = contractPdfUrl,
                 ContractId = contractId,
                 Data = contract,
@@ -146,7 +146,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 PdfUrl = contractPdfUrl,
                 Data = contracts,
 
@@ -191,7 +191,7 @@ namespace BackendEPPO.Controllers
         {               
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Không tìm thấy dữ liệu." });
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             contract.ContractId = id;
 
@@ -203,17 +203,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Yêu cầu đã thành công.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedContract
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Không tìm thấy dữ liệu." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 

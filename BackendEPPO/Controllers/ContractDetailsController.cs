@@ -1,6 +1,7 @@
 ﻿using BackendEPPO.Extenstion;
 using DTOs.ContractDetails;
 using DTOs.Contracts;
+using DTOs.Error;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,12 +33,12 @@ namespace BackendEPPO.Controllers
 
             if (contractDetail == null || !contractDetail.Any())
             {
-                return NotFound("Không tìm thấy dữ liệu.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = contractDetail
             });
         }
@@ -54,12 +55,12 @@ namespace BackendEPPO.Controllers
 
             if (contractDetail == null)
             {
-                return NotFound($"Không tìm thấy dữ liệu {contractDetailByID} .");
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = contractDetail
             });
         }
@@ -83,7 +84,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Yêu cầu đã thành công.",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = contractDetail
             });
         }
@@ -98,7 +99,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
             contractDetail.ContractDetailId = id;
 
@@ -110,17 +111,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Yêu cầu đã thành công.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedContractDetail
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Không tìm thấy dữ liệu." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
     }
