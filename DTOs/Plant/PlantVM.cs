@@ -29,5 +29,7 @@ namespace DTOs.Plant
         public DateTime? ModificationDate { get; set; }
         public int? ModificationBy { get; set; }
         public virtual ICollection<ImagePlantVM> ImagePlants { get; set; }
+        public DateTime? RentalStartDate { get; set; }
+        public DateTime? RentalEndDate { get; set; }
     }
 }
