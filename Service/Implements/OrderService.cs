@@ -164,6 +164,7 @@ namespace Service.Implements
         {
             Order order = _mapper.Map<Order>(createOrderDTO);
             order.CreationDate = DateTime.Now;
+            order.TypeEcommerceId = 2; 
             order.Status = 1; // Trạng thái 'đã tạo'
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
