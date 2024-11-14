@@ -37,7 +37,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 200,  
-                Message = "Tra cứu dữ liệu thành công.",
+                Message = "Yêu cầu đã thành công.",
                 Data = users
             });
         }
@@ -48,18 +48,18 @@ namespace BackendEPPO.Controllers
         /// <returns>Get information User by userID for role admin, manager,staff.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.User.GetUserByID)]
-        public async Task<IActionResult> GetUsersByID(int id)
+        public async Task<IActionResult> GetUsersByID(int userId)
         {
-            var users = await _userService.GetUsersByID(id);
+            var users = await _userService.GetUsersByID(userId);
 
             if (users == null)
             {
-                return NotFound($"Người dùng có Id = {id} không tồn tại.");
+                return NotFound($"Người dùng có Id = {userId} không tồn tại.");
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Tra cứu dữ liệu thành công.",
+                Message = "Yêu cầu đã thành công.",
                 Data = users
             });
         }
@@ -85,7 +85,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = "Yêu cầu đã thành công.",
                 Data = users
             });
         }
@@ -109,7 +109,7 @@ namespace BackendEPPO.Controllers
                 return Conflict(new
                 {
                     StatusCode = 409,
-                    Message = "Account with the same email or username already exists."
+                    Message = "Tài khoản mật khẩu đã tồn tại."
                 });
             }
             await _userService.CreateAccountByCustomer(customer);
@@ -140,7 +140,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Owner created successfully",
+                Message = "Yêu cầu đã thành công.",
                 Data = owner
             });
         }
@@ -164,7 +164,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Admin created successfully",
+                Message = "Yêu cầu đã thành công.",
                 Data = admin
             });
         }
@@ -191,13 +191,13 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "User account updated successfully.",
+                    Message = "Yêu cầu đã thành công.",
                     Data = updatedUser
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "User not found." });
+                return NotFound(new { message = "Không tìm thấy dữ liệu." });
             }
             catch (Exception ex)
             {

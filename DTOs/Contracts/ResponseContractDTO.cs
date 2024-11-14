@@ -67,6 +67,13 @@ namespace DTOs.Contracts
             public int? Status { get; set; }
 
         }
+    public class UpdateStatus
+    {
+        public int ContractId { get; set; }
+        public ulong? IsActive { get; set; }
+        public int? Status { get; set; }
+
+    }
 
 
 

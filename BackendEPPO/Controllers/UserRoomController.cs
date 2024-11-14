@@ -1,4 +1,5 @@
 ﻿using BackendEPPO.Extenstion;
+using DTOs.Error;
 using DTOs.Room;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,12 +31,12 @@ namespace BackendEPPO.Controllers
 
             if (room == null || !room.Any())
             {
-                return NotFound("No user room found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = room
             });
         }

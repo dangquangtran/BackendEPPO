@@ -1,5 +1,6 @@
 ﻿using BackendEPPO.Extenstion;
 using DTOs.Address;
+using DTOs.Error;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,17 +29,17 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Address.GetListAddress_Endpoint)]
         public async Task<IActionResult> GetListAddress(int page, int size)
         {
-            var users = await _IService.GetLisAddress(page, size);
+            var address = await _IService.GetLisAddress(page, size);
 
-            if (users == null || !users.Any())
+            if (address == null || !address.Any())
             {
-                return NotFound("No users found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
-                Data = users
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = address
             });
         }
 
@@ -50,17 +51,17 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Address.GetListAddressByUserID_Endpoint)]
         public async Task<IActionResult> GetListAddressByUserID(int userID)
         {
-            var users = await _IService.GetLisAddressByUserID(userID);
+            var address = await _IService.GetLisAddressByUserID(userID);
 
-            if (users == null || !users.Any())
+            if (address == null || !address.Any())
             {
-                return NotFound("No users found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
-                Data = users
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = address
             });
         }
 
@@ -68,21 +69,21 @@ namespace BackendEPPO.Controllers
         /// Get the address by addressId.
         /// </summary>
         /// <returns>Get the address by addressId.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+     //   [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Address.GetAddressByID)]
-        public async Task<IActionResult> GetAddressByID(int id)
+        public async Task<IActionResult> GetAddressByID(int addressId)
         {
-            var users = await _IService.GetAddressByID(id);
+            var address = await _IService.GetAddressByID(addressId);
 
-            if (users == null)
+            if (address == null)
             {
-                return NotFound($"User with ID {id} not found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
-                Data = users
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = address
             });
         }
 
@@ -101,12 +102,12 @@ namespace BackendEPPO.Controllers
 
             if (users == null || !users.Any())
             {
-                return NotFound("Không tìm thấy địa chỉ.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Thành công",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = users
             });
         }
@@ -132,7 +133,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "Address created successfully",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = address
             });
         }
@@ -143,32 +144,30 @@ namespace BackendEPPO.Controllers
         /// <returns>Update the address with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Address.UpdateAddress)]
-        public async Task<IActionResult> UpdateAddress(int id, [FromForm] UpdateAddressDTO address)
+        public async Task<IActionResult> UpdateAddress(int addressId, [FromForm] UpdateAddressDTO address)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
-   
-
             try
             {
-                await _IService.UpdateAddress(address , id , userId);
-                var updatedRank = await _IService.GetAddressByID(id);
+                await _IService.UpdateAddress(address , addressId, userId);
+                var updatedAddress = await _IService.GetAddressByID(addressId);
 
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Address updated successfully.",
-                    Data = updatedRank
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = updatedAddress
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Address not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
@@ -183,29 +182,29 @@ namespace BackendEPPO.Controllers
         /// <returns>Delete the address with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpDelete(ApiEndPointConstant.Address.DeleteAddress)]
-        public async Task<IActionResult> DeleteAddress(int id, [FromBody] DeleteAddressDTO address)
+        public async Task<IActionResult> DeleteAddress(int addressId, [FromBody] DeleteAddressDTO address)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Dữ liệu không tồn tại." });
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
-            address.AddressId = id;
+            address.AddressId = addressId;
 
             try
             {
                 await _IService.DeleteAddress(address);
-                var updatedRank = await _IService.GetAddressByID(id);
+                var updatedAddress = await _IService.GetAddressByID(addressId);
 
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Thay đổi địa chỉ thành công.",
-                    Data = updatedRank
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = updatedAddress
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "Không tìm thấy địa chỉ" });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
@@ -226,20 +225,18 @@ namespace BackendEPPO.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Dữ liệu không tồn tại." });
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
             }
-         
-
             try
             {
                 await _IService.DeleteAddress(address);
-                var updatedRank = await _IService.GetAddressByID(userId);
+                var updatedAddress = await _IService.GetAddressByID(userId);
 
                 return Ok(new
                 {
                     StatusCode = 201,
                     Message = "Thay đổi địa chỉ thành công.",
-                    Data = updatedRank
+                    Data = updatedAddress
                 });
             }
             catch (KeyNotFoundException)

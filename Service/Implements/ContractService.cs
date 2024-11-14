@@ -31,6 +31,23 @@ namespace Service
             _mapper = mapper;
 
         }
+        public async Task UpdateStatusContractID(int contractId, int status)
+        {
+            var entity = await Task.FromResult(_unitOfWork.ContractRepository.GetByID(contractId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Contract with ID {contractId} not found.");
+            }
+
+            entity.IsActive = 1;
+            entity.Status = status;
+
+            _unitOfWork.ContractRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+
+
 
         public async Task<IEnumerable<Contract>> GetListContract(int page, int size)
         {
