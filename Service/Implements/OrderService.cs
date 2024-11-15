@@ -179,35 +179,61 @@ namespace Service.Implements
          .Where(cd => cd.Contract != null && cd.Contract.UserId == userId && cd.Contract.IsActive == 0)
          .ToList();
 
-            // Duyệt qua từng cây trong OrderDetails để kiểm tra số lần xuất hiện trong ContractDetail
-            foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+            // Kiểm tra tổng số lượng hợp đồng không hoạt động của người dùng
+            if (contractDetails.Count > 3)
             {
-                if (orderDetailDTO.PlantId.HasValue)
-                {
-                    int plantOccurrenceCount = contractDetails
-                        .Count(cd => cd.PlantId == orderDetailDTO.PlantId.Value);
-
-                    if (plantOccurrenceCount >= 3)
-                    {
-                        throw new Exception($"Cây với ID {orderDetailDTO.PlantId} đã xuất hiện trong hợp đồng của người dùng 3 lần trở lên. Không thể tạo đơn hàng mới.");
-                    }
-                }
+                throw new Exception($"Người dùng có hơn 3 hợp đồng không hoạt động. Không thể tạo đơn hàng mới.");
             }
+
+            // Tạo order mới
             Order order = _mapper.Map<Order>(createOrderDTO);
+            
             order.CreationDate = DateTime.Now;
-            order.TypeEcommerceId = 2; 
+            order.TypeEcommerceId = 2;
             order.Status = 1;
             order.UserId = userId;
-            order.FinalPrice = order.TotalPrice + order.DeliveryFee;
-            order.PaymentStatus = "Chưa thanh toán";
+
             foreach (var orderDetail in order.OrderDetails)
             {
                 if (orderDetail.RentalStartDate.HasValue && orderDetail.NumberMonth.HasValue)
                 {
-                    orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+                    // Lấy giá cây từ cơ sở dữ liệu
+                    var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId);
+                    if (plant != null)
+                    {
+                        // Tính giá cho OrderDetail = giá cây * số tháng
+                        double priceForOrderDetail = plant.Price * orderDetail.NumberMonth.Value;
+
+                        // Cộng dồn giá này vào tổng giá của Order
+                        order.TotalPrice += priceForOrderDetail;
+
+                        // Tính RentalEndDate
+                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+
+                        // Kiểm tra ngày hết hạn hợp đồng
+                        var relatedContractDetail = contractDetails
+                            .FirstOrDefault(cd => cd.PlantId == orderDetail.PlantId);
+
+                        if (relatedContractDetail != null && relatedContractDetail.Contract != null)
+                        {
+                            DateTime? contractEndDate = relatedContractDetail.Contract.EndContractDate;
+                            if (orderDetail.RentalEndDate > contractEndDate)
+                            {
+                                throw new Exception($"Ngày kết thúc thuê của cây với ID {orderDetail.PlantId} vượt quá ngày hết hạn hợp đồng ({contractEndDate?.ToShortDateString()}).");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception($"Không tìm thấy cây với ID {orderDetail.PlantId}.");
+                    }
                 }
             }
 
+            order.FinalPrice = order.TotalPrice + order.DeliveryFee;
+            order.PaymentStatus = "Chưa thanh toán";
+
+            // Cập nhật trạng thái của cây và lưu đơn hàng
             foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
             {
                 if (orderDetailDTO.PlantId.HasValue)
@@ -220,15 +246,17 @@ namespace Service.Implements
                             throw new Exception($"Cây với ID {plant.PlantId} không thể được thuê vì đã ngừng hoạt động.");
                         }
 
-                        plant.IsActive = false; 
+                        plant.IsActive = false;
                         _unitOfWork.PlantRepository.Update(plant);
                     }
                 }
             }
+
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
             return _mapper.Map<OrderVM>(order);
         }
+
 
         public void UpdatePaymentOrderRental(int orderId, int contractId, int userId, int paymentId)
         {
