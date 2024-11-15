@@ -323,6 +323,43 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
+        public void CancelOrder(int orderId)
+        {
+            // Lấy thông tin đơn hàng từ cơ sở dữ liệu
+            var order = _unitOfWork.OrderRepository.GetByID(orderId, includeProperties: "OrderDetails");
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+            
+            // Kiểm tra trạng thái đơn hàng (chỉ hủy nếu chưa hoàn thành)
+            if (order.Status == 4 || order.PaymentStatus == "Đã thanh toán")
+            {
+                throw new Exception("Đơn hàng đã hoàn thành hoặc đã được thanh toán và không thể hủy.");
+            }
+
+            order.Status = 5;
+            order.ModificationDate = DateTime.Now;
+
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                // Cập nhật trạng thái của cây nếu cần
+                if (orderDetail.PlantId.HasValue)
+                {
+                    var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
+                    if (plant != null)
+                    {
+                        plant.IsActive = true; // Kích hoạt lại cây nếu đơn hàng bị hủy
+                        _unitOfWork.PlantRepository.Update(plant);
+                    }
+                }
+            }
+
+            // Cập nhật đơn hàng
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
 
     }
+
 }

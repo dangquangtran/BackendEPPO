@@ -271,5 +271,33 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPut("CancelOrder/{orderId}")]
+        public IActionResult CancelOrder(int orderId)
+        {
+            try
+            {
+
+                _orderService.CancelOrder(orderId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã hủy đơn hàng thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+
     }
 }
