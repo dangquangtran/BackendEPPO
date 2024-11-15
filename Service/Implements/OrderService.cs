@@ -189,10 +189,29 @@ namespace Service.Implements
                 throw new Exception("Người dùng có hơn 3 đơn hàng thuê chưa thanh toán. Không thể tạo đơn hàng mới.");
             }
 
-          
+            // Lấy danh sách các đơn hàng có status = 1 và paymentId = 2
+            var activeOrders = _unitOfWork.OrderRepository
+                .Get(o => o.UserId == userId && o.Status == 1 && o.PaymentId == 2, includeProperties: "OrderDetails")
+                .ToList();
+
+            // Lấy danh sách PlantId trong các đơn hàng này
+            var rentedPlantIds = activeOrders
+                .SelectMany(o => o.OrderDetails)
+                .Select(od => od.PlantId)
+                .Distinct()
+                .ToHashSet();
+
+            // Kiểm tra từng PlantId trong đơn hàng mới
+            foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+            {
+                if (orderDetailDTO.PlantId.HasValue && rentedPlantIds.Contains(orderDetailDTO.PlantId.Value))
+                {
+                    throw new Exception($"Cây với ID {orderDetailDTO.PlantId.Value} đã được thuê trong một đơn hàng khác. Không thể tạo đơn hàng mới với cây này.");
+                }
+            }
+
             // Tạo order mới
             Order order = _mapper.Map<Order>(createOrderDTO);
-
             order.CreationDate = DateTime.Now;
             order.TypeEcommerceId = 2;
             order.Status = 1;
@@ -237,9 +256,6 @@ namespace Service.Implements
                         {
                             throw new Exception($"Cây với ID {plant.PlantId} không thể được thuê vì đã ngừng hoạt động.");
                         }
-
-                        plant.IsActive = false;
-                        _unitOfWork.PlantRepository.Update(plant);
                     }
                 }
             }
@@ -248,7 +264,6 @@ namespace Service.Implements
             _unitOfWork.Save();
             return _mapper.Map<OrderVM>(order);
         }
-
 
 
         public void UpdatePaymentOrderRental(int orderId, int contractId, int userId, int paymentId)
@@ -309,7 +324,19 @@ namespace Service.Implements
                 // Cập nhật trạng thái thanh toán đơn hàng
                 order.PaymentStatus = "Đã thanh toán";
             }
-           
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                // Cập nhật trạng thái của cây nếu cần
+                if (orderDetail.PlantId.HasValue)
+                {
+                    var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
+                    if (plant != null)
+                    {
+                        plant.IsActive = false; // Kích hoạt lại cây nếu đơn hàng bị hủy
+                        _unitOfWork.PlantRepository.Update(plant);
+                    }
+                }
+            }
 
             order.ModificationDate = DateTime.Now;
             _unitOfWork.OrderRepository.Update(order);
