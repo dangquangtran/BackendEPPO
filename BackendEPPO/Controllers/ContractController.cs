@@ -50,6 +50,32 @@ namespace BackendEPPO.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Get list all Contracts of UserId in database with customer for renting.
+        /// </summary>
+        /// <returns>Get list all Contracts in database with the page and the size.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Contract.GetContractOfCustomer_Endpoint)]
+        public async Task<IActionResult> GetContractOfCustomer()
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            var contract = await _contractService.GetContractOfUser(userId);
+
+            if (contract == null || !contract.Any())
+            {
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = contract
+            });
+        }
+
         /// <summary>
         /// Get list all Contracts in database with the page and the size.
         /// </summary>
