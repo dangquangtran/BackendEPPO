@@ -74,6 +74,7 @@ namespace Service.Implements
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
             order.PaymentStatus = "Đã thanh toán";
+            order.TypeEcommerceId = 1;
 
             foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
             {
@@ -111,7 +112,7 @@ namespace Service.Implements
                 filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 1,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "OrderDetails" // Bao gồm thông tin chi tiết đơn hàng
+                includeProperties: "OrderDetails,OrderDetails.Plant" // Bao gồm thông tin chi tiết đơn hàng
             );
 
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
@@ -123,7 +124,7 @@ namespace Service.Implements
                 filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 2,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "OrderDetails" // Bao gồm thông tin chi tiết đơn hàng
+                includeProperties: "OrderDetails,OrderDetails.Plant" // Bao gồm thông tin chi tiết đơn hàng
             );
 
             return _mapper.Map<IEnumerable<OrderRentalVM>>(orders);
