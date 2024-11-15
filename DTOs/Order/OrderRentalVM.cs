@@ -21,6 +21,6 @@ namespace DTOs.Order
         public int? Status { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
-        public virtual OrderDetailRentalVM OrderDetail { get; set; }
+        public virtual ICollection<OrderDetailRentalVM> OrderDetails { get; set; }
     }
 }

@@ -35,8 +35,10 @@ namespace Service.AutoMapper
             CreateMap<CreateOrderDTO, Order>();
             CreateMap<UpdateOrderDTO, Order>();
             CreateMap<Order, OrderVM>().ReverseMap();
+            CreateMap<Order, OrderRentalVM>().ReverseMap();
             CreateMap<CreateOrderDetailDTO, OrderDetail>();
             CreateMap<OrderDetail, OrderDetailVM>().ReverseMap();
+            CreateMap<OrderDetail, OrderDetailRentalVM>().ReverseMap();
             CreateMap<CreateOrderRentalDTO, Order>();
             CreateMap<CreateOrderDetailRentalDTO, OrderDetail>();
             CreateMap<OrderDetail, OrderDetailRentalVM>().ReverseMap();
