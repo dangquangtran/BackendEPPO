@@ -140,15 +140,52 @@ namespace BackendEPPO.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetOrdersByUser")]
-        public IActionResult GetOrdersByUserId(int pageIndex, int pageSize, int status, int typeEcommerceId)
+        [HttpGet("GetOrdersBuyByUser")]
+        public IActionResult GetOrdersBuyByUser(int pageIndex, int pageSize, int status)
         {
             try
             {
                 var userIdClaim = User.FindFirst("userId")?.Value;
                 int userId = int.Parse(userIdClaim);
 
-                var result = _orderService.GetOrdersByUserId(userId, pageIndex, pageSize, status, typeEcommerceId);
+                var result = _orderService.GetOrdersBuyByUserId(userId, pageIndex, pageSize, status);
+                if (result == null || !result.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không tìm thấy đơn hàng nào của người dùng.",
+                        Data = (object)null
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetOrdersRentalByUser")]
+        public IActionResult GetOrdersRentalByUserId(int pageIndex, int pageSize, int status)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+
+                var result = _orderService.GetOrdersRentalByUserId(userId, pageIndex, pageSize, status);
                 if (result == null || !result.Any())
                 {
                     return NotFound(new

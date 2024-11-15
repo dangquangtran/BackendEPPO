@@ -105,19 +105,30 @@ namespace Service.Implements
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
         }
-        public IEnumerable<OrderVM> GetOrdersByUserId(int userId, int pageIndex, int pageSize, int status, int typeEcommerceId)
+        public IEnumerable<OrderVM> GetOrdersBuyByUserId(int userId, int pageIndex, int pageSize, int status)
         {
-            // Lấy danh sách đơn hàng dựa theo userId và có trạng thái khác 0 (đang hoạt động)
             var orders = _unitOfWork.OrderRepository.Get(
-                filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == typeEcommerceId, // Lọc theo userId và trạng thái đơn hàng
+                filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 1,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "OrderDetails" // Bao gồm thông tin chi tiết đơn hàng
             );
 
-            // Sử dụng AutoMapper để chuyển đổi từ Order sang OrderVM
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
+
+        public IEnumerable<OrderRentalVM> GetOrdersRentalByUserId(int userId, int pageIndex, int pageSize, int status)
+        {
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 2,
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails" // Bao gồm thông tin chi tiết đơn hàng
+            );
+
+            return _mapper.Map<IEnumerable<OrderRentalVM>>(orders);
+        }
+
 
         //private double CalculateTotalPrice(CreateOrderDTO createOrderDTO)
         //{
