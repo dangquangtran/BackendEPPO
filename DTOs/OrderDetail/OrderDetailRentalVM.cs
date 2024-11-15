@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTOs.Plant;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace DTOs.OrderDetail
         public DateTime? RentalStartDate { get; set; }
         public DateTime? RentalEndDate { get; set; }
         public double? NumberMonth { get; set; }
+        public PlantVM Plant { get; set; }
     }
 }

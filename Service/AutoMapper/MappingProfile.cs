@@ -43,6 +43,12 @@ namespace Service.AutoMapper
             CreateMap<CreateOrderDetailRentalDTO, OrderDetail>();
             CreateMap<OrderDetail, OrderDetailRentalVM>().ReverseMap();
             CreateMap<ImagePlant, ImagePlantVM>().ReverseMap();
+            CreateMap<OrderDetail, OrderDetailRentalVM>()
+            .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+            .ForMember(dest => dest.RentalStartDate, opt => opt.MapFrom(src => src.RentalStartDate))
+            .ForMember(dest => dest.RentalEndDate, opt => opt.MapFrom(src => src.RentalEndDate))
+            .ForMember(dest => dest.NumberMonth, opt => opt.MapFrom(src => src.NumberMonth))
+            .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.Plant));
             //Do Huu Thuan
             CreateMap<Plant, ResponsePlantDTO>().ReverseMap();
             CreateMap<User, ResponseUserDTO>().ReverseMap();
