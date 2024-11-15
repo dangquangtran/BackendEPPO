@@ -180,16 +180,24 @@ namespace Service.Implements
         }
         public OrderVM CreateRentalOrder(CreateOrderRentalDTO createOrderDTO, int userId)
         {
+            var unpaidOrdersCount = _unitOfWork.OrderRepository
+        .Get(o => o.UserId == userId && o.PaymentStatus == "Chưa thanh toán" && o.PaymentId == 2 && o.Status == 1)
+        .Count();
+
+            if (unpaidOrdersCount > 3)
+            {
+                throw new Exception("Người dùng có hơn 3 đơn hàng thuê chưa thanh toán. Không thể tạo đơn hàng mới.");
+            }
             var contractDetails = _unitOfWork.ContractDetailRepository
          .Get(includeProperties: "Contract")
          .Where(cd => cd.Contract != null && cd.Contract.UserId == userId && cd.Contract.IsActive == 0)
          .ToList();
 
-            // Kiểm tra tổng số lượng hợp đồng không hoạt động của người dùng
-            if (contractDetails.Count > 3)
-            {
-                throw new Exception($"Người dùng có hơn 3 hợp đồng không hoạt động. Không thể tạo đơn hàng mới.");
-            }
+            //   // Kiểm tra tổng số lượng hợp đồng không hoạt động của người dùng
+            //   if (contractDetails.Count > 3)
+            //   {
+            //       throw new Exception($"Người dùng có hơn 3 hợp đồng không hoạt động. Không thể tạo đơn hàng mới.");
+            //   }
 
             // Tạo order mới
             Order order = _mapper.Map<Order>(createOrderDTO);
