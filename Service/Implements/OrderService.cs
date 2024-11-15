@@ -162,6 +162,25 @@ namespace Service.Implements
         }
         public OrderVM CreateRentalOrder(CreateOrderRentalDTO createOrderDTO, int userId)
         {
+            var contractDetails = _unitOfWork.ContractDetailRepository
+         .Get(includeProperties: "Contract")
+         .Where(cd => cd.Contract != null && cd.Contract.UserId == userId && cd.Contract.IsActive == 0)
+         .ToList();
+
+            // Duyệt qua từng cây trong OrderDetails để kiểm tra số lần xuất hiện trong ContractDetail
+            foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+            {
+                if (orderDetailDTO.PlantId.HasValue)
+                {
+                    int plantOccurrenceCount = contractDetails
+                        .Count(cd => cd.PlantId == orderDetailDTO.PlantId.Value);
+
+                    if (plantOccurrenceCount >= 3)
+                    {
+                        throw new Exception($"Cây với ID {orderDetailDTO.PlantId} đã xuất hiện trong hợp đồng của người dùng 3 lần trở lên. Không thể tạo đơn hàng mới.");
+                    }
+                }
+            }
             Order order = _mapper.Map<Order>(createOrderDTO);
             order.CreationDate = DateTime.Now;
             order.TypeEcommerceId = 2; 
