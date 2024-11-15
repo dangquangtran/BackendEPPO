@@ -191,7 +191,7 @@ namespace Service.Implements
 
             // Lấy danh sách các đơn hàng có status = 1 và paymentId = 2
             var activeOrders = _unitOfWork.OrderRepository
-                .Get(o => o.UserId == userId && o.Status == 1 && o.PaymentId == 2, includeProperties: "OrderDetails")
+                .Get(o => o.UserId == userId && o.Status == 1, includeProperties: "OrderDetails")
                 .ToList();
 
             // Lấy danh sách PlantId trong các đơn hàng này
