@@ -84,7 +84,7 @@ namespace BackendEPPO.Extenstion
 
             public const string UpdateStatusContractID = GetListContract_Endpoint + "/Update/Status/Contract/ContractId";
 
-            
+            public const string GetContractOfCustomer_Endpoint = ApiEndpoint + "/GetList/Contracts/ByToken/UserId";
             public const string GetContractOfUser_Endpoint = ApiEndpoint + "/GetList/Contracts/UserId";
 
             public const string CreatePartnershipContract = GetListContract_Endpoint + "/Create/Contract/Ownership";
