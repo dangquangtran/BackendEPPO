@@ -181,27 +181,18 @@ namespace Service.Implements
         public OrderVM CreateRentalOrder(CreateOrderRentalDTO createOrderDTO, int userId)
         {
             var unpaidOrdersCount = _unitOfWork.OrderRepository
-        .Get(o => o.UserId == userId && o.PaymentStatus == "Chưa thanh toán" && o.PaymentId == 2 && o.Status == 1)
-        .Count();
+                .Get(o => o.UserId == userId && o.PaymentStatus == "Chưa thanh toán" && o.PaymentId == 2 && o.Status == 1)
+                .Count();
 
             if (unpaidOrdersCount > 3)
             {
                 throw new Exception("Người dùng có hơn 3 đơn hàng thuê chưa thanh toán. Không thể tạo đơn hàng mới.");
             }
-            var contractDetails = _unitOfWork.ContractDetailRepository
-         .Get(includeProperties: "Contract")
-         .Where(cd => cd.Contract != null && cd.Contract.UserId == userId && cd.Contract.IsActive == 0)
-         .ToList();
 
-            //   // Kiểm tra tổng số lượng hợp đồng không hoạt động của người dùng
-            //   if (contractDetails.Count > 3)
-            //   {
-            //       throw new Exception($"Người dùng có hơn 3 hợp đồng không hoạt động. Không thể tạo đơn hàng mới.");
-            //   }
-
+          
             // Tạo order mới
             Order order = _mapper.Map<Order>(createOrderDTO);
-            
+
             order.CreationDate = DateTime.Now;
             order.TypeEcommerceId = 2;
             order.Status = 1;
@@ -223,19 +214,6 @@ namespace Service.Implements
 
                         // Tính RentalEndDate
                         orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
-
-                        // Kiểm tra ngày hết hạn hợp đồng
-                        var relatedContractDetail = contractDetails
-                            .FirstOrDefault(cd => cd.PlantId == orderDetail.PlantId);
-
-                        if (relatedContractDetail != null && relatedContractDetail.Contract != null)
-                        {
-                            DateTime? contractEndDate = relatedContractDetail.Contract.EndContractDate;
-                            if (orderDetail.RentalEndDate > contractEndDate)
-                            {
-                                throw new Exception($"Ngày kết thúc thuê của cây với ID {orderDetail.PlantId} vượt quá ngày hết hạn hợp đồng ({contractEndDate?.ToShortDateString()}).");
-                            }
-                        }
                     }
                     else
                     {
@@ -270,6 +248,7 @@ namespace Service.Implements
             _unitOfWork.Save();
             return _mapper.Map<OrderVM>(order);
         }
+
 
 
         public void UpdatePaymentOrderRental(int orderId, int contractId, int userId, int paymentId)

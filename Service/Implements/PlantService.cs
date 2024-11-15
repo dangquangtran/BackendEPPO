@@ -50,23 +50,9 @@ namespace Service
 
         public PlantVM GetPlantById(int id)
         {
-            var plant = _unitOfWork.PlantRepository.GetByID(id, includeProperties: "ImagePlants,ContractDetails.Contract");
+            var plant = _unitOfWork.PlantRepository.GetByID(id, includeProperties: "ImagePlants");
 
-            var plantVM = _mapper.Map<PlantVM>(plant);
-            if (plant != null)
-            {
-                plantVM.RentalStartDate = plant.ContractDetails
-                    .Select(cd => cd.Contract)
-                    .OrderByDescending(contract => contract.CreationContractDate)
-                    .FirstOrDefault()?.CreationContractDate;
-
-                plantVM.RentalEndDate = plant.ContractDetails
-                    .Select(cd => cd.Contract)
-                    .OrderByDescending(contract => contract.EndContractDate)
-                    .FirstOrDefault()?.EndContractDate;
-            }
-
-            return plantVM;
+            return _mapper.Map<PlantVM>(plant); ;
         }
 
         public async Task CreatePlant(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles)
@@ -187,43 +173,10 @@ namespace Service
                 filter: c => c.TypeEcommerceId == typeEcommerceId && c.Status != 0 && c.IsActive == true,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "ImagePlants,ContractDetails.Contract"
+                includeProperties: "ImagePlants"
             );
 
-            var plantVMs = plants.Select(plant => new PlantVM
-            {
-                PlantId = plant.PlantId,
-                PlantName = plant.PlantName,
-                Title = plant.Title,
-                Description = plant.Description,
-                Length = plant.Length,
-                Width = plant.Width,
-                Height = plant.Height,
-                Price = plant.Price,
-                Discounts = plant.Discounts,
-                FinalPrice = plant.FinalPrice,
-                MainImage = plant.MainImage,
-                CategoryId = plant.CategoryId,
-                TypeEcommerceId = plant.TypeEcommerceId,
-                Status = plant.Status,
-                IsActive = plant.IsActive,
-                CreationDate = plant.CreationDate,
-                ModificationDate = plant.ModificationDate,
-                ModificationBy = plant.ModificationBy,
-                ImagePlants = _mapper.Map<ICollection<ImagePlantVM>>(plant.ImagePlants),
-
-                // Lấy ngày thuê và ngày hết hạn từ Contract liên quan
-                RentalStartDate = plant.ContractDetails
-             .Select(cd => cd.Contract)
-             .OrderByDescending(contract => contract.CreationContractDate)
-             .FirstOrDefault()?.CreationContractDate,
-                RentalEndDate = plant.ContractDetails
-             .Select(cd => cd.Contract)
-             .OrderByDescending(contract => contract.EndContractDate)
-             .FirstOrDefault()?.EndContractDate
-            });
-
-            return plantVMs;
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
 
@@ -233,89 +186,26 @@ namespace Service
                filter: c => c.TypeEcommerceId == typeEcommerceId && c.CategoryId == categoryId && c.Status != 0 && c.IsActive == true,
                pageIndex: pageIndex,
                pageSize: pageSize,
-               includeProperties: "ImagePlants,ContractDetails.Contract"
+               includeProperties: "ImagePlants"
            );
 
-            var plantVMs = plants.Select(plant => new PlantVM
-            {
-                PlantId = plant.PlantId,
-                PlantName = plant.PlantName,
-                Title = plant.Title,
-                Description = plant.Description,
-                Length = plant.Length,
-                Width = plant.Width,
-                Height = plant.Height,
-                Price = plant.Price,
-                Discounts = plant.Discounts,
-                FinalPrice = plant.FinalPrice,
-                MainImage = plant.MainImage,
-                CategoryId = plant.CategoryId,
-                TypeEcommerceId = plant.TypeEcommerceId,
-                Status = plant.Status,
-                IsActive = plant.IsActive,
-                CreationDate = plant.CreationDate,
-                ModificationDate = plant.ModificationDate,
-                ModificationBy = plant.ModificationBy,
-                ImagePlants = _mapper.Map<ICollection<ImagePlantVM>>(plant.ImagePlants),
-
-                // Lấy ngày thuê và ngày hết hạn từ Contract liên quan
-                RentalStartDate = plant.ContractDetails
-              .Select(cd => cd.Contract)
-              .OrderByDescending(contract => contract.CreationContractDate)
-              .FirstOrDefault()?.CreationContractDate,
-                RentalEndDate = plant.ContractDetails
-              .Select(cd => cd.Contract)
-              .OrderByDescending(contract => contract.EndContractDate)
-              .FirstOrDefault()?.EndContractDate
-            });
-
-            return plantVMs;
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
-        public IEnumerable<PlantVM> SearchPlants(string keyword,int typeEcommerceId, int pageIndex, int pageSize)
+        public IEnumerable<PlantVM> SearchPlants(string keyword, int typeEcommerceId, int pageIndex, int pageSize)
         {
             // Tìm kiếm cây theo từ khóa (có thể là tên hoặc một thuộc tính khác)
             var plants = _unitOfWork.PlantRepository.Get(
-                filter: c => (c.PlantName.Contains(keyword) || c.Description.Contains(keyword)) && c.Status != 0 && c.TypeEcommerceId == typeEcommerceId && c.IsActive == true,
+                filter: c => (c.PlantName.Contains(keyword) || c.Description.Contains(keyword))
+                              && c.Status != 0
+                              && c.TypeEcommerceId == typeEcommerceId
+                              && c.IsActive == true,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "ImagePlants,ContractDetails.Contract"
+                includeProperties: "ImagePlants"
             );
 
-            var plantVMs = plants.Select(plant => new PlantVM
-            {
-                PlantId = plant.PlantId,
-                PlantName = plant.PlantName,
-                Title = plant.Title,
-                Description = plant.Description,
-                Length = plant.Length,
-                Width = plant.Width,
-                Height = plant.Height,
-                Price = plant.Price,
-                Discounts = plant.Discounts,
-                FinalPrice = plant.FinalPrice,
-                MainImage = plant.MainImage,
-                CategoryId = plant.CategoryId,
-                TypeEcommerceId = plant.TypeEcommerceId,
-                Status = plant.Status,
-                IsActive = plant.IsActive,
-                CreationDate = plant.CreationDate,
-                ModificationDate = plant.ModificationDate,
-                ModificationBy = plant.ModificationBy,
-                ImagePlants = _mapper.Map<ICollection<ImagePlantVM>>(plant.ImagePlants),
-
-                // Lấy ngày thuê và ngày hết hạn từ Contract liên quan
-                RentalStartDate = plant.ContractDetails
-             .Select(cd => cd.Contract)
-             .OrderByDescending(contract => contract.CreationContractDate)
-             .FirstOrDefault()?.CreationContractDate,
-                            RentalEndDate = plant.ContractDetails
-             .Select(cd => cd.Contract)
-             .OrderByDescending(contract => contract.EndContractDate)
-             .FirstOrDefault()?.EndContractDate
-                        });
-
-            return plantVMs;
+            return _mapper.Map<IEnumerable<PlantVM>>(plants); ;
         }
 
         public async Task<IEnumerable<PlantVM>> SearchPlantKeyType(int pageIndex, int pageSize, int typeEcommerceId, string keyword)
