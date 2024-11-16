@@ -76,7 +76,7 @@ namespace BackendEPPO.Controllers
         /// Get the the transaction  with all role.
         /// </summary>
         /// <returns>Get the the transaction  with all role.</returns>
-      //  [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Wallet.GetListTransaction_Endpoint)]
         public async Task<IActionResult> GetListTransactionsByWallet()
         {
@@ -109,7 +109,10 @@ namespace BackendEPPO.Controllers
             }
 
         }
-
+        /// <summary>
+        /// Create the wallet  with all role.
+        /// </summary>
+        /// <returns>Create the wallet  with all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Wallet.CreateWallet)]
         public async Task<IActionResult> CreateWallet([FromBody] CreateWalletDTO wallet)

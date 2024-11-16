@@ -212,6 +212,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
+
         [HttpGet("search")]
         public IActionResult SearchPlants(string keyword, int typeEcommerceId, int pageIndex, int pageSize)
         {

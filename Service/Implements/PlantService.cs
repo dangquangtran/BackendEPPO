@@ -173,7 +173,7 @@ namespace Service
                 filter: c => c.TypeEcommerceId == typeEcommerceId && c.Status != 0 && c.IsActive == true,
                 pageIndex: pageIndex,
                 pageSize: pageSize,
-                includeProperties: "ImagePlants"
+                includeProperties: "ImagePlants,Category"
             );
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
