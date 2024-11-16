@@ -31,6 +31,7 @@ namespace DTOs.Plant
         public virtual ICollection<ImagePlantVM> ImagePlants { get; set; }
         public DateTime? RentalStartDate { get; set; }
         public DateTime? RentalEndDate { get; set; }
+ 
     }
 
     public class CheckCart
