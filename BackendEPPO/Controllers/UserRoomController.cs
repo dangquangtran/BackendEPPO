@@ -53,12 +53,12 @@ namespace BackendEPPO.Controllers
 
             if (room == null)
             {
-                return NotFound($"User Room with ID {id} not found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = room
             });
         }
@@ -84,7 +84,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
-                Message = "User room created successfully",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = userRoom
             });
         }
@@ -99,7 +99,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return BadRequest(new { Message = Error.BAD_REQUEST });
             }
             userRoom.UserRoomId = id;
 
@@ -111,17 +111,17 @@ namespace BackendEPPO.Controllers
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "User room updated successfully.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedcRoom
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "User room not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
 
@@ -132,33 +132,33 @@ namespace BackendEPPO.Controllers
         /// <returns>Delete user room with role manager, role staff and role customer.</returns>
         [Authorize(Roles = "admin, manager, staff, customer")]
         [HttpDelete(ApiEndPointConstant.UserRoom.DelteUserRoomByID)]
-        public async Task<IActionResult> DeleteUserRoom(int id, [FromBody] DeleteUserRoomDTO userRoom)
+        public async Task<IActionResult> DeleteUserRoom(int userRoomId, [FromBody] DeleteUserRoomDTO userRoom)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid input data." });
+                return BadRequest(new { Message = Error.BAD_REQUEST });
             }
-            userRoom.UserRoomId = id;
+            userRoom.UserRoomId = userRoomId;
 
             try
             {
                 await _service.DeleteUserRoom(userRoom);
-                var updatedcRoom = await _service.GetUserRoomByID(id);
+                var updatedcRoom = await _service.GetUserRoomByID(userRoomId);
 
                 return Ok(new
                 {
                     StatusCode = 201,
-                    Message = "User room updated successfully.",
+                    Message = Error.REQUESR_SUCCESFULL,
                     Data = updatedcRoom
                 });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = "User room not found." });
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
     }

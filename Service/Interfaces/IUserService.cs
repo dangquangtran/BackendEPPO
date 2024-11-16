@@ -10,6 +10,8 @@ namespace Service.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<User>> GetListUsers(int page, int size);
+        Task<IEnumerable<User>> FilterAccountByRoleID(int page, int size, int roleId);
+        Task<IEnumerable<User>> SearchAccountByKey(int page, int size, string keyWork);
         Task<User> GetUsersByID(int Id);
         //Task<User> GetInformationByID(int Id);
         IQueryable<User> GetAllUsers();
@@ -24,5 +26,6 @@ namespace Service.Interfaces
         Task ChangePasswordAccount(ChangePassword account);
 
         Task<bool> CheckAccountExists(string email, string userName);
+        Task<int> CountAccountByStatus(int status);
     }
 }

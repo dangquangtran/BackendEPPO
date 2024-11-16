@@ -44,6 +44,50 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
+        /// Filter list account by role in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list the staff in database with the page and the size.</returns>
+        [Authorize(Roles = "admin, manager")]
+        [HttpGet(ApiEndPointConstant.User.GetListFilterByRole_Endpoint)]
+        public async Task<IActionResult> FilterAccountByRoleID(int page, int size ,int roleId)
+        {
+            var users = await _userService.FilterAccountByRoleID(page, size, roleId);
+
+            if (users == null || !users.Any())
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = users
+            });
+        }
+
+        /// <summary>
+        /// Function of manager: Search account by key work with the page and the size.
+        /// </summary>
+        /// <returns>Function of manager: Search account by key work with the page and the size.</returns>
+        [Authorize(Roles = "admin, manager")]
+        [HttpGet(ApiEndPointConstant.User.SearchAccountByKey_Endpoint)]
+        public async Task<IActionResult> SearchAccountByKey(int page, int size, string keyWord)
+        {
+            var users = await _userService.SearchAccountByKey(page, size, keyWord);
+
+            if (users == null || !users.Any())
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = users
+            });
+        }
+
+        /// <summary>
         /// Get information User by userID for role admin, manager,staff.
         /// </summary>
         /// <returns>Get information User by userID for role admin, manager,staff.</returns>
@@ -171,23 +215,23 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Update information account by all role manager.
+        /// Update information account by user Id .
         /// </summary>
         /// <returns>Update information account by all role manager.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.User.UpdateAccount)]
-        public async Task<IActionResult> UpdateUserAccount(int id, [FromForm] UpdateAccount accountDTO)
+        public async Task<IActionResult> UpdateUserAccount(int userId, [FromForm] UpdateAccount accountDTO)
         {
             if (!ModelState.IsValid)
             {
                 return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
-            accountDTO.UserId = id;
+            accountDTO.UserId = userId;
 
             try
             {
                 await _userService.UpdateUserAccount(accountDTO, accountDTO.ImageFile);
-                var updatedUser = await _userService.GetUsersByID(id);
+                var updatedUser = await _userService.GetUsersByID(userId);
 
                 return Ok(new
                 {
@@ -207,7 +251,7 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Update information account by for mobile role customer and owner.
+        /// Update information account by token for mobile role customer and owner.
         /// </summary>
         /// <returns>Update information account by for mobile.</returns>
         [Authorize(Roles = "owner, customer")]
@@ -245,23 +289,23 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Change password of account by all role.
+        /// Change password of account by user Id.
         /// </summary>
         /// <returns>Change password of account by all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.User.ChangePassword)]
-        public async Task<IActionResult> ChangePasswordAccount(int id, [FromBody] ChangePassword accountDTO)
+        public async Task<IActionResult> ChangePasswordAccount(int userId, [FromBody] ChangePassword accountDTO)
         {
             if (!ModelState.IsValid)
             {
                 return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
-            accountDTO.UserId = id;
+            accountDTO.UserId = userId;
 
             try
             {
                 await _userService.ChangePasswordAccount(accountDTO);
-                var updatedUser = await _userService.GetUsersByID(id);
+                var updatedUser = await _userService.GetUsersByID(userId);
 
                 return Ok(new
                 {
@@ -281,7 +325,7 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Change password of account by all role.
+        /// Change password of account by token.
         /// </summary>
         /// <returns>Change password of account by all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
