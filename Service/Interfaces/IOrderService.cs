@@ -20,5 +20,7 @@ namespace Service.Interfaces
         void UpdatePaymentOrderRental(int orderId, int contractId, int userId, int paymentId);
         IEnumerable<OrderRentalVM> GetOrdersRentalByUserId(int userId, int pageIndex, int pageSize, int status);
         void CancelOrder(int orderId);
+        Task<int> CountOrderByStatus(int userId, int status);
+        Task<double> CountOrderPrice(int status, int? month = null, int? year = null );
     }
 }

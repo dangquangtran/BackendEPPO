@@ -25,12 +25,23 @@ namespace BackendEPPO.Extenstion
         static ApiEndPointConstant()
         {
         }
+        public static class Count
+        {
+            public const string CountOrder_Endpoint = ApiEndpoint + "/Count/OrderStatus/ByUserId";
+            public const string CountOrderByToken_Endpoint = ApiEndpoint + "/Count/OrderStatus/ByToken";
+            public const string CountAccountByStatus_Endpoint = ApiEndpoint + "/Count/User/Status";
+            public const string CountOrderPriceRevenue_Endpoint = ApiEndpoint + "/Count/Order/Revenue";
+        }
 
         // Do Huu Thuan     
         public static class User
         {
             public const string GetUserEndpoint = ApiEndpoint + "/GetUser/Users";
             public const string GetListUsers_Endpoint = ApiEndpoint + "/GetList/Users";
+
+            public const string GetListFilterByRole_Endpoint = ApiEndpoint + "/GetList/FilterByRole";
+            public const string SearchAccountByKey_Endpoint = ApiEndpoint + "/GetList/SearchAccountByKey";
+
             public const string Login_Endpoint = ApiEndpoint + "/Users/Login";
             public const string GetUserByID = GetUserEndpoint + "/Id";
 

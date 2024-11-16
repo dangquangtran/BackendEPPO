@@ -52,16 +52,16 @@ namespace BackendEPPO.Controllers
         /// <returns>Get wallet by wallet ID for all role </returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Wallet.GetWalletByID)]
-        public async Task<IActionResult> GetWalletByID(int id)
+        public async Task<IActionResult> GetWalletByID(int walletID)
         {
-            var _wallet = await _service.GetWalletByID(id);
+            var _wallet = await _service.GetWalletByID(walletID);
 
             if (_wallet == null)
             {
                 return NotFound(new
                 {
                     StatusCode = 404,
-                    Message = $"Không tìm thấy ví có ID {id}.",
+                    Message = $"Không tìm thấy ví có ID {walletID}.",
                     Data = (object)null
                 });
             }
@@ -140,7 +140,7 @@ namespace BackendEPPO.Controllers
         /// <returns>Update wallet for all role</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Wallet.UpdateWalletByID)]
-        public async Task<IActionResult> UpdateWallet(int id, [FromBody] UpdateWalletDTO wallet)
+        public async Task<IActionResult> UpdateWallet(int walletId, [FromBody] UpdateWalletDTO wallet)
         {
             if (!ModelState.IsValid)
             {
@@ -151,12 +151,12 @@ namespace BackendEPPO.Controllers
                     Data = ModelState
                 });
             }
-            wallet.WalletId = id;
+            wallet.WalletId = walletId;
 
             try
             {
                 await _service.UpdateWallet(wallet);
-                var updatedWallet = await _service.GetWalletByID(id);
+                var updatedWallet = await _service.GetWalletByID(walletId);
 
                 return Ok(new
                 {

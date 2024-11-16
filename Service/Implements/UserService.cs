@@ -141,6 +141,22 @@ namespace Service
         {
             return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, pageSize: size); 
         }
+
+        public async Task<IEnumerable<User>> FilterAccountByRoleID(int page, int size, int roleId)
+        {
+            return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, pageSize: size , filter: u => u.RoleId == roleId);
+        }
+        public async Task<IEnumerable<User>> SearchAccountByKey(int page, int size, string keyWord)
+        {
+            return await _unitOfWork.UserRepository.GetAsync(
+                pageIndex: page, 
+                pageSize: size, 
+                includeProperties: "Wallet",
+                filter: u => 
+                (u.FullName.Contains(keyWord) || u.Email.Contains(keyWord) || u.PhoneNumber.Contains(keyWord)));
+        }
+
+
         public async Task<User> GetUsersByID(int Id)
         {
             return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id, includeProperties: "Wallet"));
@@ -344,6 +360,14 @@ namespace Service
         public User GetUserByID(int id)
         {
             return _unitOfWork.UserRepository.GetByID(id);
+        }
+        public async Task<int> CountAccountByStatus(int status)
+        {
+            var userCount = await Task.FromResult(_unitOfWork.UserRepository.Get(
+                filter: o =>  o.Status == status
+            ).Count());
+
+            return userCount;
         }
     }
 }

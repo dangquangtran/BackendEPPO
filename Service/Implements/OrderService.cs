@@ -123,6 +123,30 @@ namespace Service.Implements
 
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
+        public async Task<double> CountOrderPrice(int status, int? month = null, int? year = null)
+        {
+            var query = _unitOfWork.OrderRepository.Get(
+                filter: o => o.FinalPrice.HasValue && o.Status == status // status = 4 là giao hàng thành công
+            );
+            if (month.HasValue && year.HasValue)
+            {
+                query = query.Where(o => o.CreationDate.HasValue
+                                         && o.CreationDate.Value.Month == month
+                                         && o.CreationDate.Value.Year == year);
+            }
+            var totalRevenue = query.Any() ? query.Sum(o => o.FinalPrice.Value) : 0;
+
+            return totalRevenue;
+        }
+
+        public async Task<int> CountOrderByStatus(int userId, int status)
+        {
+            var orderCount = await Task.FromResult(_unitOfWork.OrderRepository.Get(
+                filter: o => o.UserId == userId && o.Status == status
+            ).Count());
+
+            return orderCount;
+        }
 
         public IEnumerable<OrderRentalVM> GetOrdersRentalByUserId(int userId, int pageIndex, int pageSize, int status)
         {

@@ -186,7 +186,7 @@ namespace BackendEPPO.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
+                return BadRequest(new { Message = Error.BAD_REQUEST });
             }
             address.AddressId = addressId;
 
@@ -225,7 +225,7 @@ namespace BackendEPPO.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
+                return BadRequest(new { Message = Error.BAD_REQUEST });
             }
             try
             {
