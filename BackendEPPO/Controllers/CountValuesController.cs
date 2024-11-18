@@ -182,5 +182,45 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Function for mobile: Count account register by status.
+        /// </summary>
+        /// <returns> Function for web: Count account by status.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Count.CountAccountResgiter_Endpoint)]
+        public IActionResult CountUserRegister(int roomId)
+        {
+            try
+            {
+                int result = _userRoomService.CountUserRegister(roomId).Result;
+
+                if (result == 0)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.ORDER_FOUND_ERROR,
+                        Data = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = $"Số người đăng kí là: {result}"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = Error.ORDER_FOUND_ERROR + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
     }
 }

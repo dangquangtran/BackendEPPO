@@ -33,7 +33,7 @@ namespace Service.Implements
 
         public async Task<UserRoom> GetUserRoomByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(Id));
+            return await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(Id, includeProperties: "Room"));
         }
 
         public async Task UpdateUserRoom(UpdateUserRoomDTO userRoom)
@@ -79,5 +79,45 @@ namespace Service.Implements
             _unitOfWork.UserRoomRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task<int> CountUserRegister(int roomId)
+        {
+            var uCount = await Task.FromResult(_unitOfWork.UserRoomRepository.Get(
+                filter: o => o.Status != 0 && o.RoomId == roomId
+            ).Count());
+
+            return uCount;
+        }
+        public async Task<int> CountTimeActive(int roomId)
+        {
+            var room = await Task.FromResult(
+                _unitOfWork.RoomRepository.Get(filter: r => r.RoomId == roomId).FirstOrDefault()
+            );
+
+            if (room == null || !room.RegistrationOpenDate.HasValue || !room.RegistrationEndDate.HasValue)
+            {
+                throw new ArgumentNullException("Room or registration dates are invalid.");
+            }
+            var timeSpan = room.ActiveDate.Value - DateTime.Now;
+
+           
+            return (int)timeSpan.TotalSeconds; 
+        }
+        public async Task<int> CountTimeClose(int roomId)
+        {
+            var room = await Task.FromResult(
+                _unitOfWork.RoomRepository.Get(filter: r => r.RoomId == roomId).FirstOrDefault()
+            );
+
+            if (room == null || !room.RegistrationOpenDate.HasValue || !room.RegistrationEndDate.HasValue)
+            {
+                throw new ArgumentNullException("Room or registration dates are invalid.");
+            }
+            var timeSpan = room.EndDate.Value - room.ActiveDate.Value;
+
+
+            return (int)timeSpan.TotalSeconds;
+        }
+
     }
 }
