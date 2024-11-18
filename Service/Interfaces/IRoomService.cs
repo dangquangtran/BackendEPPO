@@ -17,5 +17,7 @@ namespace Service.Interfaces
         Task DeleteRoom(DeleteRoomDTO room);
         Task<IEnumerable<Room>> SearchListRoomByDate(int page, int size, string date);
         Task<IEnumerable<Room>> FilterListRoomByPrice(int page, int size, double? minPrice = null, double? maxPrice = null, bool isDescending = false);
+
+        Task<int> CounUserRegister(int roomId);
     }
 }

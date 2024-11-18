@@ -42,6 +42,31 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
+        /// Function for mobile: Get list all room register successful by token .
+        /// </summary>
+        /// <returns>Function for mobile: Get list all room register successful by token.</returns>
+        [Authorize(Roles = "customer")]
+        [HttpGet(ApiEndPointConstant.UserRoom.GetListUserRoomByToken_Endpoint)]
+        public async Task<IActionResult> GetListUserRoomWithUserToken(int page, int size)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            var room = await _service.GetListUserRoomWithUserToken(page, size, userId);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = room
+            });
+        }
+
+
+        /// <summary>
         /// Get user room by user room id.
         /// </summary>
         /// <returns>Get user room by user room id.</returns>

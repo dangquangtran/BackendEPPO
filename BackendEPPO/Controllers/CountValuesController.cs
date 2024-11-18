@@ -14,10 +14,12 @@ namespace BackendEPPO.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IUserService _userService;
-        public CountValuesController(IOrderService orderService, IUserService userService)
+        private readonly IUserRoomService _userRoomService;
+        public CountValuesController(IOrderService orderService, IUserService userService, IUserRoomService userRoomService)
         {
             _orderService = orderService;
             _userService = userService;
+            _userRoomService = userRoomService;
         }
         /// <summary>
         /// Function for web: Count the order by status.
