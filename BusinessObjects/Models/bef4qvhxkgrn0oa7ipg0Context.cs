@@ -240,12 +240,6 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.BidTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Code).HasMaxLength(255);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
-
                 entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
