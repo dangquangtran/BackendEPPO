@@ -1,10 +1,13 @@
 ﻿using BackendEPPO.Extenstion;
+using BusinessObjects.Models;
 using DTOs.Category;
+using DTOs.Error;
 using DTOs.Room;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
+using static BackendEPPO.Extenstion.ApiEndPointConstant;
 
 namespace BackendEPPO.Controllers
 {
@@ -112,20 +115,72 @@ namespace BackendEPPO.Controllers
         /// </summary>
         /// <returns>Get room by ID of the room.</returns>
         [HttpGet(ApiEndPointConstant.Room.GetRoomByID)]
-        public async Task<IActionResult> GetRoomByID(int id)
+        public async Task<IActionResult> GetRoomByID(int roomId)
         {
-            var room = await _roomService.GetRoomByID(id);
+            try
+            {
+                int registeredCount = await _roomService.CountUserRegister(roomId);
 
-            if (room == null)
-            {
-                return NotFound($"Room with ID {id} not found.");
+
+                double totalSecoundOpening = await _roomService.CountTimeActive(roomId);
+                if (totalSecoundOpening == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
+
+                double totalSecoundClosing = await _roomService.CountTimeClose(roomId);
+                if (totalSecoundClosing == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
+
+                var room = await _roomService.GetRoomByID(roomId);
+
+                if (room == null)
+                {
+                    return NotFound($"Room with ID {roomId} not found.");
+                }
+                //return Ok(new
+                //{
+                //    StatusCode = 200,
+                //    Message = "Request was successful",
+                //    Data = room
+                //});
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = new
+                    {
+                        Room = room,
+                        RegisteredCount = registeredCount,
+                        OpeningCoolDown = totalSecoundOpening,
+                        ClosingCoolDown = totalSecoundClosing,
+
+                    }
+                });
             }
-            return Ok(new
+            catch (Exception ex)
             {
-                StatusCode = 200,
-                Message = "Request was successful",
-                Data = room
-            });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = $"{Error.ORDER_FOUND_ERROR}: {ex.Message}",
+                    Data = (object)null
+                });
+            }
+
+            
         }
 
         /// <summary>

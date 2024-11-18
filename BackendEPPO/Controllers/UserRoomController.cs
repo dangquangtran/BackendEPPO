@@ -4,6 +4,7 @@ using DTOs.Room;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service.Implements;
 using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
@@ -72,21 +73,71 @@ namespace BackendEPPO.Controllers
         /// <returns>Get user room by user room id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.UserRoom.GetUserRoomByID)]
-        public async Task<IActionResult> GetUserRoomByID(int id)
+        public async Task<IActionResult> GetUserRoomByID(int userRoomId)
         {
-            var room = await _service.GetUserRoomByID(id);
+            try
+            {
+                double totalSecoundOpening = await _service.CountTimeActive(userRoomId);
+                if (totalSecoundOpening == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
 
-            if (room == null)
-            {
-                return NotFound(new { Message = Error.NO_DATA_FOUND });
+                double totalSecoundClosing = await _service.CountTimeClose(userRoomId);
+                if (totalSecoundClosing == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
+
+                var room = await _service.GetUserRoomByID(userRoomId);
+                if (room == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
+
+     
+                int registeredCount = await _service.CountUserRegister(userRoomId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = new
+                    {
+                        Room = room,
+                        RegisteredCount = registeredCount,
+                        OpeningCoolDown = totalSecoundOpening,
+                        ClosingCoolDown = totalSecoundClosing,
+
+                    }
+                });
             }
-            return Ok(new
+            catch (Exception ex)
             {
-                StatusCode = 200,
-                Message = Error.REQUESR_SUCCESFULL,
-                Data = room
-            });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = $"{Error.ORDER_FOUND_ERROR}: {ex.Message}",
+                    Data = (object)null
+                });
+            }
         }
+
 
 
         /// <summary>
