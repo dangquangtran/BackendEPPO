@@ -51,7 +51,7 @@ namespace Service.Implements
                 RoomId = userRoom.RoomId,
                 UserId = userID,
                 JoinDate = DateTime.Now,
-                IsActive = userRoom.IsActive,
+                IsActive = true,
                 Status = 1,
             };
             _unitOfWork.UserRoomRepository.Insert(entity);

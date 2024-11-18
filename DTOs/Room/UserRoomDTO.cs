@@ -18,7 +18,6 @@ namespace DTOs.Room
     public class CreateUserRoomDTO
     {
         public int? RoomId { get; set; }
-        public bool? IsActive { get; set; }
 
     }
     public class DeleteUserRoomDTO
