@@ -110,7 +110,7 @@ namespace Service.Implements
                         {
                             var broadcastMessage = new
                             {
-                                Message = "Có lượt đấu giá mới",
+                                Message = "Have a new auction",
                                 HistoryBid = historyBid
                             };
                             var broadcastBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(broadcastMessage));
