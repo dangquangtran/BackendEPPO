@@ -80,6 +80,7 @@ namespace BackendEPPO.Extenstion
         public static class UserRoom
         {
             public const string GetListUserRoom_Endpoint = ApiEndpoint + "/GetList/UserRoom";
+            public const string GetListUserRoomByToken_Endpoint = ApiEndpoint + "/GetList/UserRoom/Registered/ByToken";
             public const string GetUserRoomByID = GetListUserRoom_Endpoint + "/Id";
             public const string CreateUserRoom = GetListUserRoom_Endpoint + "/Create/UserRoom";
             public const string UpdateUserRoomByID = GetListUserRoom_Endpoint + "/Update/UserRoom/Id";

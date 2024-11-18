@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Room;
+using PdfSharp.Pdf.Filters;
 using Repository.Interfaces;
 using Service.Interfaces;
 using System;
@@ -21,6 +22,13 @@ namespace Service.Implements
         public async Task<IEnumerable<UserRoom>> GetListUserRoom(int page, int size)
         {
             return await _unitOfWork.UserRoomRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
+        }
+        public async Task<IEnumerable<UserRoom>> GetListUserRoomWithUserToken(int page, int size, int userId)
+        {
+            return await _unitOfWork.UserRoomRepository.GetAsync(
+                filter: c => c.UserId == userId && c.Status != 0 && c.IsActive != false,
+                pageIndex: page, pageSize: size,
+                includeProperties: "Room");
         }
 
         public async Task<UserRoom> GetUserRoomByID(int Id)
