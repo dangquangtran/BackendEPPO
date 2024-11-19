@@ -28,12 +28,12 @@ namespace Service.Implements
             return await _unitOfWork.UserRoomRepository.GetAsync(
                 filter: c => c.UserId == userId && c.Status != 0 && c.IsActive != false,
                 pageIndex: page, pageSize: size,
-                includeProperties: "Room");
+                includeProperties: "Room.Plant");
         }
 
         public async Task<UserRoom> GetUserRoomByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(Id, includeProperties: "Room"));
+            return await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(Id, includeProperties: "Room.Plant"));
         }
 
         public async Task UpdateUserRoom(UpdateUserRoomDTO userRoom)
