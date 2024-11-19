@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Conversation;
+using DTOs.HistoryBid;
 using DTOs.ImagePlant;
 using DTOs.Message;
 using DTOs.Order;
@@ -43,6 +44,7 @@ namespace Service.AutoMapper
             CreateMap<CreateOrderDetailRentalDTO, OrderDetail>();
             CreateMap<OrderDetail, OrderDetailRentalVM>().ReverseMap();
             CreateMap<ImagePlant, ImagePlantVM>().ReverseMap();
+            CreateMap<HistoryBid, HistoryBidVM>().ReverseMap();
             CreateMap<OrderDetail, OrderDetailRentalVM>()
             .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
             .ForMember(dest => dest.RentalStartDate, opt => opt.MapFrom(src => src.RentalStartDate))

@@ -25,6 +25,7 @@ namespace Repository.Interfaces
 
 
         TEntity GetByID(object id, string includeProperties = "");
+        Task<TEntity> GetByIDAsync(object id, string includeProperties = "");
 
         void Insert(TEntity entity);
 
@@ -38,6 +39,9 @@ namespace Repository.Interfaces
 
         Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> filter);
         Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> filter);
-
+        IQueryable<TEntity> GetQueryable(
+      Expression<Func<TEntity, bool>> filter = null,
+      Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+      string includeProperties = "");
     }
 }
