@@ -2,6 +2,7 @@
 using BusinessObjects.Models;
 using DTOs.ImagePlant;
 using DTOs.Plant;
+using DTOs.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Repository.Interfaces;
@@ -48,6 +49,12 @@ namespace Service
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
+        public IEnumerable<PlantVM> GetAllPlantsToResgister(int pageIndex, int pageSize)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status != 0 && c.IsActive == false, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+
         public PlantVM GetPlantById(int id)
         {
             var plant = _unitOfWork.PlantRepository.GetByID(id, includeProperties: "ImagePlants");
@@ -55,46 +62,8 @@ namespace Service
             return _mapper.Map<PlantVM>(plant); ;
         }
 
-        public async Task CreatePlant(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles)
-        {
-            Plant plant = _mapper.Map<Plant>(createPlant);
-            plant.CreationDate = DateTime.Now;
-            plant.Status = 1;
-            plant.IsActive = true;
-            if (mainImageFile != null)
-            {
-                using var mainImageStream = mainImageFile.OpenReadStream();
-                string mainImageFileName = mainImageFile.FileName;
-
-                string mainImageUrl = await _firebaseStorageService.UploadPlantImageAsync(mainImageStream, mainImageFileName);
-
-                plant.MainImage = mainImageUrl;
-            }
-            if (imageFiles != null && imageFiles.Count > 0)
-            {
-                foreach (var imageFile in imageFiles)
-                {
-                    using var stream = imageFile.OpenReadStream();
-                    string fileName = imageFile.FileName;
-
-                    // Upload từng hình ảnh lên Firebase và lấy URL
-                    string imageUrl = await _firebaseStorageService.UploadPlantImageAsync(stream, fileName);
-
-                    // Lưu đường dẫn hình ảnh vào ImagePlant
-                    ImagePlant imagePlant = new ImagePlant
-                    {
-                        PlantId = plant.PlantId, // Liên kết hình ảnh với plant đã tạo
-                        ImageUrl = imageUrl
-                    };
-
-                    // Thêm imagePlant vào danh sách các ảnh của plant
-                    plant.ImagePlants.Add(imagePlant);
-                }
-            }
-            _unitOfWork.PlantRepository.Insert(plant);
-            _unitOfWork.Save();
-        }
-        public async Task UpdatePlant(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles)
+      
+        public async Task UpdatePlantByManager(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles)
         {
             // Lấy thông tin plant từ DB
             var plant = _unitOfWork.PlantRepository.GetByID(updatePlant.PlantId, includeProperties: "ImagePlants");
@@ -235,5 +204,118 @@ namespace Service
             return plantVMs;
         }
 
+
+
+        public async Task CreatePlantByOwner(CreatePlantDTOByOwner plant , string userId)
+        {
+         
+            var plantEntity = new Plant
+            {
+                PlantName=plant.PlantName,
+                Title = plant.Title,
+                Description = plant.Description,
+                Length = plant.Length,
+                Width = plant.Width,
+                Height = plant.Height,
+                Price = plant.Price, // nhập giá mong đợi của owner
+                Discounts = plant.Discounts,// chia hoa hồng
+                FinalPrice = plant.FinalPrice, // Giá cuối cùng khi đã lên shop eppo
+                MainImage = plant.MainImage,
+                CategoryId = plant.CategoryId,
+                TypeEcommerceId = plant.TypeEcommerceId,
+                Status = 1, // đã tạo plant
+                IsActive =  false, // chờ manager xét duyệt
+                CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
+                Code = userId,
+          
+
+            };
+
+            _unitOfWork.PlantRepository.Insert(plantEntity);
+            await _unitOfWork.SaveAsync();
+        }
+        public async Task CreatePlantByOwner(CreatePlantDTOTokenOwner createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles , int userId)
+        {
+            Plant plant = _mapper.Map<Plant>(createPlant);
+            plant.CreationDate = DateTime.Now;
+            plant.ModificationDate = DateTime.Now;
+            plant.Status = 1;
+            plant.IsActive = false;
+            plant.ModificationBy = userId;
+            if (mainImageFile != null)
+            {
+                using var mainImageStream = mainImageFile.OpenReadStream();
+                string mainImageFileName = mainImageFile.FileName;
+
+                string mainImageUrl = await _firebaseStorageService.UploadPlantImageAsync(mainImageStream, mainImageFileName);
+
+                plant.MainImage = mainImageUrl;
+            }
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload từng hình ảnh lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadPlantImageAsync(stream, fileName);
+
+                    // Lưu đường dẫn hình ảnh vào ImagePlant
+                    ImagePlant imagePlant = new ImagePlant
+                    {
+                        PlantId = plant.PlantId, // Liên kết hình ảnh với plant đã tạo
+                        ImageUrl = imageUrl
+                    };
+
+                    // Thêm imagePlant vào danh sách các ảnh của plant
+                    plant.ImagePlants.Add(imagePlant);
+                }
+            }
+            _unitOfWork.PlantRepository.Insert(plant);
+            _unitOfWork.Save();
+        }
+
+        public async Task CreatePlantByOwner(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles, int userId)
+        {
+            Plant plant = _mapper.Map<Plant>(createPlant);
+            plant.CreationDate = DateTime.Now;
+            plant.Status = 1;
+            plant.IsActive = false;
+            plant.ModificationBy = userId;
+            if (mainImageFile != null)
+            {
+                using var mainImageStream = mainImageFile.OpenReadStream();
+                string mainImageFileName = mainImageFile.FileName;
+
+                string mainImageUrl = await _firebaseStorageService.UploadPlantImageAsync(mainImageStream, mainImageFileName);
+
+                plant.MainImage = mainImageUrl;
+            }
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload từng hình ảnh lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadPlantImageAsync(stream, fileName);
+
+                    // Lưu đường dẫn hình ảnh vào ImagePlant
+                    ImagePlant imagePlant = new ImagePlant
+                    {
+                        PlantId = plant.PlantId, // Liên kết hình ảnh với plant đã tạo
+                        ImageUrl = imageUrl
+                    };
+
+                    // Thêm imagePlant vào danh sách các ảnh của plant
+                    plant.ImagePlants.Add(imagePlant);
+                }
+            }
+            _unitOfWork.PlantRepository.Insert(plant);
+            _unitOfWork.Save();
+        }
     }
 }

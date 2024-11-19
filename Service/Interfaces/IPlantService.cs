@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Plant;
+using DTOs.User;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,10 @@ namespace Service.Interfaces
         Task<Plant> GetPlantByID(int Id);
         Task<IEnumerable<Plant>> GetListPlantByCategory(int Id);
         IEnumerable<PlantVM> GetAllPlants(int pageIndex, int pageSize);
+        IEnumerable<PlantVM> GetAllPlantsToResgister(int pageIndex, int pageSize); 
         PlantVM GetPlantById(int id);
-        Task CreatePlant(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles);
-        Task UpdatePlant(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles);
+        Task CreatePlantByOwner(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles, int userId);
+     
         IEnumerable<PlantVM> GetPlantsByCategoryId(int pageIndex, int pageSize, int categoryId);
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId);
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId);
@@ -27,5 +29,10 @@ namespace Service.Interfaces
         Task<IEnumerable<PlantVM>> CheckPlantInCart(List<int> PlantId);
         IEnumerable<PlantVM> SearchPlants(string keyword,int typeEcommerceId, int pageIndex, int pageSize);
 
+
+        Task CreatePlantByOwner(CreatePlantDTOByOwner plant , string userId);
+
+        Task CreatePlantByOwner(CreatePlantDTOTokenOwner createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles , int userId);
+        Task UpdatePlantByManager(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles);
     }
 }

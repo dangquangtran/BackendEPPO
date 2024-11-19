@@ -361,7 +361,7 @@ namespace Service
                         gfx.DrawString($"• Thanh toán sẽ được thực hiện vào ngày  {contract.CreationContractDate:dd} hàng tháng.", font, XBrushes.Black, new XPoint(margin, yPoint));
                         yPoint += lineHeight;
 
-      
+                if (yPoint >= pageHeightLimit) CreateNewPage();
                 // Điều 4: Quyền và nghĩa vụ của Bên A
                 gfx.DrawString("Điều 4: Quyền và nghĩa vụ của Bên A", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
@@ -393,7 +393,7 @@ namespace Service
                 yPoint += lineHeight;
                 gfx.DrawString($"quy định của pháp luật.", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-
+                if (yPoint >= pageHeightLimit) CreateNewPage();
                 // Điều 7: Điều khoản chung
                 gfx.DrawString("Điều 7: Điều khoản chung", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;

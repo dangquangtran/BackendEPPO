@@ -100,8 +100,8 @@ namespace Service.Implements
             }
             var timeSpan = room.ActiveDate.Value - DateTime.Now;
 
-           
-            return (int)timeSpan.TotalSeconds; 
+
+            return timeSpan.TotalSeconds > 0 ? (int)timeSpan.TotalSeconds : 0;
         }
         public async Task<int> CountTimeClose(int roomId)
         {
@@ -116,7 +116,7 @@ namespace Service.Implements
             var timeSpan = room.EndDate.Value - room.ActiveDate.Value;
 
 
-            return (int)timeSpan.TotalSeconds;
+            return timeSpan.TotalSeconds > 0 ? (int)timeSpan.TotalSeconds : 0;
         }
 
     }
