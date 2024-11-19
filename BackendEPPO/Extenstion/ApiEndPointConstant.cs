@@ -82,7 +82,7 @@ namespace BackendEPPO.Extenstion
         {
             public const string GetListUserRoom_Endpoint = ApiEndpoint + "/GetList/UserRoom";
             public const string GetListUserRoomByToken_Endpoint = ApiEndpoint + "/GetList/UserRoom/Registered/ByToken";
-            public const string GetUserRoomByID = GetListUserRoom_Endpoint + "/Id";
+            public const string GetUserRoomByID = GetListUserRoom_Endpoint + "/RoomId";
             public const string CreateUserRoom = GetListUserRoom_Endpoint + "/Create/UserRoom";
             public const string UpdateUserRoomByID = GetListUserRoom_Endpoint + "/Update/UserRoom/Id";
             public const string DelteUserRoomByID = GetListUserRoom_Endpoint + "/Delete/UserRoom/Id";
@@ -211,6 +211,13 @@ namespace BackendEPPO.Extenstion
             public const string SearchPlantByKeyWord = GetListPlants_Endpoint + "/Search/Keyword";
 
             public const string CheckPlantInCart = GetListPlants_Endpoint + "/Cart/Check/PlantId";
+
+            public const string CreatePlantByOwner_Endpoint = ApiEndpoint + "/GetList/Plants/CreatePlant/ByToken";
+            public const string CreatePlantByOwnerToken_Endpoint = ApiEndpoint + "/Plants/CreatePlant/ByToken";
+
+            public const string GetListPlantsRegister_Endpoint = ApiEndpoint + "/GetList/Plants/Register";
+
+            public const string UpdatePlantByManager = ApiEndpoint + "/GetList/Plants/UpdatePlant/PlantId";
         }
         // Do Huu Thuan
         public static class Categories

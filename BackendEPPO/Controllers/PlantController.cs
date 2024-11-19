@@ -1,7 +1,10 @@
 ﻿using BackendEPPO.Extenstion;
+using DTOs.Error;
 using DTOs.Plant;
+using DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
@@ -59,31 +62,7 @@ namespace BackendEPPO.Controllers
             });
         }
 
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
-        [HttpPost]
-        public async Task<IActionResult> CreatePlant([FromForm] CreatePlantDTO createPlant)
-        {
-            await _plantService.CreatePlant(createPlant, createPlant.MainImageFile, createPlant.ImageFiles);
-            return Ok(new
-            {
-                StatusCode = 201,
-                Message = "Đã tạo cây thành công.",
-                Data = createPlant
-            });
-        }
-
-        [Authorize]
-        [HttpPut]
-        public async Task<IActionResult> UpdatePlant([FromForm] UpdatePlantDTO updatePlant)
-        {
-            await _plantService.UpdatePlant(updatePlant, updatePlant.MainImageFile, updatePlant.ImageFiles);
-            return Ok(new
-            {
-                StatusCode = 200,
-                Message = "Đã cập nhật cây thành công.",
-                Data = updatePlant
-            });
-        }
+ 
 
         /// <summary>
         /// Get list Plant by Category with the page and the size.
@@ -231,6 +210,108 @@ namespace BackendEPPO.Controllers
                 StatusCode = 200,
                 Message = "Yêu cầu thành công.",
                 Data = plants
+            });
+        }
+
+        /// <summary>
+        /// Function for mobile: Create plant for owner by role owner.
+        /// </summary>
+        /// <returns> Function for mobile: Create plant for owner by role owner</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPost(ApiEndPointConstant.Plants.CreatePlantByOwner_Endpoint)]
+        public async Task<IActionResult> CreatePlantByOwner([FromBody] CreatePlantDTOByOwner plant)
+        {
+
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _plantService.CreatePlantByOwner(plant, userIdClaim);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = plant
+            });
+        }
+
+        /// <summary>
+        /// Function for mobile: Create plant for owner by role owner.
+        /// </summary>
+        /// <returns> Function for mobile: Create plant for owner by role owner</returns>
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[HttpPost(ApiEndPointConstant.Plants.CreatePlantByOwnerToken_Endpoint)]
+        //public async Task<IActionResult> CreatePlantDTOTokenOwner([FromForm] CreatePlantDTOTokenOwner createPlant)
+        //{
+        //    var userIdClaim = User.FindFirst("userId")?.Value;
+        //    int userId = int.Parse(userIdClaim);
+
+        //    await _plantService.CreatePlantByOwner(createPlant, createPlant.MainImageFile, createPlant.ImageFiles, userId);
+        //    return Ok(new
+        //    {
+        //        StatusCode = 201,
+        //        Message = "Đã tạo cây thành công.",
+        //        Data = createPlant
+        //    });
+        //}
+
+        /// <summary>
+        /// Function for mobile: Create plant for owner by role owner.
+        /// </summary>
+        /// <returns> Function for mobile: Create plant for owner by role owner</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPost(ApiEndPointConstant.Plants.CreatePlantByOwnerToken_Endpoint)]
+        public async Task<IActionResult> CreatePlant([FromForm] CreatePlantDTO createPlant)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            await _plantService.CreatePlantByOwner(createPlant, createPlant.MainImageFile, createPlant.ImageFiles , userId);
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = "Đã tạo cây thành công.",
+                Data = createPlant
+            });
+        }
+        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsRegister_Endpoint)]
+        public IActionResult GetAllPlantsToResgister(int pageIndex, int pageSize)
+        {
+            var plants = _plantService.GetAllPlantsToResgister(pageIndex, pageSize);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+        }
+        /// <summary>
+        /// Function for web: Update plant for manager by role manager.
+        /// </summary>
+        /// <returns> Function for web: Update plant for manager by role manager.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.Plants.UpdatePlantByManager)]
+        public async Task<IActionResult> UpdatePlantByManager([FromForm] UpdatePlantDTO updatePlant)
+        {
+            await _plantService.UpdatePlantByManager(updatePlant, updatePlant.MainImageFile, updatePlant.ImageFiles);
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Đã cập nhật cây thành công.",
+                Data = updatePlant
             });
         }
     }

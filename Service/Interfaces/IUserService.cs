@@ -27,5 +27,6 @@ namespace Service.Interfaces
 
         Task<bool> CheckAccountExists(string email, string userName);
         Task<int> CountAccountByStatus(int status);
+        Task UpdateRankVler(UpdateRankVler account);
     }
 }

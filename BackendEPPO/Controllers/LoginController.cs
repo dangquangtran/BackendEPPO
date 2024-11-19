@@ -60,7 +60,18 @@ namespace BackendEPPO.Controllers
             {
                 return Unauthorized(new { message = "Invalid username or password" });
             }
-       
+            if (user.RankLevel == "New account")
+            {
+                user.RankLevel = "Users";
+                user.ModificationDate = DateTime.Now;
+
+                _userService.UpdateRankVler(new UpdateRankVler
+                {
+                    UserId = user.UserId,
+                    RankLevel = "Users"
+                });
+            }
+
 
             if (user != null && user.Password == request.Password)
             {
@@ -69,7 +80,9 @@ namespace BackendEPPO.Controllers
                 response = Ok(new
                 {
                     StatusCode = 201,
-                    Message = "Đăng nhập thành công",
+                    Message = user.RankLevel == "New account"
+            ? "Welcome! This is your first login."
+            : "Đăng nhập thành công",
                     token = tokenString,
                     //userID = user.UserId,
                     roleName = user.Role.NameRole,
@@ -108,10 +121,10 @@ namespace BackendEPPO.Controllers
                     new Claim("fullName", userInfo.FullName.ToString()),
                     new Claim("email", userInfo.Email.ToString()),
                     new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),
-                    new Claim("gender", userInfo.Gender.ToString()),
+                    //new Claim("gender", userInfo.Gender.ToString()),
                     new Claim("walletId", userInfo.WalletId.ToString()),
-                    new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
-                    new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),
+                    //new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
+                    //new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),
                     new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
 
                 }, 

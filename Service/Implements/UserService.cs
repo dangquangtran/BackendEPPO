@@ -84,6 +84,9 @@ namespace Service
                 Status = 1,
             };
 
+            _unitOfWork.WalletRepository.Insert(walletEntity);
+            await _unitOfWork.SaveAsync();
+
             var customerEntity = new User
             {
                 UserName = owner.UserName,
@@ -92,8 +95,10 @@ namespace Service
                 Email = owner.Email,
                 Password = owner.Password,
                 WalletId = walletEntity.WalletId,
+                RankLevel = "New account",
                 RoleId = 4,
                 CreationDate = DateTime.Now,
+                ModificationDate= DateTime.Now,
                 IsActive = true,
                 Status = 1,
 
@@ -368,6 +373,22 @@ namespace Service
             ).Count());
 
             return userCount;
+        }
+        public async Task UpdateRankVler(UpdateRankVler account)
+        {
+            var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(account.UserId));
+            if (userEntity == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+            if (string.IsNullOrWhiteSpace(account.RankLevel))
+            {
+                throw new ArgumentException("Password not null.");
+            }
+            userEntity.RankLevel = "UserEPPO";
+            userEntity.ModificationDate = DateTime.Now;
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

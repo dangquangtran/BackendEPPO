@@ -68,16 +68,17 @@ namespace BackendEPPO.Controllers
 
 
         /// <summary>
-        /// Get user room by user room id.
+        /// Get user room  to register by  room id.
         /// </summary>
+        /// <param name="roomId">Room ID(e.g., "roomID = 10")</param>
         /// <returns>Get user room by user room id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.UserRoom.GetUserRoomByID)]
-        public async Task<IActionResult> GetUserRoomByID(int userRoomId)
+        public async Task<IActionResult> GetUserRoomByID(int roomId)
         {
             try
             {
-                double totalSecoundOpening = await _service.CountTimeActive(userRoomId);
+                double totalSecoundOpening = await _service.CountTimeActive(roomId);
                 if (totalSecoundOpening == null)
                 {
                     return NotFound(new
@@ -88,7 +89,7 @@ namespace BackendEPPO.Controllers
                     });
                 }
 
-                double totalSecoundClosing = await _service.CountTimeClose(userRoomId);
+                double totalSecoundClosing = await _service.CountTimeClose(roomId);
                 if (totalSecoundClosing == null)
                 {
                     return NotFound(new
@@ -99,7 +100,7 @@ namespace BackendEPPO.Controllers
                     });
                 }
 
-                var room = await _service.GetUserRoomByID(userRoomId);
+                var room = await _service.GetUserRoomByID(roomId);
                 if (room == null)
                 {
                     return NotFound(new
@@ -111,7 +112,7 @@ namespace BackendEPPO.Controllers
                 }
 
      
-                int registeredCount = await _service.CountUserRegister(userRoomId);
+                int registeredCount = await _service.CountUserRegister(roomId);
 
                 return Ok(new
                 {
@@ -120,9 +121,9 @@ namespace BackendEPPO.Controllers
                     Data = new
                     {
                         Room = room,
-                        RegisteredCount = registeredCount,
-                        OpeningCoolDown = totalSecoundOpening,
-                        ClosingCoolDown = totalSecoundClosing,
+                        RegisteredCount = "Số người đăng ký đấu giá là:" + registeredCount,
+                        OpeningCoolDown = "Số ngày mở đăng ký còn lại là:" + totalSecoundOpening,
+                        ClosingCoolDown = "Thời gian còn lại cuộc đáu giá là:" + totalSecoundClosing,
 
                     }
                 });
