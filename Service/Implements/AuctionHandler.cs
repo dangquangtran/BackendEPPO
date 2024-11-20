@@ -55,20 +55,20 @@ using Microsoft.EntityFrameworkCore;
                     if (!string.IsNullOrEmpty(userIdClaim))
                     {
                         userId = int.Parse(userIdClaim);
-                        var successResponse = new { Message = "Token is valid, you have been successfully authenticated." };
-                        var successResponseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(successResponse));
+                        var successResponse = "Token";
+                        var successResponseBytes = Encoding.UTF8.GetBytes(successResponse);
                         await webSocket.SendAsync(new ArraySegment<byte>(successResponseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                         await JoinRoomAsync(authMessage.RoomId, webSocket);
                     }
                     else
                     {
-                        await webSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "Invalid token", CancellationToken.None);
+                        await webSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "Token không hợp lệ", CancellationToken.None);
                         return;
                     }
                 }
                 else
                 {
-                    await webSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "Invalid authentication", CancellationToken.None);
+                    await webSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "Xác thực thất bại", CancellationToken.None);
                     return;
                 }
 
@@ -88,8 +88,8 @@ using Microsoft.EntityFrameworkCore;
 
                         if (userRoom == null)
                         {
-                            var response = new { Message = "User is not allowed to bid in this room." };
-                            var responseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+                            var response = "Người dùng không được phép đấu giá trong phòng này.";
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
                             await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                             continue;
                         }
@@ -97,8 +97,8 @@ using Microsoft.EntityFrameworkCore;
 
                         if (user == null || user.IsActive == false || user.WalletId == null)
                         {
-                            var response = new { Message = "User or wallet not found." };
-                            var responseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+                            var response = "User hoặc ví không tìm thấy được";
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
                             await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                             continue;
                         }
@@ -108,8 +108,8 @@ using Microsoft.EntityFrameworkCore;
 
                         if (userWallet == null || userWallet.NumberBalance < bidRequest.BidAmount)
                         {
-                            var response = new { Message = "Insufficient wallet balance to place a bid." };
-                            var responseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+                            var response = "Số dư ví không đủ để thực hiện đấu giá.";
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
                             await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                             continue;
                         }
@@ -118,8 +118,8 @@ using Microsoft.EntityFrameworkCore;
                         var room = await _unitOfWork.RoomRepository.GetByIDAsync(bidRequest.RoomId, includeProperties: "Plant");
                         if (room == null)
                         {
-                            var response = new { Message = "Room not found." };
-                            var responseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+                            var response = "Không tìm thấy phòng";
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
                             await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                             continue;
                         }
@@ -132,8 +132,8 @@ using Microsoft.EntityFrameworkCore;
                         }
                         else
                         {
-                            var response = new { Message = "No plant found for this room." };
-                            var responseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+                            var response = "Không tìm thấy cây trong phòng";
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
                             await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                             continue;
                         }
@@ -152,8 +152,8 @@ using Microsoft.EntityFrameworkCore;
                             // Kiểm tra nếu BidAmount của lần đấu giá mới nhỏ hơn PriceAuctionNext của lần đấu giá trước đó
                             if (bidRequest.BidAmount < lastBid.PriceAuctionNext)
                             {
-                                var response = new { Message = $"Bid amount must be greater than or equal to the next auction price: {lastBid.PriceAuctionNext}" };
-                                var responseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+                                var response = $"Bạn phải ra giá cao hơn giá cao nhât + bước giá: {lastBid.PriceAuctionNext}";
+                                var responseBytes = Encoding.UTF8.GetBytes(response);
                                 await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                                 continue;
                             }
@@ -163,8 +163,8 @@ using Microsoft.EntityFrameworkCore;
                             // Nếu chưa có lượt đấu giá nào, kiểm tra nếu BidAmount lớn hơn giá cây trong phòng cộng với PriceStep
                             if (bidRequest.BidAmount < plantPrice + priceStep)
                             {
-                                var response = new { Message = $"Bid amount must be greater than or equal to the plant price plus price step: {plantPrice + priceStep}" };
-                                var responseBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+                                var response = $"Bạn phải ra giá cao hơn giá khởi điểm + bước giá: {plantPrice + priceStep}";
+                                var responseBytes = Encoding.UTF8.GetBytes(response);
                                 await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                                 continue;
                             }
@@ -202,7 +202,17 @@ using Microsoft.EntityFrameworkCore;
                                         var broadcastMessage = new
                                         {
                                             Message = "Have a new auction",
-                                            HistoryBid = historyBidVM
+                                            HistoryBid = new
+                                            {
+                                                historyBidVM.UserId,
+                                                historyBidVM.RoomId,
+                                                historyBidVM.BidAmount,
+                                                BidTime = historyBidVM.BidTime.HasValue ? historyBidVM.BidTime.Value.ToString("yyyy-MM-ddTHH:mm:ss") : null, // Định dạng thời gian khi truyền
+                                                historyBidVM.PriceAuctionNext,
+                                                historyBidVM.IsActive,
+                                                historyBidVM.Status,
+                                                user.UserName
+                                            },
                                         };
                                         var broadcastBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(broadcastMessage));
                                         await connection.SendAsync(
