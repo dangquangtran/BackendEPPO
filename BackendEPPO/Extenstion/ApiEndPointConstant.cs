@@ -73,9 +73,10 @@ namespace BackendEPPO.Extenstion
             public const string UpdateRoomByID = GetListRoom_Endpoint + "/Update/Room/Id";
 
             public const string DeleteRoomByID = GetListRoom_Endpoint + "/Delete/Room/Id";
-
+            public const string UpdateStatusRoomByID = GetListRoom_Endpoint + "/Update/Status/Room/Id";
             public const string SearchListRoomByDate_Endpoint = ApiEndpoint + "/GetList/Rooms/SearchRoomByDate";
             public const string FilterListRoomByPrice_Endpoint = ApiEndpoint + "/GetList/Rooms/FilterListRoomByPrice";
+            public const string GetListRoomIsActive_Endpoint = ApiEndpoint + "/GetList/Rooms/Aucting";
         }
         // Do Huu Thuan
         public static class UserRoom
@@ -83,6 +84,7 @@ namespace BackendEPPO.Extenstion
             public const string GetListUserRoom_Endpoint = ApiEndpoint + "/GetList/UserRoom";
             public const string GetListUserRoomByToken_Endpoint = ApiEndpoint + "/GetList/UserRoom/Registered/ByToken";
             public const string GetUserRoomByID = GetListUserRoom_Endpoint + "/RoomId";
+            public const string GetUserRoomByRoomID = GetListUserRoom_Endpoint + "/UerRoom/RoomId";
             public const string CreateUserRoom = GetListUserRoom_Endpoint + "/Create/UserRoom";
             public const string UpdateUserRoomByID = GetListUserRoom_Endpoint + "/Update/UserRoom/Id";
             public const string DelteUserRoomByID = GetListUserRoom_Endpoint + "/Delete/UserRoom/Id";

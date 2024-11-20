@@ -54,4 +54,8 @@ namespace DTOs.Room
     {
         public int RoomId { get; set; }
     }
+    public class UpdateStatusRoomDTO
+    {
+        public int? Status { get; set; }
+    }
 }

@@ -36,6 +36,16 @@ namespace Service.Implements
             return await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(Id, includeProperties: "Room.Plant"));
         }
 
+        public async Task<UserRoom> GetUserRoomByRoomID(int roomId)
+        {
+       
+            var userRoom =  _unitOfWork.UserRoomRepository
+                .Get(filter: ur => ur.RoomId == roomId, includeProperties: "Room.Plant");
+
+            return userRoom.FirstOrDefault();
+        }
+
+
         public async Task UpdateUserRoom(UpdateUserRoomDTO userRoom)
         {
             var entity = await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(userRoom.UserRoomId));
