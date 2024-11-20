@@ -30,7 +30,7 @@ namespace Service.Implements
             return await _unitOfWork.RoomRepository.GetAsync(
                pageIndex: page,
                pageSize: size,
-               includeProperties: "Plant",
+               includeProperties: "Plant,ImagePlant",
                orderBy: q => q.OrderByDescending(r => r.ActiveDate),
                filter: r => r.ActiveDate <= currentDate &&  r.Status != 0
            );
@@ -48,7 +48,7 @@ namespace Service.Implements
                 filter: r => r.Status != 0 && r.ActiveDate.HasValue && r.ActiveDate.Value.Date == parsedDate.Date,
                 pageIndex: page,
                 pageSize: size,
-                includeProperties: "Plant"
+                includeProperties: "Plant,ImagePlant"
             );
         }
         public async Task<IEnumerable<Room>> FilterListRoomByPrice(int page, int size, double? minPrice = null, double? maxPrice = null, bool isDescending = false)
@@ -74,7 +74,7 @@ namespace Service.Implements
                              c.EndDate >= DateTime.Now,
                 pageIndex: page,
                 pageSize: size,
-                includeProperties: "Plant"
+                includeProperties: "Plant,ImagePlant"
             );
         }
 
@@ -83,7 +83,7 @@ namespace Service.Implements
 
         public async Task<Room> GetRoomByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant"));
+            return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant,ImagePlant"));
         }
         public async Task CreateRoom(CreateRoomDTO room)
         {
