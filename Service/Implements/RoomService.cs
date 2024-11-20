@@ -66,6 +66,17 @@ namespace Service.Implements
             );
         }
 
+        public async Task<IEnumerable<Room>> GetListRoomsIsActive(int page, int size)
+        {
+            return await _unitOfWork.RoomRepository.GetAsync(
+                filter: c => c.Status == 2 &&
+                             c.ActiveDate <= DateTime.Now &&
+                             c.EndDate >= DateTime.Now,
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "Plant"
+            );
+        }
 
 
 
@@ -131,16 +142,29 @@ namespace Service.Implements
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task DeleteRoom(DeleteRoomDTO room)
+        public async Task DeleteRoom(DeleteRoomDTO room, int roomId)
         {
 
-            var entity = await Task.FromResult(_unitOfWork.RoomRepository.GetByID(room.RoomId));
+            var entity = await Task.FromResult(_unitOfWork.RoomRepository.GetByID(roomId));
 
             if (entity == null)
             {
                 throw new Exception($"Room with ID {room.RoomId} not found.");
             }
             entity.Status = 0;
+            _unitOfWork.RoomRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
+        public async Task UpdateStatusRoom(UpdateStatusRoomDTO room , int roomId)
+        {
+
+            var entity = await Task.FromResult(_unitOfWork.RoomRepository.GetByID(roomId));
+
+            if (entity == null)
+            {
+                throw new Exception($"Room with ID {roomId} not found.");
+            }
+            entity.Status = room.Status;
             _unitOfWork.RoomRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }

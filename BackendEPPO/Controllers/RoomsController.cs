@@ -33,17 +33,35 @@ namespace BackendEPPO.Controllers
 
             if (room == null || !room.Any())
             {
-                return NotFound("No room found.");
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Request was successful",
+                Message = Error.REQUESR_SUCCESFULL,
                 Data = room
             });
         }
+        /// <summary>
+        /// Get list room is aucting.
+        /// </summary>
+        /// <returns>Get list all room in database.</returns>
+        [HttpGet(ApiEndPointConstant.Room.GetListRoomIsActive_Endpoint)]
+        public async Task<IActionResult> GetListRoomsIsActive(int page, int size)
+        {
+            var room = await _roomService.GetListRoomsIsActive(page, size);
 
-
+            if (room == null || !room.Any())
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = room
+            });
+        }
         /// <summary>
         /// Filter the list of rooms by price and the plant prices in descending with the page and the size..
         /// </summary>
@@ -259,19 +277,54 @@ namespace BackendEPPO.Controllers
         /// </summary>
         /// <returns>Delete the room with role manager and staff to update status is zero.</returns>
         [Authorize(Roles = "admin, manager, staff")]
-        [HttpDelete(ApiEndPointConstant.Room.DeleteRoomByID)]
-        public async Task<IActionResult> DeleteRoom(int id, [FromBody] DeleteRoomDTO room)
+        [HttpPut(ApiEndPointConstant.Room.UpdateStatusRoomByID)]
+        public async Task<IActionResult> UpdateStatusRoom(int roomId, [FromBody] UpdateStatusRoomDTO room)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { message = "Invalid input data." });
             }
-            room.RoomId = id;
+        
+            try
+            {
+                await _roomService.UpdateStatusRoom(room, roomId);
+                var updatedRoom = await _roomService.GetRoomByID(roomId);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = "Delete room successfully.",
+                    Data = updatedRoom
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Room not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Delete the room with role manager and staff to update status is zero.
+        /// </summary>
+        /// <returns>Delete the room with role manager and staff to update status is zero.</returns>
+        [Authorize(Roles = "admin, manager, staff")]
+        [HttpDelete(ApiEndPointConstant.Room.DeleteRoomByID)]
+        public async Task<IActionResult> DeleteRoom(int rooId, [FromBody] DeleteRoomDTO room)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Invalid input data." });
+            }
+          
 
             try
             {
-                await _roomService.DeleteRoom(room);
-                var updatedRoom = await _roomService.GetRoomByID(id);
+                await _roomService.DeleteRoom(room, rooId);
+                var updatedRoom = await _roomService.GetRoomByID(rooId);
 
                 return Ok(new
                 {

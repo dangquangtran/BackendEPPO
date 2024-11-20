@@ -74,7 +74,7 @@ namespace BackendEPPO.Controllers
         /// <returns>Get user room by user room id.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.UserRoom.GetUserRoomByID)]
-        public async Task<IActionResult> GetUserRoomByID(int roomId)
+        public async Task<IActionResult> GetUserRoomByRoomID(int roomId)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace BackendEPPO.Controllers
                     });
                 }
 
-                var room = await _service.GetUserRoomByID(roomId);
+                var room = await _service.GetUserRoomByRoomID(roomId);
                 if (room == null)
                 {
                     return NotFound(new
@@ -124,6 +124,81 @@ namespace BackendEPPO.Controllers
                         RegisteredCount =  registeredCount,
                         OpeningCoolDown =  totalSecoundOpening,
                         ClosingCoolDown =  totalSecoundClosing,
+
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = $"{Error.ORDER_FOUND_ERROR}: {ex.Message}",
+                    Data = (object)null
+                });
+            }
+        }
+
+
+        /// <summary>
+        /// Get user room  details to register by user room id.
+        /// </summary>
+        /// <param name="userRoomId">Room ID(e.g., "userRoomId = 10")</param>
+        /// <returns>Get user room by user room id.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.UserRoom.GetUserRoomByRoomID)]
+        public async Task<IActionResult> GetUserRoomByID(int userRoomId)
+        {
+            try
+            {
+                var room = await _service.GetUserRoomByID(userRoomId);
+                if (room == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
+
+
+                double totalSecoundOpening = await _service.CountTimeActive(userRoomId);
+                if (totalSecoundOpening == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
+
+                double totalSecoundClosing = await _service.CountTimeClose(userRoomId);
+                if (totalSecoundClosing == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.NO_DATA_FOUND,
+                        Data = (object)null
+                    });
+                }
+
+
+
+                int registeredCount = await _service.CountUserRegister(userRoomId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = new
+                    {
+                        Room = room,
+                        RegisteredCount = registeredCount,
+                        OpeningCoolDown = totalSecoundOpening,
+                        ClosingCoolDown = totalSecoundClosing,
 
                     }
                 });

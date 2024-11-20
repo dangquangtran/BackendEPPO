@@ -14,11 +14,13 @@ namespace Service.Interfaces
         Task<Room> GetRoomByID(int Id);
         Task UpdateRoom(UpdateRoomDTO room);
         Task CreateRoom(CreateRoomDTO room);
-        Task DeleteRoom(DeleteRoomDTO room);
+        Task DeleteRoom(DeleteRoomDTO room , int roomId);
         Task<IEnumerable<Room>> SearchListRoomByDate(int page, int size, string date);
         Task<IEnumerable<Room>> FilterListRoomByPrice(int page, int size, double? minPrice = null, double? maxPrice = null, bool isDescending = false);
         Task<int> CountTimeClose(int roomId);
         Task<int> CountTimeActive(int roomId);
         Task<int> CountUserRegister(int roomId);
+        Task<IEnumerable<Room>> GetListRoomsIsActive(int page, int size);
+        Task UpdateStatusRoom(UpdateStatusRoomDTO room, int roomId);
     }
 }
