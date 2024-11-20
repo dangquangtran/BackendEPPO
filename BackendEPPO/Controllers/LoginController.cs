@@ -60,18 +60,7 @@ namespace BackendEPPO.Controllers
             {
                 return Unauthorized(new { message = "Invalid username or password" });
             }
-            if (user.RankLevel == "New account")
-            {
-                user.RankLevel = "Users";
-                user.ModificationDate = DateTime.Now;
-
-                _userService.UpdateRankVler(new UpdateRankVler
-                {
-                    UserId = user.UserId,
-                    RankLevel = "Users"
-                });
-            }
-
+          
 
             if (user != null && user.Password == request.Password)
             {
@@ -80,12 +69,11 @@ namespace BackendEPPO.Controllers
                 response = Ok(new
                 {
                     StatusCode = 201,
-                    Message = user.RankLevel == "New account"
-            ? "Welcome! This is your first login."
-            : "Đăng nhập thành công",
+                    Message = "Đăng nhập thành công",
                     token = tokenString,
                     //userID = user.UserId,
                     roleName = user.Role.NameRole,
+                    level = user.RankLevel,
                 });
             }
             return response;
