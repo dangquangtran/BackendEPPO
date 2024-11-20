@@ -121,9 +121,9 @@ namespace BackendEPPO.Controllers
                     Data = new
                     {
                         Room = room,
-                        RegisteredCount = "Số người đăng ký đấu giá là:" + registeredCount,
-                        OpeningCoolDown = "Số ngày mở đăng ký còn lại là:" + totalSecoundOpening,
-                        ClosingCoolDown = "Thời gian còn lại cuộc đáu giá là:" + totalSecoundClosing,
+                        RegisteredCount =  registeredCount,
+                        OpeningCoolDown =  totalSecoundOpening,
+                        ClosingCoolDown =  totalSecoundClosing,
 
                     }
                 });
