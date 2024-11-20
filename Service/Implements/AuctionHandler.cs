@@ -191,15 +191,42 @@ using Microsoft.EntityFrameworkCore;
                         // Phát broadcast cho các người dùng trong phòng
                         if (_roomConnections.TryGetValue(bidRequest.RoomId, out var connections))
                         {
+                            var invalidConnections = new List<WebSocket>();
+
                             foreach (var connection in connections)
                             {
-                                var broadcastMessage = new
+                                if (connection.State == WebSocketState.Open)
                                 {
-                                    Message = "Have a new auction",
-                                    HistoryBid = historyBidVM
-                                };
-                                var broadcastBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(broadcastMessage));
-                                await connection.SendAsync(new ArraySegment<byte>(broadcastBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                                    try
+                                    {
+                                        var broadcastMessage = new
+                                        {
+                                            Message = "Have a new auction",
+                                            HistoryBid = historyBidVM
+                                        };
+                                        var broadcastBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(broadcastMessage));
+                                        await connection.SendAsync(
+                                            new ArraySegment<byte>(broadcastBytes),
+                                            WebSocketMessageType.Text,
+                                            true,
+                                            CancellationToken.None);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine($"Lỗi khi gửi thông báo: {ex.Message}");
+                                        invalidConnections.Add(connection);
+                                    }
+                                }
+                                else
+                                {
+                                    invalidConnections.Add(connection);
+                                }
+                            }
+
+                            // Loại bỏ các kết nối không hợp lệ
+                            foreach (var invalidConnection in invalidConnections)
+                            {
+                                connections.Remove(invalidConnection);
                             }
                         }
                     }
@@ -212,18 +239,22 @@ using Microsoft.EntityFrameworkCore;
                 }
         }
 
-            private async Task JoinRoomAsync(int roomId, WebSocket webSocket)
+        private async Task JoinRoomAsync(int roomId, WebSocket webSocket)
+        {
+            if (!_roomConnections.ContainsKey(roomId))
             {
-                // Kiểm tra nếu phòng chưa có trong từ điển, thêm mới
-                if (!_roomConnections.ContainsKey(roomId))
-                {
-                    _roomConnections[roomId] = new List<WebSocket>();
-                }
-
-                // Thêm kết nối WebSocket vào danh sách phòng
-                _roomConnections[roomId].Add(webSocket);
+                _roomConnections[roomId] = new List<WebSocket>();
             }
-            private string DecodeJwtToken(string token, string claimType)
+
+            // Xóa các kết nối đã đóng
+            _roomConnections[roomId] = _roomConnections[roomId]
+                .Where(socket => socket.State == WebSocketState.Open).ToList();
+
+            // Thêm kết nối mới
+            _roomConnections[roomId].Add(webSocket);
+        }
+
+        private string DecodeJwtToken(string token, string claimType)
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
