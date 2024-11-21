@@ -19,7 +19,7 @@ namespace DTOs.User
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string? ImageUrl { get; set; }
-        public int? IdentificationCard { get; set; }
+        public string? IdentificationCard { get; set; }
         public int? WalletId { get; set; }
         public int? RoleId { get; set; }
         public string? RankLevel { get; set; }
@@ -43,7 +43,7 @@ namespace DTOs.User
         public string Email { get; set; }
         public string AddressDescription { get; set; }
         //public string? ImageUrl { get; set; }
-        public int? IdentificationCard { get; set; }
+        public string? IdentificationCard { get; set; }
         //public int? WalletId { get; set; }
         //public int? RoleId { get; set; }
         //public string? RankLevel { get; set; }
@@ -65,7 +65,7 @@ namespace DTOs.User
         public string Email { get; set; }
         public string AddressDescription { get; set; }
         //public string? ImageUrl { get; set; }
-        public int? IdentificationCard { get; set; }
+        public string? IdentificationCard { get; set; }
         //public int? WalletId { get; set; }
         //public int? RoleId { get; set; }
         //public string? RankLevel { get; set; }
@@ -86,7 +86,7 @@ namespace DTOs.User
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string ImageUrl { get; set; }
-        public int? IdentificationCard { get; set; }
+        public string? IdentificationCard { get; set; }
         public int? WalletId { get; set; }
         public int? RoleId { get; set; }
         public string RankLevel { get; set; }
@@ -108,7 +108,7 @@ namespace DTOs.User
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public string? ImageUrl { get; set; }
-        public int? IdentificationCard { get; set; }
+        public string? IdentificationCard { get; set; }
         public int? WalletId { get; set; }
         public string? RankLevel { get; set; }
         public bool? IsActive { get; set; }
@@ -135,7 +135,7 @@ namespace DTOs.User
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public string? ImageUrl { get; set; }
-        public int? IdentificationCard { get; set; }
+        public string? IdentificationCard { get; set; }
         public int? ModificationBy { get; set; }
         public int? WalletId { get; set; }
         public DateTime? CreationDate { get; set; }
