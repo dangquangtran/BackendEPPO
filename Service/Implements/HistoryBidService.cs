@@ -17,9 +17,10 @@ namespace Service.Implements
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public HistoryBidService(IUnitOfWork unitOfWork, )
+        public HistoryBidService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public void CreateHistoryBid(HistoryBid bid)
