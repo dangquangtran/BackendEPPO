@@ -226,22 +226,28 @@ namespace Service
             {
                 userEntity.Gender = accountDTO.Gender;
             }
-           if (!string.IsNullOrEmpty(accountDTO.DateOfBirthInput))
+
+            if (!accountDTO.DateOfBirth.HasValue)
             {
-                if (DateTime.TryParseExact(
-                    accountDTO.DateOfBirthInput,
-                    "dd/MM/yy",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None,
-                    out DateTime parsedDate))
-                {
-                    userEntity.DateOfBirth = parsedDate; 
-                }
-                else
-                {
-                    throw new FormatException("Invalid date format. Please use dd/MM/yy.");
-                }
+                userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
             }
+
+            //if (!string.IsNullOrEmpty(accountDTO.DateOfBirthInput))
+            //{
+            //    if (DateTime.TryParseExact(
+            //        accountDTO.DateOfBirthInput,
+            //        "dd/MM/yy",
+            //        CultureInfo.InvariantCulture,
+            //        DateTimeStyles.None,
+            //        out DateTime parsedDate))
+            //    {
+            //        userEntity.DateOfBirth = parsedDate; 
+            //    }
+            //    else
+            //    {
+            //        throw new FormatException("Invalid date format. Please use dd/MM/yy.");
+            //    }
+            //}
 
 
             if (!string.IsNullOrWhiteSpace(accountDTO.PhoneNumber))
@@ -336,22 +342,27 @@ namespace Service
             {
                 userEntity.Gender = accountDTO.Gender;
             }
-            if (!string.IsNullOrEmpty(accountDTO.DateOfBirthInput))
+
+            if (!accountDTO.DateOfBirth.HasValue)
             {
-                if (DateTime.TryParseExact(
-                    accountDTO.DateOfBirthInput,
-                    "dd/MM/yyyy",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None,
-                    out DateTime parsedDate))
-                {
-                    userEntity.DateOfBirth = parsedDate;
-                }
-                else
-                {
-                    throw new FormatException("Invalid date format. Please use dd/MM/yy.");
-                }
+                userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
             }
+            //if (!string.IsNullOrEmpty(accountDTO.DateOfBirthInput))
+            //{
+            //    if (DateTime.TryParseExact(
+            //        accountDTO.DateOfBirthInput,
+            //        "dd/MM/yyyy",
+            //        CultureInfo.InvariantCulture,
+            //        DateTimeStyles.None,
+            //        out DateTime parsedDate))
+            //    {
+            //        userEntity.DateOfBirth = parsedDate;
+            //    }
+            //    else
+            //    {
+            //        throw new FormatException("Invalid date format. Please use dd/MM/yy.");
+            //    }
+            //}
             if (!string.IsNullOrWhiteSpace(accountDTO.PhoneNumber))
             {
                 if (Regex.IsMatch(accountDTO.PhoneNumber, @"^\d{10}$"))
