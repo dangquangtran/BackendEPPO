@@ -137,11 +137,12 @@ namespace DTOs.User
         public int? Status { get; set; }
         public bool? IsActive { get; set; }
         public IFormFile? ImageFile { get; set; }
+        public bool? IsSigned { get; set; }//dang ki ve hop dong
+        public bool? IsUpdated { get; set; }// check coi no lan dau login
     }
     public class UpdateRankVler
     {
         public int UserId { get; set; }
         public string? RankLevel { get; set; }
-
     }
 }
