@@ -17,6 +17,7 @@ namespace DTOs.HistoryBid
         public bool? IsWinner { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsPayment { get; set; }
-        public int? Status { get; set; }            
+        public int? Status { get; set; }
+        public virtual BusinessObjects.Models.User User { get; set; }
     }
 }
