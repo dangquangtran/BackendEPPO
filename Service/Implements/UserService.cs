@@ -256,10 +256,17 @@ namespace Service
             {
                 userEntity.ImageUrl = accountDTO.ImageUrl;
             }
-            if (accountDTO.IdentificationCard.HasValue)
+
+
+            if (!string.IsNullOrWhiteSpace(accountDTO.IdentificationCard))
             {
-                userEntity.IdentificationCard = accountDTO.IdentificationCard.Value;
+                userEntity.IdentificationCard = accountDTO.IdentificationCard;
             }
+
+            //if (accountDTO.IdentificationCard.HasValue)
+            //{
+            //    userEntity.IdentificationCard = accountDTO.IdentificationCard.Value;
+            //}
             if (accountDTO.WalletId.HasValue)
             {
                 userEntity.WalletId = accountDTO.WalletId.Value;
@@ -372,10 +379,14 @@ namespace Service
             {
                 userEntity.ImageUrl = accountDTO.ImageUrl;
             }
-            if (accountDTO.IdentificationCard.HasValue)
+            if (!string.IsNullOrWhiteSpace(accountDTO.IdentificationCard))
             {
-                userEntity.IdentificationCard = accountDTO.IdentificationCard.Value;
+                userEntity.IdentificationCard = accountDTO.IdentificationCard;
             }
+            //if (accountDTO.IdentificationCard.HasValue)
+            //{
+            //    userEntity.IdentificationCard = accountDTO.IdentificationCard.Value;
+            //}
             if (accountDTO.WalletId.HasValue)
             {
                 userEntity.WalletId = accountDTO.WalletId.Value;
