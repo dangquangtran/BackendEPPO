@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PdfSharp;
+using Repository.Interfaces;
+using Service;
 using Service.Implements;
 using Service.Interfaces;
 using System.Collections.Generic;
@@ -21,11 +23,15 @@ namespace BackendEPPO.Controllers
     {
         private readonly IContractService _contractService;
         private readonly FirebaseStorageService _firebaseStorageService;
+        private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ContractController(IContractService IService, FirebaseStorageService firebaseStorageService)
+        public ContractController(IContractService IService, FirebaseStorageService firebaseStorageService, IUserService userService , IUnitOfWork unitOfWork)
         {
             _contractService = IService;
             _firebaseStorageService = firebaseStorageService;
+            _userService = userService;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -166,6 +172,10 @@ namespace BackendEPPO.Controllers
             }
 
             await _contractService.CreatePartnershipContract(contracts, userId);
+            var entity = _userService.GetUserByID(userId);
+            entity.IsSigned = true;
+            _unitOfWork.Save();
+        
 
             string contractPdfUrl = await _contractService.GenerateBusinessPartnershipContractPdfAsync(contracts, userId);
 

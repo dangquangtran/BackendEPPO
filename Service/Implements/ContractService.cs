@@ -156,7 +156,7 @@ namespace Service
             var entity = new Contract
             {
                 UserId = userID,
-                ContractNumber = contract.ContractNumber,
+                ContractNumber = userID,
                 Description = "Hợp Tác Kinh Doanh",
                 CreationContractDate = DateTime.UtcNow,
                 EndContractDate = DateTime.UtcNow.AddYears(2),
@@ -429,6 +429,12 @@ namespace Service
 
         public async Task<string> GenerateBusinessPartnershipContractPdfAsync(CreateContractPartnershipDTO contract, int userID)
         {
+            var user = await Task.FromResult(_unitOfWork.UserRepository.GetByID(userID));
+            if (user == null)
+            {
+                throw new Exception("No data user.");
+            }
+
 
             // Define file path and name
             string fileName = $"BusinessPartnershipContract_{DateTime.Now.Ticks}.pdf";
@@ -473,9 +479,9 @@ namespace Service
                 yPoint += lineHeight;
                 gfx.DrawString("• Các quy định pháp lý khác có liên quan", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString("• Mong muốn hợp tác kinh doanh giữa " + userID + " và Hệ Thống EPPO", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString("• Mong muốn hợp tác kinh doanh giữa " + user.FullName + " và Hệ Thống EPPO", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-
+                if (yPoint >= pageHeightLimit) CreateNewPage();
                 // Date and location
                 gfx.DrawString($"Hôm nay, ngày {DateTime.Now.ToString("dd")} tháng {DateTime.Now.ToString("MM")} năm {DateTime.Now.ToString("yyyy")}, tại {userID}", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
@@ -499,17 +505,17 @@ namespace Service
                 // Party A (Bên Cho Thuê)
                 gfx.DrawString("BÊN CHO THUÊ B (CHỦ SỞ HỮU):", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"• Tên: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with userID
+                gfx.DrawString($"• Tên: {user.FullName}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with userID
                 yPoint += lineHeight;
-                gfx.DrawString($"• Địa chỉ: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                gfx.DrawString($"• Địa chỉ: Thủ Đức, Hồ Chí Minh", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
                 yPoint += lineHeight;
-                gfx.DrawString($"• Mã số thuế: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                gfx.DrawString($"• CCCD/CMND: {user.IdentificationCard}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
                 yPoint += lineHeight;
-                gfx.DrawString($"• Điện thoại: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                gfx.DrawString($"• Điện thoại: {user.PhoneNumber}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
                 yPoint += lineHeight;
-                gfx.DrawString($"• Đại diện: {userID}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
+                gfx.DrawString($"• Đại diện: {user.UserName}", font, XBrushes.Black, new XPoint(margin, yPoint)); // Replace contract.UserId with actual user data
                 yPoint += lineHeight;
-
+                if (yPoint >= pageHeightLimit) CreateNewPage();
 
 
 
@@ -537,7 +543,7 @@ namespace Service
                 yPoint += lineHeight;
                 gfx.DrawString($"• Cung cấp dịch vụ bảo trì, sửa chữa cây cối khi có sự cố xảy ra (nếu có thỏa thuận).", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-
+                if (yPoint >= pageHeightLimit) CreateNewPage();
 
 
                 // Phần ký tên
@@ -545,7 +551,7 @@ namespace Service
                 yPoint += lineHeight;
                 gfx.DrawString("(Ký tên)                                                                               (Ký tên)", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"Đỗ Hữu Thuận                                                                               {userID}", font, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString($"Đỗ Hữu Thuận                                                                               {user.FullName}", font, XBrushes.Red, new XPoint(margin, yPoint));
 
                 // Lưu tài liệu PDF
                 // Saving the PDF document

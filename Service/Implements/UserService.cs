@@ -3,11 +3,14 @@ using BusinessObjects.Models;
 using DTOs.Contracts;
 using DTOs.User;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Mysqlx.Crud;
 using Repository.Interfaces;
 using Service.Implements;
 using Service.Interfaces;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Service
@@ -96,6 +99,8 @@ namespace Service
                 Password = owner.Password,
                 WalletId = walletEntity.WalletId,
                 RankLevel = "New account",
+                IsSigned =false,
+                IsUpdated = false,
                 RoleId = 4,
                 CreationDate = DateTime.Now,
                 ModificationDate= DateTime.Now,
@@ -183,10 +188,24 @@ namespace Service
             {
                 userEntity.Gender = accountDTO.Gender;
             }
-            if (accountDTO.DateOfBirth.HasValue)
+           if (!string.IsNullOrEmpty(accountDTO.DateOfBirthInput))
             {
-                userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
+                if (DateTime.TryParseExact(
+                    accountDTO.DateOfBirthInput,
+                    "dd/MM/yy",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime parsedDate))
+                {
+                    userEntity.DateOfBirth = parsedDate; 
+                }
+                else
+                {
+                    throw new FormatException("Invalid date format. Please use dd/MM/yy.");
+                }
             }
+
+
             if (!string.IsNullOrWhiteSpace(accountDTO.PhoneNumber))
             {
                 userEntity.PhoneNumber = accountDTO.PhoneNumber;
@@ -207,10 +226,13 @@ namespace Service
             {
                 userEntity.WalletId = accountDTO.WalletId.Value;
             }
-
             if (accountDTO.IsActive.HasValue)
             {
                 userEntity.IsActive = accountDTO.IsActive.Value;
+            }
+            if (accountDTO.IsUpdated.HasValue)
+            {
+                userEntity.IsUpdated = true;
             }
 
             if (accountDTO.CreationDate.HasValue)
@@ -251,6 +273,7 @@ namespace Service
             await _unitOfWork.SaveAsync();
         }
 
+
         public async Task UpdateInformationAccount(UpdateInformation accountDTO, IFormFile imageFile, int useID)
         {
 
@@ -268,18 +291,45 @@ namespace Service
             {
                 userEntity.Gender = accountDTO.Gender;
             }
-            if (accountDTO.DateOfBirth.HasValue)
+            if (!string.IsNullOrEmpty(accountDTO.DateOfBirthInput))
             {
-                userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
+                if (DateTime.TryParseExact(
+                    accountDTO.DateOfBirthInput,
+                    "dd/MM/yyyy",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime parsedDate))
+                {
+                    userEntity.DateOfBirth = parsedDate;
+                }
+                else
+                {
+                    throw new FormatException("Invalid date format. Please use dd/MM/yy.");
+                }
             }
             if (!string.IsNullOrWhiteSpace(accountDTO.PhoneNumber))
             {
-                userEntity.PhoneNumber = accountDTO.PhoneNumber;
+                if (Regex.IsMatch(accountDTO.PhoneNumber, @"^\d{10}$"))
+                {
+                    userEntity.PhoneNumber = accountDTO.PhoneNumber;
+                }
+                else
+                {
+                    throw new ArgumentException("Số điện thoại không hợp lệ. Số điện thoại phải có 10 chữ số.");
+                }
             }
             if (!string.IsNullOrWhiteSpace(accountDTO.Email))
             {
-                userEntity.Email = accountDTO.Email;
+                if (accountDTO.Email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    userEntity.Email = accountDTO.Email;
+                }
+                else
+                {
+                    throw new ArgumentException("Email không hợp lệ. Email phải có đuôi '@gmail.com'.");
+                }
             }
+
             if (!string.IsNullOrWhiteSpace(accountDTO.ImageUrl))
             {
                 userEntity.ImageUrl = accountDTO.ImageUrl;
@@ -291,6 +341,10 @@ namespace Service
             if (accountDTO.WalletId.HasValue)
             {
                 userEntity.WalletId = accountDTO.WalletId.Value;
+            }
+            if (accountDTO.IsUpdated.HasValue)
+            {
+                userEntity.IsUpdated = true;
             }
 
             if (accountDTO.IsActive.HasValue)
