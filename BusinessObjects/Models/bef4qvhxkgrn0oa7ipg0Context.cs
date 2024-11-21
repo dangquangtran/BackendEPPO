@@ -605,6 +605,8 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.Gender).HasMaxLength(10);
 
+                entity.Property(e => e.IdentificationCard).HasMaxLength(255);
+
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(255)
                     .HasColumnName("ImageURL");
