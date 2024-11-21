@@ -197,35 +197,30 @@ using Microsoft.EntityFrameworkCore;
                             {
                                 if (connection.State == WebSocketState.Open)
                                 {
-                                    try
-                                    {
-                                        var broadcastMessage = new
-                                        {
-                                            Message = "Have a new auction",
-                                            HistoryBid = new
-                                            {
-                                                historyBidVM.UserId,
-                                                historyBidVM.RoomId,
-                                                historyBidVM.BidAmount,
-                                                BidTime = historyBidVM.BidTime.HasValue ? historyBidVM.BidTime.Value.ToString("yyyy-MM-ddTHH:mm:ss") : null, // Định dạng thời gian khi truyền
-                                                historyBidVM.PriceAuctionNext,
-                                                historyBidVM.IsActive,
-                                                historyBidVM.Status,
-                                                user.UserName
-                                            },
-                                        };
-                                        var broadcastBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(broadcastMessage));
-                                        await connection.SendAsync(
-                                            new ArraySegment<byte>(broadcastBytes),
-                                            WebSocketMessageType.Text,
-                                            true,
-                                            CancellationToken.None);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Console.WriteLine($"Lỗi khi gửi thông báo: {ex.Message}");
-                                        invalidConnections.Add(connection);
-                                    }
+                                    //var broadcastMessage = new
+                                    //{
+                                    //    Message = "Have a new auction",
+                                    //    HistoryBid = new
+                                    //    {
+                                    //        historyBidVM.UserId,
+                                    //        historyBidVM.RoomId,
+                                    //        historyBidVM.BidAmount,
+                                    //        BidTime = historyBidVM.BidTime.HasValue ? historyBidVM.BidTime.Value.ToString("yyyy-MM-ddTHH:mm:ss") : null, // Định dạng thời gian khi truyền
+                                    //        historyBidVM.PriceAuctionNext,
+                                    //        historyBidVM.IsActive,
+                                    //        historyBidVM.Status,
+                                    //        user.UserName
+                                    //    },
+                                    //};
+                                    //var broadcastBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(broadcastMessage));
+                                    //await connection.SendAsync(
+                                    //    new ArraySegment<byte>(broadcastBytes),
+                                    //    WebSocketMessageType.Text,
+                                    //    true,
+                                    //    CancellationToken.None);
+                                    var response = "Đặt cược thành công";
+                                    var responseBytes = Encoding.UTF8.GetBytes(response);
+                                    await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                                 }
                                 else
                                 {
