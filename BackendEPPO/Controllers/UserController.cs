@@ -179,7 +179,16 @@ namespace BackendEPPO.Controllers
             {
                 return BadRequest(ModelState);
             }
+            bool isExistingUser = await _userService.CheckAccountExists(owner.Email, owner.UserName);
 
+            if (isExistingUser)
+            {
+                return Conflict(new
+                {
+                    StatusCode = 409,
+                    Message = Error.CREATE_ACCOUNT_FAIL,
+                });
+            }
             await _userService.CreateAccountByOwner(owner);
 
             return Ok(new

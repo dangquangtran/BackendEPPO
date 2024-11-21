@@ -517,13 +517,59 @@ namespace Service
                 yPoint += lineHeight;
                 if (yPoint >= pageHeightLimit) CreateNewPage();
 
+                gfx.DrawString("Bên A (Chủ Shop) cam kết hợp tác với Bên B (Nhà Vườn) trong việc đăng tải các sản phẩm cây cối, hoa, cảnh lên hệ thống của Bên A, ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("nhằm phục vụ cho nhu cầu mua bán, cho thuê, và đấu giá các sản phẩm cây cối, hoa, cảnh của Bên B.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
 
+
+                gfx.DrawString("Quyền và nghĩa vụ của Bên A (Chủ Shop)", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Cung cấp nền tảng trực tuyến cho phép Bên B đăng tải thông tin về sản phẩm cây cối, hoa, cảnh lên hệ thống.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Đảm bảo hệ thống vận hành ổn định và bảo mật thông tin giao dịch của Bên B.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Cung cấp công cụ quản lý sản phẩm, kiểm tra đơn hàng, và hỗ trợ xử lý giao dịch.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Cung cấp hỗ trợ kỹ thuật khi Bên B gặp vấn đề với việc đăng tải sản phẩm trên hệ thống.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Thực hiện các chiến dịch quảng bá và tiếp thị sản phẩm của Bên B trên nền tảng của Bên A.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+
+                // Điều 3: Quyền và nghĩa vụ của Bên B
+                gfx.DrawString("Quyền và nghĩa vụ của Bên B (Nhà Vườn)", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Cung cấp thông tin chính xác, đầy đủ về các sản phẩm cây cối, hoa, cảnh mà Bên B muốn đăng lên hệ thống, bao gồm mô tả chi tiết, hình ảnh và giá bán.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Đảm bảo các sản phẩm cây cối, hoa, cảnh đáp ứng các tiêu chuẩn chất lượng và có nguồn gốc hợp pháp.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Thanh toán các khoản phí dịch vụ cho Bên A theo tỷ lệ đã thỏa thuận trong hợp đồng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Cung cấp dịch vụ chăm sóc, bảo dưỡng cho cây cối, hoa, cảnh nếu có yêu cầu từ khách hàng thông qua hệ thống.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Chịu trách nhiệm về mọi vấn đề phát sinh liên quan đến chất lượng sản phẩm, giao dịch với khách hàng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                gfx.DrawString("Điều 5: Phương thức thanh toán", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Các khoản phí dịch vụ, hoa hồng và thanh toán sẽ được thực hiện qua chuyển khoản ngân hàng hoặc các", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("•phương thức thanh toán trực tuyến mà hai bên đồng thuận.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Bên B sẽ thanh toán phí dịch vụ cho Bên A vào mỗi kỳ thanh toán (theo tháng/quý/năm) hoặc ngay sau khi hoàn tất ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("•mỗi giao dịch, tùy theo thỏa thuận giữa hai bên.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
 
                 // Article 1: Purpose of the contract
                 if (yPoint >= pageHeightLimit) CreateNewPage();
                 gfx.DrawString("Điều 1: Mục đích hợp tác", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
-                gfx.DrawString($"Bên cho thuê cam kết cho bên thuê mượn cây cối, hoa, cảnh (các loại cây) để phục vụ cho nhu cầu kinh doanh, trang trí, sự kiện, hoặc các mục đích hợp pháp khác của bên thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"Bên cho thuê cam kết cho bên thuê mượn cây cối, hoa, cảnh (các loại cây) để phục vụ cho nhu cầu kinh doanh, trang trí, sự kiện, hoặc các ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"mục đích hợp pháp khác của bên thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 gfx.DrawString($"Bên thuê cam kết sử dụng cây cối đúng mục đích và chịu trách nhiệm bảo vệ cây trong suốt thời gian thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
@@ -545,7 +591,52 @@ namespace Service
                 yPoint += lineHeight;
                 if (yPoint >= pageHeightLimit) CreateNewPage();
 
-
+                // Điều 4: Quyền và nghĩa vụ của bên thuê
+                gfx.DrawString("Điều 4: Quyền và nghĩa vụ của bên thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Cam kết thanh toán đầy đủ số tiền thuê theo thỏa thuận trong hợp đồng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Đảm bảo sử dụng cây cối đúng mục đích, không thay đổi cấu trúc cây hoặc làm tổn hại đến chất lượng cây.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Chịu trách nhiệm sửa chữa hoặc bồi thường nếu cây bị hư hỏng trong quá trình thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                // Điều 4: Phí dịch vụ và hoa hồng
+                gfx.DrawString("Điều 5: Phí dịch vụ và hoa hồng", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Hệ thống sẽ thu phí dịch vụ hoặc hoa hồng từ các giao dịch mua bán, cho thuê và đấu giá theo tỷ lệ đã thỏa thuận trước.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Phí dịch vụ sẽ được tính dựa trên giá trị giao dịch, bao gồm cả chi phí giao hàng, xử lý và quản lý.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                // Điều 6: Giải quyết tranh chấp
+                gfx.DrawString("Điều 6: Giải quyết tranh chấp", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Mọi tranh chấp phát sinh trong quá trình hợp tác sẽ được giải quyết thông qua hòa giải, nếu không thành công sẽ đưa", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• ra tòa án có thẩm quyền", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                gfx.DrawString("Điều 7: Quyền và nghĩa vụ bảo mật", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Hệ thống cam kết bảo mật tất cả các thông tin giao dịch và dữ liệu của đối tác và khách hàng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Các bên đối tác cam kết không tiết lộ thông tin hoặc dữ liệu nhạy cảm liên quan đến hệ thống và các đối tác khác.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                // Điều 8: Chấm dứt hợp đồng
+                
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                gfx.DrawString("Điều 8: Điều khoản chấm dứt hợp đồng", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Hợp đồng có thể được chấm dứt trong các trường hợp sau:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("  - Một bên không thực hiện đúng nghĩa vụ trong hợp đồng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("  - Hai bên đồng thuận chấm dứt hợp đồng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Các bên có nghĩa vụ thông báo trước ít nhất 30 ngày khi có ý định chấm dứt hợp đồng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
                 // Phần ký tên
                 gfx.DrawString("ĐẠI DIỆN BÊN A                                          ĐẠI DIỆN BÊN B", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;

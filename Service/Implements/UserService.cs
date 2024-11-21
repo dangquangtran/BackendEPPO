@@ -49,7 +49,7 @@ namespace Service
         {
             var walletEntity = new Wallet
             {
-                NumberBalance = 0,              
+                NumberBalance = 0,
                 CreationDate = DateTime.Now,
                 ModificationDate = DateTime.Now,
                 Status = 1,
@@ -60,20 +60,40 @@ namespace Service
 
             var customerEntity = new User
             {
-                UserName= customer.UserName,
+                UserName = customer.UserName,
                 FullName = customer.FullName,
                 PhoneNumber = customer.PhoneNumber,
+                Gender = customer.Gender,
+                DateOfBirth = customer.DateOfBirth,
                 Email = customer.Email,
+                IdentificationCard = customer.IdentificationCard,
                 Password = customer.Password,
                 WalletId = walletEntity.WalletId,
+                RankLevel = "New account",
+                IsSigned = false,
+                IsUpdated = false,
                 RoleId = 5,
                 CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
                 IsActive = true,
                 Status = 1,
-
             };
 
             _unitOfWork.UserRepository.Insert(customerEntity);
+            await _unitOfWork.SaveAsync();
+
+            var addressEntity = new Address
+            {
+                UserId = customerEntity.UserId,
+                Description = customer.AddressDescription,
+                CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
+                Status = 1,
+            };
+
+
+
+            _unitOfWork.AddressRepository.Insert(addressEntity);
             await _unitOfWork.SaveAsync();
         }
 
@@ -95,7 +115,10 @@ namespace Service
                 UserName = owner.UserName,
                 FullName = owner.FullName,
                 PhoneNumber = owner.PhoneNumber,
+                Gender = owner.Gender,
+                DateOfBirth = owner.DateOfBirth,
                 Email = owner.Email,
+                IdentificationCard = owner.IdentificationCard,
                 Password = owner.Password,
                 WalletId = walletEntity.WalletId,
                 RankLevel = "New account",
@@ -106,11 +129,26 @@ namespace Service
                 ModificationDate= DateTime.Now,
                 IsActive = true,
                 Status = 1,
-
             };
 
             _unitOfWork.UserRepository.Insert(customerEntity);
             await _unitOfWork.SaveAsync();
+
+            var addressEntity = new Address
+            {
+                UserId = customerEntity.UserId,
+                Description = owner.AddressDescription,
+                CreationDate = DateTime.Now,
+                ModificationDate = DateTime.Now,
+                Status = 1,
+            };
+          
+
+
+            _unitOfWork.AddressRepository.Insert(addressEntity);
+            await _unitOfWork.SaveAsync();
+
+
         }
 
         public async Task CreateAccountByAdmin(CreateAccountByAdminDTO admin)

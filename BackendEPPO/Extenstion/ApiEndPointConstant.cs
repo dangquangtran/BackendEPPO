@@ -48,11 +48,11 @@ namespace BackendEPPO.Extenstion
 
             public const string GetInformationByID = GetUserEndpoint + "/Information/UserID";
 
-            public const string CreateUserAccount = ApiEndpoint + "/UsersAccount/CreateAccount";
+            public const string CreateUserAccount = ApiEndpoint + "/UsersAccount/CreateAccount/Manager";
 
-            public const string CreateAccountByCustomer = ApiEndpointByCustomer + "/CreateAccount";
+            public const string CreateAccountByCustomer = ApiEndpointByCustomer + "/CreateAccount/Customer";
 
-            public const string CreateAccountByOwner = ApiEndpointByOwner + "/CreateAccount";
+            public const string CreateAccountByOwner = ApiEndpointByOwner + "/CreateAccount/Owner";
 
             public const string CreateAccountByAdmin = ApiEndpointByAdmin + "/CreateAccount";
 
