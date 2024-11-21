@@ -25,5 +25,6 @@ namespace DTOs.Plant
         public bool? IsActive { get; set; }
         public IFormFile? MainImageFile { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }
+        public string Code { get; set; }
     }
 }

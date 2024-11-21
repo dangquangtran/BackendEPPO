@@ -314,5 +314,33 @@ namespace BackendEPPO.Controllers
                 Data = updatePlant
             });
         }
+
+        /// <summary>
+        /// Function of owner: Get list Plant by Type Ecommerce with the page and the size.
+        /// </summary>
+        /// <returns> Get list Plant by Type Ecommerce with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsOwnerByTypeEcommerceId)]
+        public IActionResult GetListPlantOfOwnerByTypeEcommerceId(int pageIndex, int pageSize, int? typeEcommerceId)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            var plants = _plantService.GetListPlantOfOwnerByTypeEcommerceId(pageIndex, pageSize, typeEcommerceId , userIdClaim);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào theo loại thương mại điện tử.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+        }
     }
 }
