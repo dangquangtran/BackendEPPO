@@ -609,6 +609,10 @@ namespace BusinessObjects.Models
                     .HasMaxLength(255)
                     .HasColumnName("ImageURL");
 
+                entity.Property(e => e.IsSigned).HasColumnName("isSigned");
+
+                entity.Property(e => e.IsUpdated).HasColumnName("isUpdated");
+
                 entity.Property(e => e.ModificationDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Password)
