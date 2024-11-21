@@ -24,6 +24,8 @@ namespace DTOs.User
         public int? RoleId { get; set; }
         public string? RankLevel { get; set; }
         public bool? IsActive { get; set; }
+        public bool? IsSigned { get; set; }
+        public bool? IsUpdated { get; set; }
         public DateTime? CreationDate { get; set; }
         public int? CreationBy { get; set; }
         public DateTime? ModificationDate { get; set; }
@@ -50,6 +52,8 @@ namespace DTOs.User
         public DateTime? ModificationDate { get; set; }
         public int? ModificationBy { get; set; }
         public int? Status { get; set; }
+        public bool? IsSigned { get; set; }
+        public bool? IsUpdated { get; set; }
     }
     public class CreateAccountByOwnerDTO
     {
@@ -99,7 +103,8 @@ namespace DTOs.User
         public int UserId { get; set; }
         public string? FullName { get; set; }
         public string? Gender { get; set; }
-        public DateTime? DateOfBirth { get; set; }
+        //public DateTime? DateOfBirth { get; set; }
+        public string DateOfBirthInput { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public string? ImageUrl { get; set; }
@@ -112,6 +117,7 @@ namespace DTOs.User
         public DateTime? ModificationDate { get; set; }
         public int? ModificationBy { get; set; }
         public int? Status { get; set; }
+        public bool? IsUpdated { get; set; }
         public IFormFile? ImageFile { get; set; }
     }
     public class ChangePassword
@@ -124,7 +130,8 @@ namespace DTOs.User
     {
         public string? FullName { get; set; }
         public string? Gender { get; set; }
-        public DateTime? DateOfBirth { get; set; }
+        //public DateTime? DateOfBirth { get; set; }
+        public string DateOfBirthInput { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public string? ImageUrl { get; set; }

@@ -79,10 +79,6 @@ namespace DTOs.Contracts
 
     public class CreateContractPartnershipDTO
     {
-        public int? ContractNumber
-        {
-            get; set;
-        } 
         public string? ContractUrl { get; set; }
         public List<ContractDetailDTOOwner>? ContractDetails { get; set; }
 
