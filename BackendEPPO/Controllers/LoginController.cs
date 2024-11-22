@@ -74,6 +74,8 @@ namespace BackendEPPO.Controllers
                     //userID = user.UserId,
                     roleName = user.Role.NameRole,
                     level = user.RankLevel,
+                    isSigned = user.IsSigned,
+                    
                 });
             }
             return response;
