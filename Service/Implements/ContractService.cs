@@ -551,7 +551,7 @@ namespace Service
                 gfx.DrawString("• Chịu trách nhiệm về mọi vấn đề phát sinh liên quan đến chất lượng sản phẩm, giao dịch với khách hàng.", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 if (yPoint >= pageHeightLimit) CreateNewPage();
-                gfx.DrawString("Điều 5: Phương thức thanh toán", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                gfx.DrawString("Phương thức thanh toán", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
                 gfx.DrawString("• Các khoản phí dịch vụ, hoa hồng và thanh toán sẽ được thực hiện qua chuyển khoản ngân hàng hoặc các", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
