@@ -111,10 +111,10 @@ namespace Service.Implements
                                     Message1 = chatMessage.Message1,
                                     Type = chatMessage.Type,
                                     ImageLink = imageUrl,
-                                    CreationDate = DateTime.UtcNow,
+                                    CreationDate = DateTime.Now,
                                     IsSent = true,
                                     IsSeen = false,
-                                    Status = 1 // Ví dụ: 1 = active
+                                    Status = 1 
                                 };
 
                                 unitOfWork.MessageRepository.Insert(message);

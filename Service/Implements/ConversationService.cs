@@ -52,6 +52,10 @@ namespace Service.Implements
         filter: c => (c.UserOne == userId || c.UserTwo == userId) && c.Status != 0,
         includeProperties: "Messages,UserOneNavigation,UserTwoNavigation"
         );
+            foreach (var conversation in conversations)
+            {
+                conversation.Messages = conversation.Messages.OrderBy(m => m.CreationDate).ToList();
+            }
             return _mapper.Map<IEnumerable<ConversationVM>>(conversations);
         }
     }
