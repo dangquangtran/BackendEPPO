@@ -83,7 +83,7 @@ namespace Service.Implements
 
         public async Task<Room> GetRoomByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant,ImagePlant"));
+            return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant"));
         }
         public async Task CreateRoom(CreateRoomDTO room)
         {
