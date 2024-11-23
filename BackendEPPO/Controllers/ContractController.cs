@@ -130,7 +130,7 @@ namespace BackendEPPO.Controllers
         /// Get Contracts by ContractID with all role.
         /// </summary>
         /// <returns>Get Contracts with ContractID with all role.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Contract.GetContractByID)]
         public async Task<IActionResult> GetContractByID(int contractId)
         {
