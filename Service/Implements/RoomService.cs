@@ -22,7 +22,7 @@ namespace Service.Implements
         }
         public async Task<IEnumerable<Room>> GetListRooms(int page, int size)
         {
-            return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size, includeProperties: "Plant");
+            return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.RoomId), pageIndex: page, pageSize: size, includeProperties: "Plant");
         }
         public async Task<IEnumerable<Room>> GetListRoomsByDateNow(int page, int size)
         {
