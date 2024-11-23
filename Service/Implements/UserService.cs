@@ -476,6 +476,27 @@ namespace Service
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
         }
+        public async Task ChangeChangeStatust(ChangeStatus account , int userId)
+        {
+            // Fetch the user entity by ID
+            var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(userId));
+            if (userEntity == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+            if (account.Status.HasValue)
+            {
+                userEntity.Status = account.Status.Value;
+            }
+            else
+            {
+                throw new ArgumentException("Status cannot be null.");
+            }
+            userEntity.ModificationDate = DateTime.Now;
+            _unitOfWork.UserRepository.Update(userEntity);
+            await _unitOfWork.SaveAsync();
+        }
+
 
         public User GetUserByID(int id)
         {
