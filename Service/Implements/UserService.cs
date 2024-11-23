@@ -208,7 +208,7 @@ namespace Service
 
         public async Task<User> GetUsersByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id, includeProperties: "Wallet"));
+            return await Task.FromResult(_unitOfWork.UserRepository.GetByID(Id, includeProperties: "Wallet,Addresses"));
         }
 
         public async Task UpdateUserAccount(UpdateAccount accountDTO, IFormFile imageFile)
