@@ -46,7 +46,10 @@ namespace Service
             _unitOfWork.ContractRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
-
+        public async Task<IEnumerable<Contract>> GetListContractStatus(int page, int size, int status)
+        {
+            return await _unitOfWork.ContractRepository.GetAsync(filter: c => c.Status == status, orderBy: query => query.OrderByDescending(c => c.ContractId), includeProperties: "User", pageIndex: page, pageSize: size);
+        }
 
 
         public async Task<IEnumerable<Contract>> GetListContract(int page, int size)

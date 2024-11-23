@@ -105,6 +105,7 @@ namespace BackendEPPO.Extenstion
             public const string CreatePartnershipContract = GetListContract_Endpoint + "/Create/Contract/Ownership";
 
             public const string DownLoadContract = ApiEndpoint + "/Download/Contract/{FileName}";
+            public const string GetListContractStatus_Endpoint = ApiEndpoint + "/GetList/Contracts/Status";
         }
         // Do Huu Thuan
         public static class RoomParticipant
