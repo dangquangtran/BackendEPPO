@@ -24,7 +24,7 @@ namespace Service.Interfaces
         Task UpdateUserAccount(UpdateAccount account, IFormFile imageFile);
         Task UpdateInformationAccount(UpdateInformation account, IFormFile imageFile , int useID);
         Task ChangePasswordAccount(ChangePassword account);
-
+        Task ChangeChangeStatust(ChangeStatus account, int userId);
         Task<bool> CheckAccountExists(string email, string userName);
         Task<int> CountAccountByStatus(int status);
         Task UpdateRankVler(UpdateRankVler account);

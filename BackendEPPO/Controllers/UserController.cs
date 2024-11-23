@@ -332,6 +332,40 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
+        /// <summary>
+        /// Change Status of account by user Id.
+        /// </summary>
+        /// <returns>Change password of account by all role.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.User.ChangeStatus)]
+        public async Task<IActionResult> ChangeStatusAccount(int userId, [FromBody] ChangeStatus accountDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+
+            try
+            {
+                await _userService.ChangeChangeStatust(accountDTO, userId );
+                var updatedUser = await _userService.GetUsersByID(userId);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = Error.UPDATE_ACCOUNT_SUCCESSFUL,
+                    Data = updatedUser
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
+            }
+        }
 
         /// <summary>
         /// Change password of account by token.
