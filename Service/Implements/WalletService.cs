@@ -39,8 +39,8 @@ namespace Service.Implements
             var entity = new Wallet
             {
                 NumberBalance = wallet.NumberBalance,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 Status = 1,
             };
             _unitOfWork.WalletRepository.Insert(entity);
@@ -56,7 +56,7 @@ namespace Service.Implements
                 throw new Exception($"Wallet with ID {wallet.WalletId} not found.");
             }
             entity.NumberBalance = wallet.NumberBalance;
-            entity.ModificationDate = DateTime.Now;
+            entity.ModificationDate = DateTime.UtcNow.AddHours(7);
             entity.Status = wallet.Status;
 
             _unitOfWork.WalletRepository.Update(entity);

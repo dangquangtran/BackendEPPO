@@ -34,8 +34,8 @@ namespace Service.Implements
             {    
                 Title = category.Title,
                 Description = category.Description,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 ModificationById = category.ModificationById,
                 Status = 1,
             };
@@ -52,7 +52,7 @@ namespace Service.Implements
                 throw new Exception($"Category with ID {category.CategoryId} not found.");
             }
             entity.Title = category.Title;
-            entity.ModificationDate = DateTime.Now;
+            entity.ModificationDate = DateTime.UtcNow.AddHours(7);
             entity.Status = category.Status;
             _unitOfWork.CategoriesRepository.Update(entity);
             await _unitOfWork.SaveAsync();

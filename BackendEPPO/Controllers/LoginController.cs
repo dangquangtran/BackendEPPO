@@ -118,7 +118,7 @@ namespace BackendEPPO.Controllers
                     new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
 
                 }, 
-                expires: DateTime.Now.AddMinutes(120),
+                expires: DateTime.UtcNow.AddHours(7).AddMinutes(120),
                 signingCredentials: credentials
             );
 
@@ -156,7 +156,7 @@ namespace BackendEPPO.Controllers
                     Email = email,
                     FullName = name,
                     UserName = email, // or any other unique identifier
-                    CreationDate = DateTime.Now,
+                    CreationDate = DateTime.UtcNow.AddHours(7),
                     IsActive = true,
                     Status = 1,
                     RoleId = 4

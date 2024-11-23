@@ -33,14 +33,14 @@ namespace Service.Implements
         public void CreateMessage(ChatMessageDTO createMessage)
         {
             Message message = _mapper.Map<Message>(createMessage);
-            message.CreationDate = DateTime.Now;
+            message.CreationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.MessageRepository.Insert(message);
             _unitOfWork.Save();
         }
         public void UpdateMessage(UpdateMessageDTO updateMessage)
         {
             Message message = _mapper.Map<Message>(updateMessage);
-            message.UpdateDate = DateTime.Now;
+            message.UpdateDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.MessageRepository.Update(message);
             _unitOfWork.Save();
         }

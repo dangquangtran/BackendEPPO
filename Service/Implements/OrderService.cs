@@ -64,8 +64,8 @@ namespace Service.Implements
                     Description = "Thanh toán đơn hàng",
                     WithdrawNumber = finalPrice,
                     RechargeNumber = null,
-                    WithdrawDate = DateTime.Now,
-                    CreationDate = DateTime.Now,
+                    WithdrawDate = DateTime.UtcNow.AddHours(7),
+                    CreationDate = DateTime.UtcNow.AddHours(7),
                     PaymentId = 2,
                     Status = 1,
                     IsActive = true
@@ -74,7 +74,7 @@ namespace Service.Implements
             }
 
             Order order = _mapper.Map<Order>(createOrderDTO);
-            order.CreationDate = DateTime.Now;
+            order.CreationDate = DateTime.UtcNow.AddHours(7);
             order.Status = 1;
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
@@ -108,7 +108,7 @@ namespace Service.Implements
         public void UpdateOrder(UpdateOrderDTO updateOrder)
         {
             Order order = _mapper.Map<Order>(updateOrder);
-            order.ModificationDate = DateTime.Now;
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
         }
@@ -197,7 +197,7 @@ namespace Service.Implements
             if (order != null)
             {
                 order.PaymentStatus = paymentStatus; // Giả sử bạn có thuộc tính PaymentStatus trong Order
-                order.ModificationDate = DateTime.Now; // Cập nhật ngày sửa đổi
+                order.ModificationDate = DateTime.UtcNow.AddHours(7); // Cập nhật ngày sửa đổi
                 _unitOfWork.OrderRepository.Update(order);
                 _unitOfWork.Save();
             }
@@ -236,7 +236,7 @@ namespace Service.Implements
 
             // Tạo order mới
             Order order = _mapper.Map<Order>(createOrderDTO);
-            order.CreationDate = DateTime.Now;
+            order.CreationDate = DateTime.UtcNow.AddHours(7);
             order.TypeEcommerceId = 2;
             order.Status = 1;
             order.UserId = userId;
@@ -337,8 +337,8 @@ namespace Service.Implements
                     Description = "Thanh toán đơn hàng",
                     WithdrawNumber = order.FinalPrice,
                     RechargeNumber = null,
-                    WithdrawDate = DateTime.Now,
-                    CreationDate = DateTime.Now,
+                    WithdrawDate = DateTime.UtcNow.AddHours(7),
+                    CreationDate = DateTime.UtcNow.AddHours(7),
                     PaymentId = 2,
                     Status = 1,
                     IsActive = true
@@ -362,7 +362,7 @@ namespace Service.Implements
                 }
             }
 
-            order.ModificationDate = DateTime.Now;
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
         }
@@ -383,7 +383,7 @@ namespace Service.Implements
             }
 
             order.Status = 5;
-            order.ModificationDate = DateTime.Now;
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
 
             foreach (var orderDetail in order.OrderDetails)
             {

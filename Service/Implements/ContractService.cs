@@ -108,8 +108,8 @@ namespace Service
                 CreationContractDate = contract.CreationContractDate,
                 EndContractDate = contract.EndContractDate,
                 TotalAmount = contract.TotalAmount,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow.AddHours(7),
+                UpdatedAt = DateTime.UtcNow.AddHours(7),
                 TypeContract = "Thuê Cây",
                 ContractUrl = contract.ContractUrl,
                 IsActive = 1,
@@ -162,11 +162,11 @@ namespace Service
                 UserId = userID,
                 ContractNumber = userID,
                 Description = "Hợp Tác Kinh Doanh",
-                CreationContractDate = DateTime.UtcNow,
-                EndContractDate = DateTime.UtcNow.AddYears(2),
+                CreationContractDate = DateTime.UtcNow.AddHours(7),
+                EndContractDate = DateTime.UtcNow.AddHours(7).AddYears(2),
                 TotalAmount = 1,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow.AddHours(7),
+                UpdatedAt = DateTime.UtcNow.AddHours(7),
                 TypeContract = "Hợp Tác Kinh Doanh",
                 ContractUrl = contract.ContractUrl,
                 IsActive = 1,
@@ -219,7 +219,7 @@ namespace Service
 
 
 
-            fileName = $"Contract_{contract.ContractNumber}_{DateTime.Now.Ticks}.pdf";
+            fileName = $"Contract_{contract.ContractNumber}_{DateTime.UtcNow.AddHours(7).Ticks}.pdf";
 
             string pdfPath = Path.Combine("wwwroot", "contracts", fileName);
 
@@ -441,7 +441,7 @@ namespace Service
 
 
             // Define file path and name
-            string fileName = $"BusinessPartnershipContract_{DateTime.Now.Ticks}.pdf";
+            string fileName = $"BusinessPartnershipContract_{DateTime.UtcNow.AddHours(7).Ticks}.pdf";
             string pdfPath = Path.Combine("wwwroot", "contracts", fileName);
 
             // Create the directory if it doesn't exist
@@ -487,7 +487,7 @@ namespace Service
                 yPoint += lineHeight;
                 if (yPoint >= pageHeightLimit) CreateNewPage();
                 // Date and location
-                gfx.DrawString($"Hôm nay, ngày {DateTime.Now.ToString("dd")} tháng {DateTime.Now.ToString("MM")} năm {DateTime.Now.ToString("yyyy")}, tại {userID}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                gfx.DrawString($"Hôm nay, ngày {DateTime.UtcNow.AddHours(7).ToString("dd")} tháng {DateTime.UtcNow.AddHours(7).ToString("MM")} năm {DateTime.UtcNow.AddHours(7).ToString("yyyy")}, tại {userID}", font, XBrushes.Black, new XPoint(margin, yPoint));
                 yPoint += lineHeight;
 
 

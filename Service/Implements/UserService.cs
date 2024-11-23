@@ -36,7 +36,7 @@ namespace Service
                 PhoneNumber = userDto.PhoneNumber,
                 Email = userDto.Email,
                 RoleId = 4,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
                 IsActive = true,
                 Status = 1,
 
@@ -50,8 +50,8 @@ namespace Service
             var walletEntity = new Wallet
             {
                 NumberBalance = 0,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 Status = 1,
             };
 
@@ -73,8 +73,8 @@ namespace Service
                 IsSigned = false,
                 IsUpdated = false,
                 RoleId = 5,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 IsActive = true,
                 Status = 1,
             };
@@ -86,8 +86,8 @@ namespace Service
             {
                 UserId = customerEntity.UserId,
                 Description = customer.AddressDescription,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 Status = 1,
             };
 
@@ -102,8 +102,8 @@ namespace Service
             var walletEntity = new Wallet
             {
                 NumberBalance = 0,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 Status = 1,
             };
 
@@ -125,8 +125,8 @@ namespace Service
                 IsSigned =false,
                 IsUpdated = false,
                 RoleId = 4,
-                CreationDate = DateTime.Now,
-                ModificationDate= DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate= DateTime.UtcNow.AddHours(7),
                 IsActive = true,
                 Status = 1,
             };
@@ -138,8 +138,8 @@ namespace Service
             {
                 UserId = customerEntity.UserId,
                 Description = owner.AddressDescription,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 Status = 1,
             };
           
@@ -156,8 +156,8 @@ namespace Service
             var walletEntity = new Wallet
             {
                 NumberBalance = 0,
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 Status = 1,
             };
 
@@ -170,7 +170,7 @@ namespace Service
                 Password = admin.Password,
                 WalletId = walletEntity.WalletId,
                 RoleId = 3,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
                 IsActive = true,
                 Status = 1,
 
@@ -297,7 +297,7 @@ namespace Service
                 userEntity.CreationBy = accountDTO.CreationBy.Value;
             }
 
-            userEntity.ModificationDate = DateTime.Now;
+            userEntity.ModificationDate = DateTime.UtcNow.AddHours(7);
             userEntity.ModificationBy = accountDTO.ModificationBy;
 
             if (accountDTO.Status.HasValue)
@@ -427,7 +427,7 @@ namespace Service
                 userEntity.CreationBy = accountDTO.CreationBy.Value;
             }
 
-            userEntity.ModificationDate = DateTime.Now;
+            userEntity.ModificationDate = DateTime.UtcNow.AddHours(7);
             userEntity.ModificationBy = accountDTO.ModificationBy;
      
             if (accountDTO.Status.HasValue)
@@ -472,7 +472,7 @@ namespace Service
                 throw new ArgumentException("Password not null.");
             }
             userEntity.Password = account.Password;
-            userEntity.ModificationDate = DateTime.Now;
+            userEntity.ModificationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
         }
@@ -501,7 +501,7 @@ namespace Service
                 throw new ArgumentException("Password not null.");
             }
             userEntity.RankLevel = "UserEPPO";
-            userEntity.ModificationDate = DateTime.Now;
+            userEntity.ModificationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
         }
