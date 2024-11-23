@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTOs.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,6 @@ namespace DTOs.HistoryBid
         public bool? IsActive { get; set; }
         public bool? IsPayment { get; set; }
         public int? Status { get; set; }
-        public virtual BusinessObjects.Models.User User { get; set; }
+        public virtual ResponseUserDTO User { get; set; }
     }
 }
