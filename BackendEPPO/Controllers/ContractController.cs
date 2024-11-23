@@ -105,6 +105,28 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
+        /// Get list all Contracts by status in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all Contracts in database with the page and the size.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Contract.GetListContractStatus_Endpoint)]
+        public async Task<IActionResult> GetListContractStatus(int page, int size, int status)
+        {
+            var contract = await _contractService.GetListContractStatus(page, size, status);
+
+            if (contract == null || !contract.Any())
+            {
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = contract
+            });
+        }
+
+        /// <summary>
         /// Get Contracts by ContractID with all role.
         /// </summary>
         /// <returns>Get Contracts with ContractID with all role.</returns>

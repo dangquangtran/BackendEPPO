@@ -18,6 +18,6 @@ namespace Service.Interfaces
         Task CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID);
         Task<string> GenerateBusinessPartnershipContractPdfAsync(CreateContractPartnershipDTO contract , int userID);
 
-
+        Task<IEnumerable<Contract>> GetListContractStatus(int page, int size,int status);
     }
 }
