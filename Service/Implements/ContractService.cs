@@ -93,6 +93,7 @@ namespace Service
             await _unitOfWork.SaveAsync();
         }
 
+
         public async Task<int> CreateContract(CreateContractDTO contract , int userId)
         {
 
@@ -108,7 +109,7 @@ namespace Service
                 UpdatedAt = DateTime.Now,
                 TypeContract = "Thuê Cây",
                 ContractUrl = contract.ContractUrl,
-                IsActive = 0,
+                IsActive = 1,
                 Status = 1,
             };
 
