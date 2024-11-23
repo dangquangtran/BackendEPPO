@@ -26,7 +26,7 @@ namespace Service.Implements
         }
         public async Task<IEnumerable<Room>> GetListRoomsByDateNow(int page, int size)
         {
-            DateTime currentDate = DateTime.UtcNow;
+            DateTime currentDate = DateTime.UtcNow.AddHours(7);
             return await _unitOfWork.RoomRepository.GetAsync(
                pageIndex: page,
                pageSize: size,
@@ -70,8 +70,8 @@ namespace Service.Implements
         {
             return await _unitOfWork.RoomRepository.GetAsync(
                 filter: c => c.Status == 2 &&
-                             c.ActiveDate <= DateTime.Now &&
-                             c.EndDate >= DateTime.Now,
+                             c.ActiveDate <= DateTime.UtcNow.AddHours(7) &&
+                             c.EndDate >= DateTime.UtcNow.AddHours(7),
                 pageIndex: page,
                 pageSize: size,
                 includeProperties: "Plant,ImagePlant"
@@ -107,7 +107,7 @@ namespace Service.Implements
                 RegistrationEndDate = room.RegistrationEndDate,
                 RegistrationFee = room.RegistrationFee,
                 PriceStep = room.PriceStep,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
                 ActiveDate = room.ActiveDate,
                 EndDate = room.EndDate,
                 ModificationDate = room.ModificationDate,
@@ -134,7 +134,7 @@ namespace Service.Implements
             entity.CreationDate = room.CreationDate;
             entity.ActiveDate = room.ActiveDate;
             entity.EndDate = room.EndDate;
-            entity.ModificationDate = DateTime.Now;
+            entity.ModificationDate = DateTime.UtcNow.AddHours(7);
             entity.ModificationBy = room.ModificationBy;
             entity.Status = room.Status;
 
@@ -179,7 +179,7 @@ namespace Service.Implements
             {
                 throw new ArgumentNullException("Room or registration dates are invalid.");
             }
-            var timeSpan = room.ActiveDate.Value - DateTime.Now;
+            var timeSpan = room.ActiveDate.Value - DateTime.UtcNow.AddHours(7);
 
 
             return timeSpan.TotalSeconds > 0 ? (int)timeSpan.TotalSeconds : 0;

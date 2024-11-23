@@ -64,11 +64,11 @@ namespace Service.Implements
             {
                 Title = feedback.Title,
                 Description = feedback.Description,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
                 PlantId = feedback.PlantId,
                 Rating = feedback.Rating,
                 UserId = feedback.UserId,
-                ModificationDate = DateTime.Now,
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 ModificationByUserId = feedback.ModificationByUserId,
                 Status = 1,
             };

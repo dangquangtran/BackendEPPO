@@ -111,7 +111,7 @@ namespace Service.Implements
                                     Message1 = chatMessage.Message1,
                                     Type = chatMessage.Type,
                                     ImageLink = imageUrl,
-                                    CreationDate = DateTime.Now,
+                                    CreationDate = DateTime.UtcNow.AddHours(7),
                                     IsSent = true,
                                     IsSeen = false,
                                     Status = 1 
@@ -176,7 +176,7 @@ namespace Service.Implements
         private async Task<string> UploadImageToFirebase(string imagePath, int userId, int conversationId)
         {
             var stream = File.Open(imagePath, FileMode.Open);
-            var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmssfff"); // Sử dụng "fff" để có độ chính xác đến mili giây
+            var timestamp = DateTime.UtcNow.AddHours(7).ToString("yyyyMMdd_HHmmssfff"); // Sử dụng "fff" để có độ chính xác đến mili giây
             var fileName = $"user_{userId}_conv_{conversationId}_{timestamp}.jpg";
 
             // Tải ảnh lên Firebase

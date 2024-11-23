@@ -45,9 +45,9 @@ namespace Service.Implements
             var entity = new Address
             {
                  UserId = userID,
-                 CreationDate = DateTime.Now,
+                 CreationDate = DateTime.UtcNow.AddHours(7),
                  Description = address.Description, 
-                 ModificationDate = DateTime.Now,  
+                 ModificationDate = DateTime.UtcNow.AddHours(7),  
                  Status = 1,
             };
 
@@ -70,7 +70,7 @@ namespace Service.Implements
                 entity.Description = address.Description;
             }
             entity.Description = address.Description;
-            entity.ModificationDate = DateTime.Now;
+            entity.ModificationDate = DateTime.UtcNow.AddHours(7);
             entity.Status = address.Status;
 
             _unitOfWork.AddressRepository.Update(entity);

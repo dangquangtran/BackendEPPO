@@ -71,7 +71,7 @@ namespace Service
 
             // Cập nhật các thuộc tính của plant
             _mapper.Map(updatePlant, plant);
-            plant.ModificationDate = DateTime.Now;
+            plant.ModificationDate = DateTime.UtcNow.AddHours(7);
 
             // Cập nhật ảnh chính nếu có
             if (mainImageFile != null)
@@ -238,8 +238,8 @@ namespace Service
                 TypeEcommerceId = plant.TypeEcommerceId,
                 Status = 1, // đã tạo plant
                 IsActive =  false, // chờ manager xét duyệt
-                CreationDate = DateTime.Now,
-                ModificationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
                 Code = userId,
           
 
@@ -251,8 +251,8 @@ namespace Service
         public async Task CreatePlantByOwner(CreatePlantDTOTokenOwner createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles , int userId)
         {
             Plant plant = _mapper.Map<Plant>(createPlant);
-            plant.CreationDate = DateTime.Now;
-            plant.ModificationDate = DateTime.Now;
+            plant.CreationDate = DateTime.UtcNow.AddHours(7);
+            plant.ModificationDate = DateTime.UtcNow.AddHours(7);
             plant.Status = 1;
             plant.IsActive = false;
             plant.ModificationBy = userId;
@@ -293,7 +293,7 @@ namespace Service
         public async Task CreatePlantByOwner(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles, int userId)
         {
             Plant plant = _mapper.Map<Plant>(createPlant);
-            plant.CreationDate = DateTime.Now;
+            plant.CreationDate = DateTime.UtcNow.AddHours(7);
             plant.Status = 1;
             plant.IsActive = false;
             plant.ModificationBy = userId;

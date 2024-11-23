@@ -34,7 +34,7 @@ namespace Service.Implements
         public void CreateConversation(CreateConversationDTO createConversation)
         {
             Conversation conversation = _mapper.Map<Conversation>(createConversation);
-            conversation.CreationDate = DateTime.Now;
+            conversation.CreationDate = DateTime.UtcNow.AddHours(7);
             conversation.Status = 1;
             _unitOfWork.ConversationRepository.Insert(conversation);
             _unitOfWork.Save();

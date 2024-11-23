@@ -68,7 +68,7 @@ namespace Service.Implements
             {
                 RoomId = userRoom.RoomId,
                 UserId = userID,
-                JoinDate = DateTime.Now,
+                JoinDate = DateTime.UtcNow.AddHours(7),
                 IsActive = true,
                 Status = 1,
             };
@@ -108,7 +108,7 @@ namespace Service.Implements
             {
                 throw new ArgumentNullException("Room or registration dates are invalid.");
             }
-            var timeSpan = room.ActiveDate.Value - DateTime.Now;
+            var timeSpan = room.ActiveDate.Value - DateTime.UtcNow.AddHours(7);
 
 
             return timeSpan.TotalSeconds > 0 ? (int)timeSpan.TotalSeconds : 0;

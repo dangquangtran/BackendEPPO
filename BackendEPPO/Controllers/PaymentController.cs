@@ -55,7 +55,7 @@ namespace BackendEPPO.Controllers
             param.Add("app_user", "user" + order.UserId);
             param.Add("app_time", Utils.GetTimeStamp().ToString());
             param.Add("amount", order.FinalPrice.ToString());
-            param.Add("app_trans_id", DateTime.Now.ToString("yyMMdd") + "_" + app_trans_id); // mã giao dich có định dạng yyMMdd_xxxx
+            param.Add("app_trans_id", DateTime.UtcNow.AddHours(7).ToString("yyMMdd") + "_" + app_trans_id); // mã giao dich có định dạng yyMMdd_xxxx
             param.Add("embed_data", JsonConvert.SerializeObject(embed_data));
             param.Add("item", JsonConvert.SerializeObject(items));
             param.Add("description", "Thanh toán đơn hàng #" + orderId + app_trans_id);

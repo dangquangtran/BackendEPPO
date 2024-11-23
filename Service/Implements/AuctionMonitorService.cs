@@ -28,7 +28,7 @@ namespace Service.Implements
                 {
                     var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                    var rooms = await _unitOfWork.RoomRepository.GetAsync(r => r.EndDate <= DateTime.Now);
+                    var rooms = await _unitOfWork.RoomRepository.GetAsync(r => r.EndDate <= DateTime.UtcNow.AddHours(7));
                     foreach (var room in rooms)
                     {
                         // Tìm thông tin đấu giá cao nhất trong phòng

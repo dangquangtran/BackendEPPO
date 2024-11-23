@@ -35,11 +35,11 @@ namespace Service.Implements
         {
             
             Transaction transaction = _mapper.Map<Transaction>(createTransaction);
-            transaction.CreationDate = DateTime.Now;
+            transaction.CreationDate = DateTime.UtcNow.AddHours(7);
             transaction.Status = 1;
             transaction.IsActive = true;
             transaction.Description = "Nạp tiền vào ví";
-            transaction.RechargeDate = DateTime.Now;
+            transaction.RechargeDate = DateTime.UtcNow.AddHours(7);
             transaction.WithdrawNumber = null;
 
             _unitOfWork.TransactionRepository.Insert(transaction);
@@ -59,10 +59,10 @@ namespace Service.Implements
         {
            
             Transaction transaction = _mapper.Map<Transaction>(createTransaction);
-            transaction.CreationDate = DateTime.Now;
+            transaction.CreationDate = DateTime.UtcNow.AddHours(7);
             transaction.Status = 1;
             transaction.IsActive = true;
-            transaction.WithdrawDate = DateTime.Now;
+            transaction.WithdrawDate = DateTime.UtcNow.AddHours(7);
             transaction.Description = "Rút tiền từ ví";
             transaction.RechargeNumber = null;
 
@@ -89,10 +89,10 @@ namespace Service.Implements
         {
             
             Transaction transaction = _mapper.Map<Transaction>(createTransaction);
-            transaction.CreationDate = DateTime.Now;
+            transaction.CreationDate = DateTime.UtcNow.AddHours(7);
             transaction.Status = 1;
             transaction.IsActive = true;
-            transaction.WithdrawDate = DateTime.Now;
+            transaction.WithdrawDate = DateTime.UtcNow.AddHours(7);
             transaction.Description = "Thanh toán đơn hàng "+orderId;
 
             _unitOfWork.TransactionRepository.Insert(transaction);
