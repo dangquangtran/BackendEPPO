@@ -68,12 +68,12 @@ namespace Service
 
         public async Task<Contract> GetContractByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.ContractRepository.GetByID(Id));
+            return await Task.FromResult(_unitOfWork.ContractRepository.GetByID(Id, includeProperties: "User,ContractDetails.Plant"));
         }
 
         public async Task UpdateContract(UpdateContractDTO contract)
         {
-            var entity = await Task.FromResult(_unitOfWork.ContractRepository.GetByID(contract.ContractId));
+            var entity = await Task.FromResult(_unitOfWork.ContractRepository.GetByID(contract.ContractId)); 
 
             if (entity == null)
             {
