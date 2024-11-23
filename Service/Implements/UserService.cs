@@ -187,18 +187,19 @@ namespace Service
 
         public async Task<IEnumerable<User>> GetListUsers(int page, int size)
         {
-            return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, pageSize: size); 
+            return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, orderBy: query => query.OrderByDescending(c => c.UserId), pageSize: size); 
         }
 
         public async Task<IEnumerable<User>> FilterAccountByRoleID(int page, int size, int roleId)
         {
-            return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, pageSize: size , filter: u => u.RoleId == roleId);
+            return await _unitOfWork.UserRepository.GetAsync(pageIndex: page, pageSize: size, orderBy: query => query.OrderByDescending(c => c.UserId), filter: u => u.RoleId == roleId);
         }
         public async Task<IEnumerable<User>> SearchAccountByKey(int page, int size, string keyWord)
         {
             return await _unitOfWork.UserRepository.GetAsync(
                 pageIndex: page, 
-                pageSize: size, 
+                pageSize: size,
+                orderBy: query => query.OrderByDescending(c => c.UserId),
                 includeProperties: "Wallet",
                 filter: u => 
                 (u.FullName.Contains(keyWord) || u.Email.Contains(keyWord) || u.PhoneNumber.Contains(keyWord)));

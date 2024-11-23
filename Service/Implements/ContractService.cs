@@ -51,7 +51,7 @@ namespace Service
 
         public async Task<IEnumerable<Contract>> GetListContract(int page, int size)
         {
-            return await _unitOfWork.ContractRepository.GetAsync(filter: c => c.Status != 0, includeProperties: "User", pageIndex: page, pageSize: size);
+            return await _unitOfWork.ContractRepository.GetAsync(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.ContractId), includeProperties: "User", pageIndex: page, pageSize: size);
         }
 
         public async Task<IEnumerable<Contract>> GetContractOfUser(int userID)

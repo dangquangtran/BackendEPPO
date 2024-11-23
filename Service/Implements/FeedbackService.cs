@@ -29,7 +29,7 @@ namespace Service.Implements
 
            // return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
 
-            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size, includeProperties: "ImageFeedbacks");
+            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.FeedbackId), pageIndex: page, pageSize: size, includeProperties: "ImageFeedbacks");
 
         }
         public async Task<Feedback> GetFeedbackByID(int Id)

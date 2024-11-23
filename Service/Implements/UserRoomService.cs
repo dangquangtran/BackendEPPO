@@ -21,13 +21,14 @@ namespace Service.Implements
 
         public async Task<IEnumerable<UserRoom>> GetListUserRoom(int page, int size)
         {
-            return await _unitOfWork.UserRoomRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
+            return await _unitOfWork.UserRoomRepository.GetAsync(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.UserRoomId), pageIndex: page, pageSize: size);
         }
         public async Task<IEnumerable<UserRoom>> GetListUserRoomWithUserToken(int page, int size, int userId)
         {
             return await _unitOfWork.UserRoomRepository.GetAsync(
                 filter: c => c.UserId == userId && c.Status != 0 && c.IsActive != false,
                 pageIndex: page, pageSize: size,
+                orderBy: query => query.OrderByDescending(c => c.UserRoomId),
                 includeProperties: "Room.Plant");
         }
 
