@@ -33,6 +33,7 @@ namespace Service.Implements
         {
             var historyBids = _unitOfWork.HistoryBidRepository.Get(
                 filter: bid => bid.RoomId == roomId,
+                orderBy: bids => bids.OrderByDescending(bid => bid.BidTime),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "User"
