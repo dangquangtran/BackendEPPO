@@ -60,7 +60,8 @@ namespace Service
         public async Task<IEnumerable<Contract>> GetContractOfUser(int userID)
         {
             var contract = _unitOfWork.ContractRepository.Get(
-                filter: c => c.UserId == userID && c.Status != 0
+                orderBy: query => query.OrderByDescending(c => c.ContractId),
+                filter: c => c.UserId == userID
             );
             return _mapper.Map<IEnumerable<Contract>>(contract);
             //    return await _unitOfWork.ContractRepository.GetAsync(filter: c => c.Status != 0, includeProperties: "User", pageIndex: page, pageSize: size);
@@ -96,7 +97,21 @@ namespace Service
             await _unitOfWork.SaveAsync();
         }
 
+        public async Task IsSignedPartnershipContract(IsSignedPartnershipContract contract, int contractId)
+        {
+            var entity = await Task.FromResult(_unitOfWork.ContractRepository.GetByID(contractId));
 
+            if (entity == null)
+            {
+                throw new Exception($"Contract with ID {contractId} not found.");
+            }
+            entity.UpdatedAt = DateTime.Now;
+            entity.IsActive = 1;  // 0= false ; 1=true 
+            entity.Status = contract.Status; // 1= Gen Hop Dong ; 2= Huy hop dong
+
+            _unitOfWork.ContractRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
         public async Task<int> CreateContract(CreateContractDTO contract , int userId)
         {
 
@@ -150,9 +165,13 @@ namespace Service
 
             return entity.ContractId;
         }
+        public  Task<Contract?> GetActiveContractByUserId(int userId)
+        {
+            return  _unitOfWork.ContractRepository.GetFirstOrDefaultAsync(c => c.UserId == userId  && c.Status == 1); // Kiểm tra hợp đồng đang hoạt động và chưa bị hủy
+        }
 
 
-        public async Task CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID)
+        public async Task<int> CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID)
         {
 
 
@@ -169,7 +188,7 @@ namespace Service
                 UpdatedAt = DateTime.UtcNow,
                 TypeContract = "Hợp Tác Kinh Doanh",
                 ContractUrl = contract.ContractUrl,
-                IsActive = 1,
+                IsActive = 0, // 1= false ; 2=true 
                 Status = 1,
             };
 
@@ -194,6 +213,7 @@ namespace Service
                     _unitOfWork.ContractDetailRepository.Insert(contractDetailEntity);
                 }
                 await _unitOfWork.SaveAsync();
+
             }
 
 
@@ -204,6 +224,8 @@ namespace Service
 
             _unitOfWork.ContractRepository.Update(entity);
             await _unitOfWork.SaveAsync();
+
+            return entity.ContractId;
         }
 
 

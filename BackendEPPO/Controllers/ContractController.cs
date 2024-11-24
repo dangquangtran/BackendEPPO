@@ -12,6 +12,7 @@ using Service;
 using Service.Implements;
 using Service.Interfaces;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Reflection.Metadata;
 using static BackendEPPO.Extenstion.ApiEndPointConstant;
 
@@ -193,7 +194,19 @@ namespace BackendEPPO.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _contractService.CreatePartnershipContract(contracts, userId);
+            var existingContract = await _contractService.GetActiveContractByUserId(userId);
+            if (existingContract != null)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "You already have an active partnership contract.",
+                    ExistingContract = existingContract
+                });
+            }
+
+
+            int contractId =  await _contractService.CreatePartnershipContract(contracts, userId);
             var entity = _userService.GetUserByID(userId);
             entity.IsSigned = true;
             _unitOfWork.Save();
@@ -204,6 +217,7 @@ namespace BackendEPPO.Controllers
             return Ok(new
             {
                 StatusCode = 201,
+                ContractId = contractId,
                 Message = Error.REQUESR_SUCCESFULL,
                 PdfUrl = contractPdfUrl,
                 Data = contracts,
@@ -211,6 +225,41 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Confirm Contracts with role register owner.
+        /// </summary>
+        /// <returns>Create Contracts with role register owner.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner")]
+        [HttpPut(ApiEndPointConstant.Contract.ConfirmContractID)]
+        public async Task<IActionResult> IsSignedPartnershipContract([FromBody] IsSignedPartnershipContract contract, int contractId)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
+            }
+  
+            try
+            {
+                await _contractService.IsSignedPartnershipContract(contract, contractId);
+                var updatedContract = await _contractService.GetContractByID(contractId);
+          
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = updatedContract
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
+            }
+        }
 
         /// <summary>
         /// Download contract details with all role.
