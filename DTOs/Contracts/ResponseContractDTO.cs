@@ -85,4 +85,10 @@ namespace DTOs.Contracts
 
     }
 
+    public class IsSignedPartnershipContract
+    {
+        public int? Status { get; set; }
+
+    }
+
 }
