@@ -30,7 +30,7 @@ namespace Service.Implements
         {
             var uploadTask = await _firebaseStorage
                 .Child(folderName)
-                .Child(DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + fileName)
+                .Child(DateTime.UtcNow.AddHours(7).ToString("yyyyMMddHHmmssfff") + "_" + fileName)
                 .PutAsync(imageStream);
 
             return uploadTask;

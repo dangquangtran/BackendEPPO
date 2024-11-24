@@ -179,7 +179,7 @@ using Microsoft.EntityFrameworkCore;
                             UserId = userId.Value,
                             RoomId = bidRequest.RoomId,
                             BidAmount = bidRequest.BidAmount,
-                            BidTime = DateTime.Now,
+                            BidTime = DateTime.UtcNow.AddHours(7),
                             PriceAuctionNext = priceAuctionNext,
                             IsActive = true,
                             Status = 1

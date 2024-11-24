@@ -38,8 +38,8 @@ namespace Service.Implements
                 Description = NotificationDTO.Description,
                 IsRead = NotificationDTO.IsRead,
                 IsNotifications = NotificationDTO.IsNotifications,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
+                CreatedDate = DateTime.UtcNow.AddHours(7),
+                UpdatedDate = DateTime.UtcNow.AddHours(7),
                 Status = 1,
             };
             _unitOfWork.NotificationRepository.Insert(entity);
@@ -59,7 +59,7 @@ namespace Service.Implements
             entity.Description = NotificationDTO.Description;
             entity.IsRead = NotificationDTO.IsRead;
             entity.IsNotifications = NotificationDTO.IsNotifications;
-            entity.UpdatedDate = DateTime.Now;
+            entity.UpdatedDate = DateTime.UtcNow.AddHours(7);
             entity.Status = NotificationDTO.Status;
 
             _unitOfWork.NotificationRepository.Update(entity);

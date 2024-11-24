@@ -34,7 +34,7 @@ namespace Service.Implements
         public void CreateConversation(CreateConversationDTO createConversation)
         {
             Conversation conversation = _mapper.Map<Conversation>(createConversation);
-            conversation.CreationDate = DateTime.Now;
+            conversation.CreationDate = DateTime.UtcNow.AddHours(7);
             conversation.Status = 1;
             _unitOfWork.ConversationRepository.Insert(conversation);
             _unitOfWork.Save();
@@ -51,16 +51,11 @@ namespace Service.Implements
             var conversations = _unitOfWork.ConversationRepository.Get(
         filter: c => (c.UserOne == userId || c.UserTwo == userId) && c.Status != 0,
         includeProperties: "Messages,UserOneNavigation,UserTwoNavigation"
-    );
+        );
             foreach (var conversation in conversations)
             {
-                conversation.Messages = conversation.Messages
-                    .OrderByDescending(m => m.CreationDate)
-                    .ToList();
+                conversation.Messages = conversation.Messages.OrderBy(m => m.CreationDate).ToList();
             }
-            var sortedConversations = conversations
-        .OrderByDescending(c => c.Messages.FirstOrDefault()?.CreationDate)
-        .ToList();
             return _mapper.Map<IEnumerable<ConversationVM>>(conversations);
         }
     }
