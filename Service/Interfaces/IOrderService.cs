@@ -19,7 +19,7 @@ namespace Service.Interfaces
         OrderVM CreateRentalOrder(CreateOrderRentalDTO createOrderDTO, int userId);
         void UpdatePaymentOrderRental(int orderId, int contractId, int userId, int paymentId);
         IEnumerable<OrderRentalVM> GetOrdersRentalByUserId(int userId, int pageIndex, int pageSize, int status);
-        void CancelOrder(int orderId);
+        void CancelOrder(int orderId, int userId);
         Task<int> CountOrderByStatus(int userId, int status);
         Task<double> CountOrderPrice(int status, int? month = null, int? year = null );
     }

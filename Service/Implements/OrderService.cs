@@ -367,7 +367,7 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
-        public void CancelOrder(int orderId)
+        public void CancelOrder(int orderId, int userId)
         {
             // Lấy thông tin đơn hàng từ cơ sở dữ liệu
             var order = _unitOfWork.OrderRepository.GetByID(orderId, includeProperties: "OrderDetails");
@@ -375,11 +375,42 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
-            
+
             // Kiểm tra trạng thái đơn hàng (chỉ hủy nếu chưa hoàn thành)
-            if (order.Status == 4 || order.PaymentStatus == "Đã thanh toán")
+            if (order.PaymentStatus == "Đã thanh toán")
             {
-                throw new Exception("Đơn hàng đã hoàn thành hoặc đã được thanh toán và không thể hủy.");
+                // Lấy thông tin ví của người dùng
+                var user = _unitOfWork.UserRepository.GetByID(userId);
+                if (user == null)
+                {
+                    throw new Exception("Không tìm thấy thông tin người dùng.");
+                }
+
+                var walletId = user.WalletId;
+                var wallet = _unitOfWork.WalletRepository.GetByID(walletId);
+                if (wallet == null)
+                {
+                    throw new Exception("Không tìm thấy ví của người dùng.");
+                }
+
+                // Hoàn tiền vào ví
+                wallet.NumberBalance += order.FinalPrice ?? 0;
+                _unitOfWork.WalletRepository.Update(wallet);
+
+                // Tạo giao dịch hoàn tiền
+                Transaction transaction = new Transaction
+                {
+                    WalletId = walletId,
+                    Description = "Hoàn tiền hủy đơn hàng",
+                    RechargeNumber = order.FinalPrice,
+                    WithdrawNumber = null,
+                    RechargeDate = DateTime.UtcNow.AddHours(7),
+                    CreationDate = DateTime.UtcNow.AddHours(7),
+                    PaymentId = order.PaymentId,
+                    Status = 1,
+                    IsActive = true
+                };
+                _unitOfWork.TransactionRepository.Insert(transaction);
             }
 
             order.Status = 5;
