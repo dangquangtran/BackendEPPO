@@ -342,5 +342,29 @@ namespace BackendEPPO.Controllers
                 Data = plants
             });
         }
+        /// <summary>
+        /// Function for web: Update status plant.
+        /// </summary>
+        /// <returns> Function for web: Update plant for manager by role manager.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.Plants.UpdateStatusPlant)]
+        public async Task<IActionResult> UpdateStauts([FromBody] UpdatePlantStatus plant, int plantId)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _plantService.UpdatePlantStatus(plant, plantId);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = plant
+            });
+        }
+
     }
 }

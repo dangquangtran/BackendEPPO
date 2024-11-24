@@ -191,6 +191,8 @@ namespace BackendEPPO.Extenstion
             public const string CreateFeedback = GetListFeedback_Endpoint + "/Create/Feedback";
             public const string UpdateFeedbackID = GetListFeedback_Endpoint + "/Update/Feedback/Id";
             public const string DeleteFeedbackID = GetListFeedback_Endpoint + "/Delete/Feedback/Id";
+
+            public const string GetListFeedbackByPlant = ApiEndpoint + "/GetList/Feedback/ByPlant";
         }
         // Do Huu Thuan
         public static class Accessory
@@ -228,6 +230,9 @@ namespace BackendEPPO.Extenstion
             public const string UpdatePlantByManager = ApiEndpoint + "/GetList/Plants/UpdatePlant/PlantId";
 
             public const string GetListPlantsOwnerByTypeEcommerceId = GetListPlants_Endpoint + "/PlantOwner/ByTypeEcommerceId";
+
+
+            public const string UpdateStatusPlant = ApiEndpoint + "/GetList/Plants/Update/ByStatus";
         }
         // Do Huu Thuan
         public static class Categories

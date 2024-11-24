@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
+using DTOs.Contracts;
 using DTOs.ImagePlant;
 using DTOs.Plant;
 using DTOs.User;
@@ -335,6 +336,22 @@ namespace Service
             }
             _unitOfWork.PlantRepository.Insert(plant);
             _unitOfWork.Save();
+        }
+
+        public async Task UpdatePlantStatus(UpdatePlantStatus updatePlant, int plantId)
+        {
+            var entity = await Task.FromResult(_unitOfWork.PlantRepository.GetByID(plantId));
+
+
+            if (entity == null)
+            {
+                throw new Exception($"Contract with ID {plantId} not found.");
+            }
+            entity.ModificationDate = DateTime.Now;
+            entity.Status = updatePlant.Status; 
+
+            _unitOfWork.PlantRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

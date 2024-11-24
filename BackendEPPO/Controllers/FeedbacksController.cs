@@ -1,5 +1,7 @@
 ﻿using BackendEPPO.Extenstion;
+using BusinessObjects.Models;
 using DTOs.ContractDetails;
+using DTOs.Error;
 using DTOs.Feedback;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +42,29 @@ namespace BackendEPPO.Controllers
                 Data = _feedback
             });
         }
+        /// <summary>
+        /// Function for mobile: Get list feedback of the plant.
+        /// </summary>
+        /// <returns>Get list all Feedbacks in database with the page and the size.</returns>
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackByPlant)]
+        public async Task<IActionResult> GetListFeedbackByPlant(int page, int size, int plantId)
+        {
+            var _feedback = await _service.GetListFeedbackByPlant(page, size,plantId);
+
+            if (_feedback == null || !_feedback.Any())
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = _feedback
+            });
+        }
+
 
         /// <summary>
         /// Get feedback by feedback id.
@@ -67,17 +92,19 @@ namespace BackendEPPO.Controllers
         /// Create feedback with all role.
         /// </summary>
         /// <returns>Create feedback with all role.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Feedback.CreateFeedback)]
         public async Task<IActionResult> CreateFeedback([FromForm] CreateFeedbackDTO feedback)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _service.CreateFeedback(feedback, feedback.ImageFiles);
+            await _service.CreateFeedback(feedback,userId, feedback.ImageFiles);
 
             return Ok(new
             {
