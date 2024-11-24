@@ -36,5 +36,7 @@ namespace Service.Interfaces
         Task UpdatePlantByManager(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles);
 
         IEnumerable<PlantVM> GetListPlantOfOwnerByTypeEcommerceId(int pageIndex, int pageSize, int? typeEcommerceId, string code);
+
+        Task UpdatePlantStatus(UpdatePlantStatus updatePlant, int plantId);
     }
 }

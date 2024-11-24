@@ -27,4 +27,9 @@ namespace DTOs.Plant
         public List<IFormFile>? ImageFiles { get; set; }
         public string Code { get; set; }
     }
+    public class UpdatePlantStatus
+    {
+        public int? Status { get; set; }
+
+    }
 }

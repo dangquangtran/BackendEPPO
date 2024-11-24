@@ -29,12 +29,18 @@ namespace Service.Implements
 
            // return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, pageIndex: page, pageSize: size);
 
-            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.FeedbackId), pageIndex: page, pageSize: size, includeProperties: "ImageFeedbacks");
+            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.FeedbackId), pageIndex: page, pageSize: size, includeProperties: "Plant,User,ImageFeedbacks");
 
         }
+
+        public async Task<IEnumerable<Feedback>> GetListFeedbackByPlant(int page, int size, int plantId)
+        {
+            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.PlantId == plantId && c.Status != 0, orderBy: query => query.OrderByDescending(c => c.FeedbackId), pageIndex: page, pageSize: size, includeProperties: "Plant,User,ImageFeedbacks");
+        }
+
         public async Task<Feedback> GetFeedbackByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.FeedbackRepository.GetByID(Id));
+            return await Task.FromResult(_unitOfWork.FeedbackRepository.GetByID(Id, includeProperties: "Plant,User,ImageFeedbacks"));
         }
         public async Task UpdateFeedback(UpdateFeedbackDTO feedback)
         {
@@ -58,18 +64,17 @@ namespace Service.Implements
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task CreateFeedback(CreateFeedbackDTO feedback, List<IFormFile> imageFiles)
+        public async Task CreateFeedback(CreateFeedbackDTO feedback,int userId, List<IFormFile> imageFiles)
         {
             var entity = new Feedback
             {
+                PlantId = feedback.PlantId,
                 Title = feedback.Title,
                 Description = feedback.Description,
                 CreationDate = DateTime.Now,
-                PlantId = feedback.PlantId,
                 Rating = feedback.Rating,
-                UserId = feedback.UserId,
+                UserId = userId,
                 ModificationDate = DateTime.Now,
-                ModificationByUserId = feedback.ModificationByUserId,
                 Status = 1,
             };
             if (imageFiles != null && imageFiles.Count > 0)

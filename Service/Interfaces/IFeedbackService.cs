@@ -16,8 +16,10 @@ namespace Service.Interfaces
         Task<IEnumerable<Feedback>> GetListFeedback(int page, int size);
         Task<Feedback> GetFeedbackByID(int Id);
 
-        Task CreateFeedback(CreateFeedbackDTO feedback, List<IFormFile> imageFiles);
+        Task CreateFeedback(CreateFeedbackDTO feedback,int userId, List<IFormFile> imageFiles);
         Task UpdateFeedback(UpdateFeedbackDTO feedback);
         Task DeleteFeedback(DeleteFeedbackDTO feedback);
+
+        Task<IEnumerable<Feedback>> GetListFeedbackByPlant(int page, int size, int plantId);
     }
 }

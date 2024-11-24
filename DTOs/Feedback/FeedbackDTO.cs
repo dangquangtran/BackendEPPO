@@ -27,9 +27,9 @@ namespace DTOs.Feedback
         public DateTime? CreationDate { get; set; }
         public int? PlantId { get; set; }
         public int? Rating { get; set; }
-        public int? UserId { get; set; }
+        //public int? UserId { get; set; }
         public DateTime? ModificationDate { get; set; }
-        public int? ModificationByUserId { get; set; }
+        //public int? ModificationByUserId { get; set; }
         public int? Status { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }
     }
