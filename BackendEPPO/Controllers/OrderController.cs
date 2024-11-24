@@ -277,8 +277,10 @@ namespace BackendEPPO.Controllers
         {
             try
             {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
 
-                _orderService.CancelOrder(orderId);
+                _orderService.CancelOrder(orderId, userId);
 
                 return Ok(new
                 {
