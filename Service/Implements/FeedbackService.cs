@@ -71,19 +71,15 @@ namespace Service.Implements
                 PlantId = feedback.PlantId,
                 Title = feedback.Title,
                 Description = feedback.Description,
-<<<<<<< HEAD
+
                 CreationDate = DateTime.Now,
                 Rating = feedback.Rating,
                 UserId = userId,
                 ModificationDate = DateTime.Now,
-=======
-                CreationDate = DateTime.UtcNow.AddHours(7),
-                PlantId = feedback.PlantId,
-                Rating = feedback.Rating,
-                UserId = feedback.UserId,
-                ModificationDate = DateTime.UtcNow.AddHours(7),
-                ModificationByUserId = feedback.ModificationByUserId,
->>>>>>> 7b1a7a7ceb67c34b18c543a72dfda7d0f0599fff
+
+          
+  
+
                 Status = 1,
             };
             if (imageFiles != null && imageFiles.Count > 0)
