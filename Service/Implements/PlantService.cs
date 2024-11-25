@@ -64,10 +64,10 @@ namespace Service
         }
 
       
-        public async Task UpdatePlantByManager(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles)
+        public async Task UpdatePlantByManager(UpdatePlantDTO updatePlant, int plantId, IFormFile mainImageFile, List<IFormFile> newImageFiles)
         {
             // Lấy thông tin plant từ DB
-            var plant = _unitOfWork.PlantRepository.GetByID(updatePlant.PlantId, includeProperties: "ImagePlants");
+            var plant = _unitOfWork.PlantRepository.GetByID(plantId, includeProperties: "ImagePlants");
             if (plant == null) throw new Exception("Plant không tồn tại");
 
             // Cập nhật các thuộc tính của plant

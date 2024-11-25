@@ -304,9 +304,9 @@ namespace BackendEPPO.Controllers
         /// <returns> Function for web: Update plant for manager by role manager.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Plants.UpdatePlantByManager)]
-        public async Task<IActionResult> UpdatePlantByManager([FromForm] UpdatePlantDTO updatePlant)
+        public async Task<IActionResult> UpdatePlantByManager([FromForm] UpdatePlantDTO updatePlant, int plantId)
         {
-            await _plantService.UpdatePlantByManager(updatePlant, updatePlant.MainImageFile, updatePlant.ImageFiles);
+            await _plantService.UpdatePlantByManager(updatePlant, plantId,updatePlant.MainImageFile, updatePlant.ImageFiles);
             return Ok(new
             {
                 StatusCode = 200,
