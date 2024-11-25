@@ -363,5 +363,27 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+
+        /// <summary>
+        /// Function Mobile: Get list room is active for register.
+        /// </summary>
+        /// <returns>Get list all room in database.</returns>
+        [HttpGet(ApiEndPointConstant.Room.GetListRoomActive_Endpoint)]
+        public async Task<IActionResult> GetListRoomActive(int page, int size)
+        {
+            var room = await _roomService.GetListRoomActive(page, size);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = room
+            });
+        }
     }
 }

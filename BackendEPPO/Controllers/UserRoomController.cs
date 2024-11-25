@@ -226,19 +226,31 @@ namespace BackendEPPO.Controllers
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _service.CreateUserRoom(userRoom, userId);
-
-            return Ok(new
+            try
             {
-                StatusCode = 201,
-                Message = Error.REQUESR_SUCCESFULL,
-                Data = userRoom
-            });
+                await _service.CreateUserRoom(userRoom, userId);
+
+                return Ok(new
+                {
+                    StatusCode = 201,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = userRoom
+                });
+            }
+            catch (Exception ex)
+            {
+                return Conflict(new
+                {
+                    StatusCode = 409,
+                    Message = ex.Message
+                });
+            }
         }
 
         /// <summary>

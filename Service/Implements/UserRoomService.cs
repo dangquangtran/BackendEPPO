@@ -65,6 +65,15 @@ namespace Service.Implements
         }
         public async Task CreateUserRoom(CreateUserRoomDTO userRoom, int userID)
         {
+            // Kiểm tra xem người dùng đã đăng ký phòng này chưa
+            var existingRegistration = await _unitOfWork.UserRoomRepository.GetFirstOrDefaultAsync(
+                filter: ur => ur.RoomId == userRoom.RoomId && ur.UserId == userID
+            );
+            if (existingRegistration != null)
+            {
+                throw new Exception("User has already registered for this room.");
+            }
+
             var entity = new UserRoom
             {
                 RoomId = userRoom.RoomId,

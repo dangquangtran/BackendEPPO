@@ -207,9 +207,7 @@ namespace BackendEPPO.Controllers
 
 
             int contractId =  await _contractService.CreatePartnershipContract(contracts, userId);
-            var entity = _userService.GetUserByID(userId);
-            entity.IsSigned = true;
-            _unitOfWork.Save();
+      
         
 
             string contractPdfUrl = await _contractService.GenerateBusinessPartnershipContractPdfAsync(contracts, userId);
@@ -233,7 +231,8 @@ namespace BackendEPPO.Controllers
         [HttpPut(ApiEndPointConstant.Contract.ConfirmContractID)]
         public async Task<IActionResult> IsSignedPartnershipContract([FromBody] IsSignedPartnershipContract contract, int contractId)
         {
-
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
@@ -243,7 +242,9 @@ namespace BackendEPPO.Controllers
             {
                 await _contractService.IsSignedPartnershipContract(contract, contractId);
                 var updatedContract = await _contractService.GetContractByID(contractId);
-          
+                var entity = _userService.GetUserByID(userId);
+                entity.IsSigned = true;
+                _unitOfWork.Save();
                 return Ok(new
                 {
                     StatusCode = 201,
