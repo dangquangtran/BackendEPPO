@@ -249,14 +249,14 @@ namespace Service.Implements
                     var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId);
                     if (plant != null)
                     {
-                        // Tính giá cho OrderDetail = giá cây * số tháng
-                        double priceForOrderDetail = plant.Price * orderDetail.NumberMonth.Value;
+                        //// Tính giá cho OrderDetail = giá cây * số tháng
+                        //double priceForOrderDetail = plant.Price * orderDetail.NumberMonth.Value;
 
-                        // Cộng dồn giá này vào tổng giá của Order
-                        order.TotalPrice += priceForOrderDetail;
+                        //// Cộng dồn giá này vào tổng giá của Order
+                        //order.TotalPrice += priceForOrderDetail;
 
                         // Tính RentalEndDate
-                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value).AddDays(3);
                     }
                     else
                     {
