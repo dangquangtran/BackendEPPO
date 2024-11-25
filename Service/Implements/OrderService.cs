@@ -357,7 +357,7 @@ namespace Service.Implements
                     var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
                     if (plant != null)
                     {
-                        plant.IsActive = false; // Kích hoạt lại cây nếu đơn hàng bị hủy
+                        plant.IsActive = false;
                         _unitOfWork.PlantRepository.Update(plant);
                     }
                 }
