@@ -302,11 +302,11 @@ namespace BackendEPPO.Controllers
             {
                 return BadRequest(new { Message = Error.BAD_REQUEST });
             }
-            userRoom.UserRoomId = userRoomId;
+
 
             try
             {
-                await _service.DeleteUserRoom(userRoom);
+                await _service.DeleteUserRoom(userRoom , userRoomId);
                 var updatedcRoom = await _service.GetUserRoomByID(userRoomId);
 
                 return Ok(new
@@ -325,5 +325,7 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
+
+
     }
 }

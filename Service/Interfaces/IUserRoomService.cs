@@ -16,7 +16,7 @@ namespace Service.Interfaces
         Task<UserRoom> GetUserRoomByRoomID(int roomId);
 
         Task UpdateUserRoom(UpdateUserRoomDTO userRoom);
-        Task DeleteUserRoom(DeleteUserRoomDTO userRoom);
+        Task DeleteUserRoom(DeleteUserRoomDTO userRoom, int userRoomId);
         Task CreateUserRoom(CreateUserRoomDTO userRoom, int userID);
 
         Task<int> CountUserRegister(int roomId);

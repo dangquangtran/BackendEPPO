@@ -353,5 +353,68 @@ namespace Service
             _unitOfWork.PlantRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant, int plantId, IFormFile mainImageFile, List<IFormFile> newImageFiles)
+        {
+            // Lấy thông tin plant từ DB
+            var plant = _unitOfWork.PlantRepository.GetByID(plantId, includeProperties: "ImagePlants");
+            if (plant == null) throw new Exception("Plant không tồn tại");
+
+            // Cập nhật các thuộc tính của plant
+            _mapper.Map(updatePlant, plant);
+            plant.ModificationDate = DateTime.UtcNow.AddHours(7);
+
+            // Cập nhật ảnh chính nếu có
+            if (mainImageFile != null)
+            {
+                using var mainImageStream = mainImageFile.OpenReadStream();
+                string mainImageFileName = mainImageFile.FileName;
+
+                // Upload ảnh chính mới lên Firebase và lấy URL
+                string mainImageUrl = await _firebaseStorageService.UploadPlantImageAsync(mainImageStream, mainImageFileName);
+
+                // Gán URL mới vào MainImage và xử lý việc xóa ảnh chính cũ nếu cần
+                if (!string.IsNullOrEmpty(plant.MainImage))
+                {
+                    //await _firebaseStorageService.DeletePlantImageAsync(plant.MainImage); // Xóa ảnh chính cũ khỏi Firebase nếu cần
+                }
+                plant.MainImage = mainImageUrl;
+            }
+
+            // Tạo một danh sách để lưu các URL ảnh cần xóa
+            var existingImageUrls = plant.ImagePlants.Select(ip => ip.ImageUrl).ToList();
+
+            // Nếu có ảnh mới, kiểm tra và thêm các ảnh đó
+            if (newImageFiles != null && newImageFiles.Count > 0)
+            {
+                var newImageUrls = new List<string>();
+
+                foreach (var imageFile in newImageFiles)
+                {
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload ảnh mới lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadPlantImageAsync(stream, fileName);
+
+                    // Thêm URL vào danh sách ảnh mới và plant
+                    newImageUrls.Add(imageUrl);
+                    plant.ImagePlants.Add(new ImagePlant { PlantId = plant.PlantId, ImageUrl = imageUrl });
+                }
+
+                // Xác định các ảnh cần xóa (ảnh cũ mà không có trong danh sách ảnh mới)
+                var imagesToRemove = plant.ImagePlants.Where(ip => !newImageUrls.Contains(ip.ImageUrl)).ToList();
+
+                foreach (var image in imagesToRemove)
+                {
+                    //await _firebaseStorageService.DeletePlantImageAsync(image.ImageUrl); // Xóa ảnh khỏi Firebase
+                    plant.ImagePlants.Remove(image); // Xóa ảnh khỏi DB 
+                }
+            }
+
+            // Lưu cập nhật vào DB
+            _unitOfWork.PlantRepository.Update(plant);
+            await _unitOfWork.SaveAsync();
+        }
     }
 }

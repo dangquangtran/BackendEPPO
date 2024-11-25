@@ -22,7 +22,7 @@ namespace DTOs.Room
     }
     public class DeleteUserRoomDTO
     {
-        public int UserRoomId { get; set; }
+       
 
     }
     public class UpdateUserRoomDTO
