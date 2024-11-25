@@ -416,5 +416,42 @@ namespace Service
             _unitOfWork.PlantRepository.Update(plant);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task<int> CountShipByPlant(int plantId)
+        {
+            // Lấy thông tin của cây dựa trên PlantId
+            var plant = await _unitOfWork.PlantRepository.GetFirstOrDefaultAsync(
+                filter: p => p.PlantId == plantId
+            );
+
+            if (plant == null)
+            {
+                throw new Exception("Plant not found.");
+            }
+
+            // Kiểm tra các thuộc tính kích thước
+            double length = plant.Length ?? 0;
+            double width = plant.Width ?? 0;
+            double height = plant.Height ?? 0;
+
+            // Tính thể tích
+            double volume = length + (width + height) + (width + height);
+
+            // Nếu không có kích thước hợp lệ, phí vận chuyển là 0
+            if (volume <= 0)
+            {
+                return 0;
+            }
+
+            // Giá cơ bản cho mỗi đơn vị thể tích (10.000 VNĐ/m³)
+            const double baseRate = 1000;
+
+            // Tính phí vận chuyển
+            double shippingCost = (volume * baseRate) + (volume * 0.10) + 50000;
+
+            // Trả về giá trị làm tròn
+            return (int)Math.Ceiling(shippingCost);
+        }
+
     }
 }
