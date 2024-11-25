@@ -71,7 +71,7 @@ namespace Service.Implements
             );
             if (existingRegistration != null)
             {
-                throw new Exception("User has already registered for this room.");
+                throw new Exception("Người chơi đã đăng kí tham gia phòng này rồi! .");
             }
 
             var entity = new UserRoom
