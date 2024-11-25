@@ -79,6 +79,7 @@ namespace BackendEPPO.Extenstion
             public const string FilterListRoomByPrice_Endpoint = ApiEndpoint + "/GetList/Rooms/FilterListRoomByPrice";
             public const string GetListRoomIsActive_Endpoint = ApiEndpoint + "/GetList/Rooms/Aucting";
             public const string GetListRoomStatus_Endpoint = ApiEndpoint + "/GetList/Rooms/Status";
+            public const string GetListRoomActive_Endpoint = ApiEndpoint + "/GetList/Rooms/Active";
         }
         // Do Huu Thuan
         public static class UserRoom

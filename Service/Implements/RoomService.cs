@@ -28,6 +28,18 @@ namespace Service.Implements
         {
             return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status == status, orderBy: query => query.OrderByDescending(c => c.RoomId), pageIndex: page, pageSize: size, includeProperties: "Plant,Plant.ImagePlants");
         }
+        public async Task<IEnumerable<Room>> GetListRoomActive(int page, int size)
+        {
+            DateTime currentDate = DateTime.Now;
+
+            return await _unitOfWork.RoomRepository.GetAsync(
+                    filter: c => c.Status == 2 && c.RegistrationEndDate >= currentDate,
+                    orderBy: query => query.OrderByDescending(c => c.RoomId),
+                    pageIndex: page,
+                    pageSize: size,
+                    includeProperties: "Plant,Plant.ImagePlants"
+                );
+        }
 
         public async Task<IEnumerable<Room>> GetListRoomsByDateNow(int page, int size)
         {
