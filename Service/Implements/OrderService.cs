@@ -75,7 +75,7 @@ namespace Service.Implements
 
             Order order = _mapper.Map<Order>(createOrderDTO);
             order.CreationDate = DateTime.UtcNow.AddHours(7);
-            order.Status = 1;
+            order.Status = createOrderDTO.PaymentId == 2 ? 2 : 1;
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
             order.PaymentStatus = createOrderDTO.PaymentId == 2 ? "Đã thanh toán" : "Chưa thanh toán";
@@ -347,6 +347,7 @@ namespace Service.Implements
 
                 // Cập nhật trạng thái thanh toán đơn hàng
                 order.PaymentStatus = "Đã thanh toán";
+                order.Status = 2;
             }
             foreach (var orderDetail in order.OrderDetails)
             {
