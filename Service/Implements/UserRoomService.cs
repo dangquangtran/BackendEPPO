@@ -67,7 +67,7 @@ namespace Service.Implements
         {
             // Kiểm tra xem người dùng đã đăng ký phòng này chưa
             var existingRegistration = await _unitOfWork.UserRoomRepository.GetFirstOrDefaultAsync(
-                filter: ur => ur.RoomId == userRoom.RoomId && ur.UserId == userID
+                filter: ur => ur.RoomId == userRoom.RoomId && ur.UserId == userID && ur.Status == 1
             );
             if (existingRegistration != null)
             {
@@ -86,13 +86,13 @@ namespace Service.Implements
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task DeleteUserRoom(DeleteUserRoomDTO userRoom)
+        public async Task DeleteUserRoom(DeleteUserRoomDTO userRoom , int userRoomId)
         {
-            var entity = await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(userRoom.UserRoomId));
+            var entity = await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(userRoomId));
 
             if (entity == null)
             {
-                throw new Exception($"User Room with ID {userRoom.UserRoomId} not found.");
+                throw new Exception($"User Room with ID {userRoomId} not found.");
             }
 
             entity.Status = 0;

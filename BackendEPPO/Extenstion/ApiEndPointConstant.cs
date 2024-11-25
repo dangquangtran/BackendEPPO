@@ -234,6 +234,8 @@ namespace BackendEPPO.Extenstion
 
 
             public const string UpdateStatusPlant = ApiEndpoint + "/GetList/Plants/Update/ByStatus";
+
+            public const string UpdatePlantIdByManager = ApiEndpoint + "/GetList/Plants/Update/PlantId";
         }
         // Do Huu Thuan
         public static class Categories

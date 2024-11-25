@@ -366,5 +366,22 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        ///// <summary>
+        ///// Function for web: Update plant Id for manager by role manager.
+        ///// </summary>
+        ///// <returns> Function for web: Update plant for manager by role manager.</returns>
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[HttpPut(ApiEndPointConstant.Plants.UpdatePlantIdByManager)]
+        //public async Task<IActionResult> UpdatePlantIdByManager([FromForm] UpdatePlantIdDTO updatePlant , int plantId)
+        //{
+        //    await _plantService.UpdatePlantIdByManager(updatePlant, plantId, updatePlant.MainImageFile, updatePlant.ImageFiles);
+        //    return Ok(new
+        //    {
+        //        StatusCode = 200,
+        //        Message = "Đã cập nhật cây thành công.",
+        //        Data = updatePlant
+        //    });
+        //}
+
     }
 }
