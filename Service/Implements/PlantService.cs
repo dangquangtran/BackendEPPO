@@ -4,6 +4,7 @@ using DTOs.Contracts;
 using DTOs.ImagePlant;
 using DTOs.Plant;
 using DTOs.User;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Repository.Interfaces;
@@ -354,67 +355,85 @@ namespace Service
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant, int plantId, IFormFile mainImageFile, List<IFormFile> newImageFiles)
+        public async Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant, int plantId, IFormFile mainImageFile)
         {
-            // Lấy thông tin plant từ DB
-            var plant = _unitOfWork.PlantRepository.GetByID(plantId, includeProperties: "ImagePlants");
-            if (plant == null) throw new Exception("Plant không tồn tại");
+            var plantEntity = await Task.FromResult(_unitOfWork.PlantRepository.GetByID(plantId));
+            if (plantEntity == null) throw new Exception("Plant không tồn tại");
 
-            // Cập nhật các thuộc tính của plant
-            _mapper.Map(updatePlant, plant);
-            plant.ModificationDate = DateTime.UtcNow.AddHours(7);
+            if (!string.IsNullOrWhiteSpace(updatePlant.PlantName))
+            {
+                plantEntity.PlantName = updatePlant.PlantName;
+            }
+            if (!string.IsNullOrWhiteSpace(updatePlant.Title))
+            {
+                plantEntity.Title = updatePlant.Title;
+            }
+            if (!string.IsNullOrWhiteSpace(updatePlant.Description))
+            {
+                plantEntity.Description = updatePlant.Description;
+            }
+            if (updatePlant.Length.HasValue)
+            {
+                plantEntity.Length = updatePlant.Length.Value;
+            }
+            if (updatePlant.Width.HasValue)
+            {
+                plantEntity.Width = updatePlant.Width.Value;
+            }
+            if (updatePlant.Height.HasValue)
+            {
+                plantEntity.Height = updatePlant.Height.Value;
+            }
+            if (updatePlant.Price.HasValue)
+            {
+                plantEntity.Price = updatePlant.Price.Value;
+            }
+            if (updatePlant.Discounts.HasValue)
+            {
+                plantEntity.Discounts = updatePlant.Discounts.Value;
+            }
+            if (updatePlant.FinalPrice.HasValue)
+            {
+                plantEntity.FinalPrice = updatePlant.FinalPrice.Value;
+            }
+            if (updatePlant.CategoryId.HasValue)
+            {
+                plantEntity.CategoryId = updatePlant.CategoryId.Value;
+            }
+            if (updatePlant.TypeEcommerceId.HasValue)
+            {
+                plantEntity.TypeEcommerceId = updatePlant.TypeEcommerceId.Value;
+            }
+            if (updatePlant.Status.HasValue)
+            {
+                plantEntity.Status = updatePlant.Status.Value;
+            }
+            if (updatePlant.IsActive.HasValue)
+            {
+                plantEntity.IsActive = updatePlant.IsActive.Value;
+            }
+            if (!string.IsNullOrWhiteSpace(updatePlant.Code))
+            {
+                plantEntity.Code = updatePlant.Code;
+            }
+            plantEntity.ModificationDate = DateTime.UtcNow.AddHours(7);
 
-            // Cập nhật ảnh chính nếu có
             if (mainImageFile != null)
             {
-                using var mainImageStream = mainImageFile.OpenReadStream();
-                string mainImageFileName = mainImageFile.FileName;
+                using var stream = mainImageFile.OpenReadStream();
+                string fileName = mainImageFile.FileName;
 
-                // Upload ảnh chính mới lên Firebase và lấy URL
-                string mainImageUrl = await _firebaseStorageService.UploadPlantImageAsync(mainImageStream, mainImageFileName);
+                string newImageUrl = await _firebaseStorageService.UploadUserImageAsync(stream, fileName);
 
-                // Gán URL mới vào MainImage và xử lý việc xóa ảnh chính cũ nếu cần
-                if (!string.IsNullOrEmpty(plant.MainImage))
+                if (!string.IsNullOrWhiteSpace(plantEntity.MainImage))
                 {
-                    //await _firebaseStorageService.DeletePlantImageAsync(plant.MainImage); // Xóa ảnh chính cũ khỏi Firebase nếu cần
+                    //await _firebaseStorageService.DeleteUserImageAsync(userEntity.ImageUrl);
                 }
-                plant.MainImage = mainImageUrl;
+                plantEntity.MainImage = newImageUrl;
             }
-
-            // Tạo một danh sách để lưu các URL ảnh cần xóa
-            var existingImageUrls = plant.ImagePlants.Select(ip => ip.ImageUrl).ToList();
-
-            // Nếu có ảnh mới, kiểm tra và thêm các ảnh đó
-            if (newImageFiles != null && newImageFiles.Count > 0)
-            {
-                var newImageUrls = new List<string>();
-
-                foreach (var imageFile in newImageFiles)
-                {
-                    using var stream = imageFile.OpenReadStream();
-                    string fileName = imageFile.FileName;
-
-                    // Upload ảnh mới lên Firebase và lấy URL
-                    string imageUrl = await _firebaseStorageService.UploadPlantImageAsync(stream, fileName);
-
-                    // Thêm URL vào danh sách ảnh mới và plant
-                    newImageUrls.Add(imageUrl);
-                    plant.ImagePlants.Add(new ImagePlant { PlantId = plant.PlantId, ImageUrl = imageUrl });
-                }
-
-                // Xác định các ảnh cần xóa (ảnh cũ mà không có trong danh sách ảnh mới)
-                var imagesToRemove = plant.ImagePlants.Where(ip => !newImageUrls.Contains(ip.ImageUrl)).ToList();
-
-                foreach (var image in imagesToRemove)
-                {
-                    //await _firebaseStorageService.DeletePlantImageAsync(image.ImageUrl); // Xóa ảnh khỏi Firebase
-                    plant.ImagePlants.Remove(image); // Xóa ảnh khỏi DB 
-                }
-            }
-
-            // Lưu cập nhật vào DB
-            _unitOfWork.PlantRepository.Update(plant);
+            _unitOfWork.PlantRepository.Update(plantEntity);
             await _unitOfWork.SaveAsync();
+
         }
 
         public async Task<int> CountShipByPlant(int plantId)
