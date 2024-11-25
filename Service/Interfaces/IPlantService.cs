@@ -33,7 +33,7 @@ namespace Service.Interfaces
         Task CreatePlantByOwner(CreatePlantDTOByOwner plant , string userId);
 
         Task CreatePlantByOwner(CreatePlantDTOTokenOwner createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles , int userId);
-        Task UpdatePlantByManager(UpdatePlantDTO updatePlant, IFormFile mainImageFile, List<IFormFile> newImageFiles);
+        Task UpdatePlantByManager(UpdatePlantDTO updatePlant,int plantId , IFormFile mainImageFile, List<IFormFile> newImageFiles);
 
         IEnumerable<PlantVM> GetListPlantOfOwnerByTypeEcommerceId(int pageIndex, int pageSize, int? typeEcommerceId, string code);
 
