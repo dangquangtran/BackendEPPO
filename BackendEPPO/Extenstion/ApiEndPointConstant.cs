@@ -32,6 +32,7 @@ namespace BackendEPPO.Extenstion
             public const string CountAccountByStatus_Endpoint = ApiEndpoint + "/Count/User/Status";
             public const string CountOrderPriceRevenue_Endpoint = ApiEndpoint + "/Count/Order/Revenue";
             public const string CountAccountResgiter_Endpoint = ApiEndpoint + "/Count/User/Registered/RoomId";
+            public const string CountShipByPlant = ApiEndpoint + "/Count/FreeShip/PlantId";
         }
 
         // Do Huu Thuan     

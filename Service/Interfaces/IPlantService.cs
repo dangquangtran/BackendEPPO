@@ -40,5 +40,7 @@ namespace Service.Interfaces
         Task UpdatePlantStatus(UpdatePlantStatus updatePlant, int plantId);
 
         Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant,int plantId, IFormFile mainImageFile, List<IFormFile> newImageFiles);
+
+        Task<int> CountShipByPlant(int plantId);
     }
 }

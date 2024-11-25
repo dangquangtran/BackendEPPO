@@ -15,11 +15,14 @@ namespace BackendEPPO.Controllers
         private readonly IOrderService _orderService;
         private readonly IUserService _userService;
         private readonly IUserRoomService _userRoomService;
-        public CountValuesController(IOrderService orderService, IUserService userService, IUserRoomService userRoomService)
+        private readonly IPlantService _plantService;
+
+        public CountValuesController(IOrderService orderService, IUserService userService, IUserRoomService userRoomService, IPlantService plantService)
         {
             _orderService = orderService;
             _userService = userService;
             _userRoomService = userRoomService;
+            _plantService = plantService;
         }
         /// <summary>
         /// Function for web: Count the order by status.
@@ -187,20 +190,20 @@ namespace BackendEPPO.Controllers
         /// Function for mobile: Count account register by status.
         /// </summary>
         /// <returns> Function for web: Count account by status.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
-        [HttpGet(ApiEndPointConstant.Count.CountAccountResgiter_Endpoint)]
-        public IActionResult CountUserRegister(int roomId)
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Count.CountShipByPlant)]
+        public IActionResult CountShipByPlant(int plantId)
         {
             try
             {
-                int result = _userRoomService.CountUserRegister(roomId).Result;
+                int result = _plantService.CountShipByPlant(plantId).Result;
 
                 if (result == 0)
                 {
                     return NotFound(new
                     {
                         StatusCode = 404,
-                        Message = Error.ORDER_FOUND_ERROR,
+                        Message = Error.BAD_REQUEST,
                         Data = 0
                     });
                 }
@@ -209,18 +212,20 @@ namespace BackendEPPO.Controllers
                 {
                     StatusCode = 200,
                     Message = Error.REQUESR_SUCCESFULL,
-                    Data = $"Số người đăng kí là: {result}"
-                });
+                    Data = result
+            });
             }
             catch (Exception ex)
             {
                 return BadRequest(new
                 {
                     StatusCode = 400,
-                    Message = Error.ORDER_FOUND_ERROR + ex.Message,
+                    Message = Error.NO_DATA_FOUND + ex.Message,
                     Data = (object)null
                 });
             }
         }
+
+
     }
 }
