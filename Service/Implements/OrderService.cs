@@ -280,6 +280,8 @@ namespace Service.Implements
                         {
                             throw new Exception($"Cây với ID {plant.PlantId} không thể được thuê vì đã ngừng hoạt động.");
                         }
+                        plant.IsActive = false;
+                        _unitOfWork.PlantRepository.Update(plant);
                     }
                 }
             }
@@ -349,19 +351,19 @@ namespace Service.Implements
                 order.PaymentStatus = "Đã thanh toán";
                 order.Status = 2;
             }
-            foreach (var orderDetail in order.OrderDetails)
-            {
-                // Cập nhật trạng thái của cây nếu cần
-                if (orderDetail.PlantId.HasValue)
-                {
-                    var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
-                    if (plant != null)
-                    {
-                        plant.IsActive = false;
-                        _unitOfWork.PlantRepository.Update(plant);
-                    }
-                }
-            }
+            //foreach (var orderDetail in order.OrderDetails)
+            //{
+            //    // Cập nhật trạng thái của cây nếu cần
+            //    if (orderDetail.PlantId.HasValue)
+            //    {
+            //        var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
+            //        if (plant != null)
+            //        {
+            //            plant.IsActive = false;
+            //            _unitOfWork.PlantRepository.Update(plant);
+            //        }
+            //    }
+            //}
 
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.OrderRepository.Update(order);

@@ -159,7 +159,8 @@ builder.Services.AddSingleton<ChatHandler>();
 
 builder.Services.AddSingleton<AuctionHandler>();
 
-builder.Services.AddHostedService<AuctionMonitorService>();
+//builder.Services.AddHostedService<AuctionMonitorService>();
+builder.Services.AddHostedService<OrderCancellationService>();
 
 //Add cors for website
 builder.Services.AddCors(options =>
