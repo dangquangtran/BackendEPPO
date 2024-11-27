@@ -318,6 +318,10 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
+            if (order.Status == 5)
+            {
+                throw new Exception("Không thể thanh toán cho đơn hàng này vì trạng thái đơn hàng là đã huỷ.");
+            }
 
             // Kiểm tra paymentId để quyết định logic cần thực hiện
             if (paymentId == 2)
@@ -351,20 +355,7 @@ namespace Service.Implements
                 order.PaymentStatus = "Đã thanh toán";
                 order.Status = 2;
             }
-            //foreach (var orderDetail in order.OrderDetails)
-            //{
-            //    // Cập nhật trạng thái của cây nếu cần
-            //    if (orderDetail.PlantId.HasValue)
-            //    {
-            //        var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
-            //        if (plant != null)
-            //        {
-            //            plant.IsActive = false;
-            //            _unitOfWork.PlantRepository.Update(plant);
-            //        }
-            //    }
-            //}
-
+            
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
