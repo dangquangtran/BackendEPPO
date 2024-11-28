@@ -1,4 +1,5 @@
 ﻿using DTOs.Order;
+using GoogleApi.Entities.Search.Video.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
@@ -341,6 +342,87 @@ namespace BackendEPPO.Controllers
             }
         }
 
+
+        [Authorize]
+        [HttpPut("UpdateOrderStatus")]
+        public IActionResult UpdateOrderStatus([FromQuery] int orderId, int newStatus)
+        {
+            try
+            {
+                // Lấy userId từ JWT claims
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new
+                    {
+                        StatusCode = 401,
+                        Message = "Không có quyền truy cập.",
+                        Data = (object)null
+                    });
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                // Gọi phương thức UpdateOrderStatus trong Service
+                _orderService.UpdateOrderStatus(orderId, newStatus, userId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã cập nhật trạng thái đơn hàng thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [HttpGet("GetOrdersByOwner")]
+        [Authorize]
+        public IActionResult GetOrdersByOwner([FromQuery] int pageIndex, int pageSize, int status)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            try
+            {
+                // Gọi đến hàm service để lấy dữ liệu
+                var orders = _orderService.GetOrdersByOwner(userId, pageIndex, pageSize, status);
+
+                if (!orders.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Không tìm thấy đơn hàng nào.",
+                        Data = (object)null
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và trả về thông báo
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
 
     }
 }

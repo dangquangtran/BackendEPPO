@@ -24,5 +24,7 @@ namespace Service.Interfaces
         Task<int> CountOrderByStatus(int userId, int status);
         Task<double> CountOrderPrice(int status, int? month = null, int? year = null );
         Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId);
+        void UpdateOrderStatus(int orderId, int newStatus, int userId);
+        IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize, int status);
     }
 }

@@ -475,6 +475,40 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
+        public void UpdateOrderStatus(int orderId, int newStatus, int userId)
+        {
+            // Lấy thông tin đơn hàng từ cơ sở dữ liệu
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật trạng thái đơn hàng
+            order.Status = newStatus;
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            _unitOfWork.Save();
+        }
+
+        public IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize, int status)
+        {
+            // Lấy danh sách đơn hàng liên quan đến các Plant có Code trùng với userId
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o =>
+                    o.Status == status &&
+                    o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
 
     }
 
