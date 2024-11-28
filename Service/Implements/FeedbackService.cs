@@ -66,6 +66,15 @@ namespace Service.Implements
 
         public async Task CreateFeedback(CreateFeedbackDTO feedback,int userId, List<IFormFile> imageFiles)
         {
+
+            var existingFeedback = await _unitOfWork.FeedbackRepository.GetFirstOrDefaultAsync(
+      f => f.PlantId == feedback.PlantId && f.UserId == userId && f.Status == 1
+  );
+            if (existingFeedback != null)
+            {
+                throw new InvalidOperationException("Bạn đã gửi feedback cho cây này rồi.");
+            }
+
             var entity = new Feedback
             {
                 PlantId = feedback.PlantId,
@@ -120,14 +129,13 @@ namespace Service.Implements
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<Feedback>> GetFeedbackByDeliveredPlants(int page, int size , int userId)
+        public async Task<IEnumerable<Feedback>> GetFeedbackByDeliveredPlants(int page, int size , int userId, int TypeEcommerceId)
         {
                     var feedbacks = await _unitOfWork.FeedbackRepository.GetAsync(
-                 filter: f => f.PlantId != null // Cây có feedback
-                           && f.Plant.OrderDetails.Any(od => od.Order.Status == 4 // Đã giao thành công
-                                                            && od.Order.PaymentStatus == "Đã thanh toán"
+                 filter: f =>  f.Plant.TypeEcommerceId == TypeEcommerceId
+                 && f.Plant.OrderDetails.Any(od => od.Order.Status == 4 // Đã giao thành công
                                                             && od.Order.UserId == userId), // Thanh toán hoàn tất
-                 orderBy: query => query.OrderByDescending(f => f.CreationDate), // Sắp xếp theo ngày tạo mới nhất
+
                  pageIndex: page,
                  pageSize: size,
                  includeProperties: "Plant,User,ImageFeedbacks"
@@ -135,6 +143,19 @@ namespace Service.Implements
 
 
             return feedbacks;
+        }
+        public async Task<IEnumerable<Order>> GetDeliveredOrdersForFeedback(int userId, int page, int size)
+        {
+            var orders = await _unitOfWork.OrderRepository.GetAsync(
+                filter: o => o.Status == 4 // Đã giao hàng thành công
+                          && o.UserId == userId, // Lọc theo người dùng
+                orderBy: query => query.OrderByDescending(o => o.CreationDate), // Sắp xếp mới nhất
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "OrderDetails,OrderDetails.Plant" // Bao gồm các chi tiết cần thiết
+            );
+
+            return orders;
         }
 
     }

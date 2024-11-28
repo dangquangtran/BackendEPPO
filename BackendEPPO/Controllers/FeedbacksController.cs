@@ -195,7 +195,7 @@ namespace BackendEPPO.Controllers
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackOrderStatus)]
         //[HttpGet("delivered-plants-feedback")]
-        public async Task<IActionResult> GetFeedbackByDeliveredPlants([FromQuery] int page, [FromQuery] int size)
+        public async Task<IActionResult> GetFeedbackByDeliveredPlants([FromQuery] int page, [FromQuery] int size , int TypeEcommerceId)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace BackendEPPO.Controllers
                 int userId = int.Parse(userIdClaim);
 
                 // Gọi service để lấy danh sách feedback
-                var feedbacks = await _service.GetFeedbackByDeliveredPlants(page, size, userId);
+                var feedbacks = await _service.GetFeedbackByDeliveredPlants(page, size, userId, TypeEcommerceId);
 
                 // Kiểm tra nếu không có dữ liệu
                 if (feedbacks == null || !feedbacks.Any())
@@ -234,5 +234,55 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Lấy danh sách đơn hàng đã giao thành công để tạo feedback.
+        /// </summary>
+        /// <param name="userId">ID người dùng.</param>
+        /// <param name="page">Trang hiện tại.</param>
+        /// <param name="size">Số lượng đơn hàng trên mỗi trang.</param>
+        /// <returns>Danh sách đơn hàng.</returns>
+        ///     [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackOrderStatusDelivered)]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        public async Task<IActionResult> GetDeliveredOrdersForFeedback( [FromQuery] int page, [FromQuery] int size)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+                // Gọi service để lấy danh sách đơn hàng
+                var orders = await _service.GetDeliveredOrdersForFeedback(userId, page, size);
+
+                // Kiểm tra nếu không có dữ liệu
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không có đơn hàng nào phù hợp để tạo feedback."
+                    });
+                }
+
+                // Trả về danh sách đơn hàng
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Lấy danh sách đơn hàng thành công.",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Message = "Đã xảy ra lỗi khi xử lý yêu cầu.",
+                    Error = ex.Message
+                });
+            }
+        }
     }
 }
+
