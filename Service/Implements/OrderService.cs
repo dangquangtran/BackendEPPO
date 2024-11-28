@@ -475,6 +475,48 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
+        public async Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId)
+        {
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật mô tả giao hàng
+            order.DeliveryDescription = "Giao hàng thất bại";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            // Kiểm tra danh sách file
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    // Mở stream từ file
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload file lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadOrderDeliveryImageAsync(stream, fileName);
+
+                    // Tạo đối tượng ImageDeliveryOrder và thêm vào cơ sở dữ liệu
+                    var imageDeliveryOrder = new ImageDeliveryOrder
+                    {
+                        OrderId = orderId,
+                        ImageUrl = imageUrl,
+                        UploadDate = DateTime.UtcNow.AddHours(7)
+                    };
+
+                    order.ImageDeliveryOrders.Add(imageDeliveryOrder);
+                }
+            }
+
+            // Cập nhật thông tin đơn hàng và lưu thay đổi
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
         public void UpdateOrderStatus(int orderId, int newStatus, int userId)
         {
             // Lấy thông tin đơn hàng từ cơ sở dữ liệu
