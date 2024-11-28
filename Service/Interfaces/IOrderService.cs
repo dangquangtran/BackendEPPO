@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Order;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,6 @@ namespace Service.Interfaces
         void CancelOrder(int orderId, int userId);
         Task<int> CountOrderByStatus(int userId, int status);
         Task<double> CountOrderPrice(int status, int? month = null, int? year = null );
+        Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId);
     }
 }
