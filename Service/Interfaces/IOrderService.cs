@@ -23,8 +23,10 @@ namespace Service.Interfaces
         void CancelOrder(int orderId, int userId);
         Task<int> CountOrderByStatus(int userId, int status);
         Task<double> CountOrderPrice(int status, int? month = null, int? year = null );
+        Task UpdatePreparedOrderSuccess(int orderId, int userId);
         Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId);
         Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId);
+        Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId);
         void UpdateOrderStatus(int orderId, int newStatus, int userId);
         IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize);
         IEnumerable<OrderVM> GetOrdersByTypeEcommerceId(int typeEcommerceId, DateTime? startDate, DateTime? endDate, int pageIndex, int pageSize);

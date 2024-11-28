@@ -432,6 +432,25 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
+        public async Task UpdatePreparedOrderSuccess(int orderId, int userId)
+        {
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật mô tả giao hàng
+            order.DeliveryDescription = "Chuẩn bị hàng thành công";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+           
+            // Cập nhật thông tin đơn hàng và lưu thay đổi
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
+
         public async Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId)
         {
             // Lấy thông tin đơn hàng
@@ -510,6 +529,49 @@ namespace Service.Implements
                     };
 
                     order.ImageDeliveryOrders.Add(imageDeliveryOrder);
+                }
+            }
+
+            // Cập nhật thông tin đơn hàng và lưu thay đổi
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
+
+        public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId)
+        {
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật mô tả giao hàng
+            order.DeliveryDescription = "Thu hồi thành công";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            // Kiểm tra danh sách file
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    // Mở stream từ file
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload file lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadOrderReturnImageAsync(stream, fileName);
+
+                    // Tạo đối tượng ImageDeliveryOrder và thêm vào cơ sở dữ liệu
+                    var imageReturnOrder = new ImageReturnOrder
+                    {
+                        OrderId = orderId,
+                        ImageUrl = imageUrl,
+                        UploadDate = DateTime.UtcNow.AddHours(7)
+                    };
+
+                    order.ImageReturnOrders.Add(imageReturnOrder);
                 }
             }
 
