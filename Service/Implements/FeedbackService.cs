@@ -66,6 +66,15 @@ namespace Service.Implements
 
         public async Task CreateFeedback(CreateFeedbackDTO feedback,int userId, List<IFormFile> imageFiles)
         {
+
+            var existingFeedback = await _unitOfWork.FeedbackRepository.GetFirstOrDefaultAsync(
+      f => f.PlantId == feedback.PlantId && f.UserId == userId && f.Status == 1
+  );
+            if (existingFeedback != null)
+            {
+                throw new InvalidOperationException("Bạn đã gửi feedback cho cây này rồi.");
+            }
+
             var entity = new Feedback
             {
                 PlantId = feedback.PlantId,
