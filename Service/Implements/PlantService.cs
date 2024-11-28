@@ -47,7 +47,7 @@ namespace Service
         }
         public IEnumerable<PlantVM> GetAllPlants(int pageIndex, int pageSize)
         {
-            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status == 2 && c.IsActive == true, pageIndex : pageIndex, pageSize : pageSize, includeProperties: "ImagePlants");
+            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.PlantId), pageIndex : pageIndex, pageSize : pageSize, includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 

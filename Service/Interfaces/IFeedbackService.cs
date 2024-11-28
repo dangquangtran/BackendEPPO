@@ -21,5 +21,7 @@ namespace Service.Interfaces
         Task DeleteFeedback(DeleteFeedbackDTO feedback);
 
         Task<IEnumerable<Feedback>> GetListFeedbackByPlant(int page, int size, int plantId);
+
+        Task<IEnumerable<Feedback>> GetFeedbackByDeliveredPlants(int page, int size, int userId);
     }
 }
