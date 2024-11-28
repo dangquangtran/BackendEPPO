@@ -494,13 +494,12 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
-        public IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize, int status)
+        public IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize)
         {
             // Lấy danh sách đơn hàng liên quan đến các Plant có Code trùng với userId
             var orders = _unitOfWork.OrderRepository.Get(
-                filter: o =>
-                    o.Status == status &&
-                    o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+                filter: o => o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+                orderBy: o => o.OrderBy(order => order.Status),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "OrderDetails,OrderDetails.Plant"
