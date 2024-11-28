@@ -53,6 +53,10 @@ namespace Service.Implements
         {
             return await UploadImageAsync(imageStream, fileName, "imagesFeedback");
         }
+        public async Task<string> UploadOrderDeliveryImageAsync(Stream imageStream, string fileName)
+        {
+            return await UploadImageAsync(imageStream, fileName, "imagesDeliveryOrder");
+        }
         private async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folderName)
         {
             var uploadTask = await _firebaseStorage

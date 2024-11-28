@@ -23,8 +23,10 @@ namespace BusinessObjects.Models
         public virtual DbSet<Conversation> Conversations { get; set; }
         public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<HistoryBid> HistoryBids { get; set; }
+        public virtual DbSet<ImageDeliveryOrder> ImageDeliveryOrders { get; set; }
         public virtual DbSet<ImageFeedback> ImageFeedbacks { get; set; }
         public virtual DbSet<ImagePlant> ImagePlants { get; set; }
+        public virtual DbSet<ImageReturnOrder> ImageReturnOrders { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
@@ -255,6 +257,28 @@ namespace BusinessObjects.Models
                     .HasConstraintName("HistoryBid_ibfk_1");
             });
 
+            modelBuilder.Entity<ImageDeliveryOrder>(entity =>
+            {
+                entity.ToTable("ImageDeliveryOrder");
+
+                entity.HasIndex(e => e.OrderId, "OrderID");
+
+                entity.Property(e => e.ImageDeliveryOrderId).HasColumnName("ImageDeliveryOrderID");
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(255)
+                    .HasColumnName("ImageURL");
+
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+                entity.Property(e => e.UploadDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.ImageDeliveryOrders)
+                    .HasForeignKey(d => d.OrderId)
+                    .HasConstraintName("ImageDeliveryOrder_ibfk_1");
+            });
+
             modelBuilder.Entity<ImageFeedback>(entity =>
             {
                 entity.HasKey(e => e.ImgageFeedbackId)
@@ -292,6 +316,28 @@ namespace BusinessObjects.Models
                     .WithMany(p => p.ImagePlants)
                     .HasForeignKey(d => d.PlantId)
                     .HasConstraintName("ImagePlant_ibfk_1");
+            });
+
+            modelBuilder.Entity<ImageReturnOrder>(entity =>
+            {
+                entity.ToTable("ImageReturnOrder");
+
+                entity.HasIndex(e => e.OrderId, "OrderID");
+
+                entity.Property(e => e.ImageReturnOrderId).HasColumnName("ImageReturnOrderID");
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(255)
+                    .HasColumnName("ImageURL");
+
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+                entity.Property(e => e.UploadDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.ImageReturnOrders)
+                    .HasForeignKey(d => d.OrderId)
+                    .HasConstraintName("ImageReturnOrder_ibfk_1");
             });
 
             modelBuilder.Entity<Message>(entity =>
@@ -372,6 +418,8 @@ namespace BusinessObjects.Models
                 entity.Property(e => e.CreationDate).HasColumnType("datetime");
 
                 entity.Property(e => e.DeliveryAddress).HasMaxLength(255);
+
+                entity.Property(e => e.DeliveryDescription).HasMaxLength(255);
 
                 entity.Property(e => e.ModificationDate).HasColumnType("datetime");
 
