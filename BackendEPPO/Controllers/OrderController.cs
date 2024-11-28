@@ -386,14 +386,14 @@ namespace BackendEPPO.Controllers
 
         [HttpGet("GetOrdersByOwner")]
         [Authorize]
-        public IActionResult GetOrdersByOwner([FromQuery] int pageIndex, int pageSize, int status)
+        public IActionResult GetOrdersByOwner([FromQuery] int pageIndex, int pageSize)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
             try
             {
                 // Gọi đến hàm service để lấy dữ liệu
-                var orders = _orderService.GetOrdersByOwner(userId, pageIndex, pageSize, status);
+                var orders = _orderService.GetOrdersByOwner(userId, pageIndex, pageSize);
 
                 if (!orders.Any())
                 {
