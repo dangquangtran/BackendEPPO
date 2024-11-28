@@ -197,30 +197,9 @@ using Microsoft.EntityFrameworkCore;
                             {
                                 if (connection.State == WebSocketState.Open)
                                 {
-                                    //var broadcastMessage = new
-                                    //{
-                                    //    Message = "Have a new auction",
-                                    //    HistoryBid = new
-                                    //    {
-                                    //        historyBidVM.UserId,
-                                    //        historyBidVM.RoomId,
-                                    //        historyBidVM.BidAmount,
-                                    //        BidTime = historyBidVM.BidTime.HasValue ? historyBidVM.BidTime.Value.ToString("yyyy-MM-ddTHH:mm:ss") : null, // Định dạng thời gian khi truyền
-                                    //        historyBidVM.PriceAuctionNext,
-                                    //        historyBidVM.IsActive,
-                                    //        historyBidVM.Status,
-                                    //        user.UserName
-                                    //    },
-                                    //};
-                                    //var broadcastBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(broadcastMessage));
-                                    //await connection.SendAsync(
-                                    //    new ArraySegment<byte>(broadcastBytes),
-                                    //    WebSocketMessageType.Text,
-                                    //    true,
-                                    //    CancellationToken.None);
-                                    var response = "Đặt cược thành công";
+                                    var response = "Có lượt đặt cược mới";
                                     var responseBytes = Encoding.UTF8.GetBytes(response);
-                                    await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                                    await connection.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                                 }
                                 else
                                 {
@@ -241,7 +220,9 @@ using Microsoft.EntityFrameworkCore;
                         Console.WriteLine("Stack Trace: " + ex.StackTrace);
                     }
                 }
-                }
+                // Khi kết nối đóng, loại bỏ khỏi danh sách kết nối trong phòng
+                await LeaveRoomAsync(authMessage.RoomId, webSocket);
+            }
         }
 
         private async Task JoinRoomAsync(int roomId, WebSocket webSocket)
@@ -257,6 +238,22 @@ using Microsoft.EntityFrameworkCore;
 
             // Thêm kết nối mới
             _roomConnections[roomId].Add(webSocket);
+        }
+        private async Task LeaveRoomAsync(int roomId, WebSocket webSocket)
+        {
+            if (_roomConnections.ContainsKey(roomId))
+            {
+                var connections = _roomConnections[roomId];
+
+                // Loại bỏ kết nối khỏi danh sách
+                connections.Remove(webSocket);
+
+                // Nếu không còn kết nối nào trong phòng, có thể loại bỏ phòng
+                if (connections.Count == 0)
+                {
+                    _roomConnections.Remove(roomId);
+                }
+            }
         }
 
         private string DecodeJwtToken(string token, string claimType)

@@ -59,7 +59,11 @@ namespace Service.Implements
                         {
                             userId = int.Parse(userIdClaim);
                             _userSockets.TryAdd(userId.Value, socket);
+                            var successMessage = "Xác thực thành công";
+                            var successBytes = Encoding.UTF8.GetBytes(successMessage);
+                            await socket.SendAsync(new ArraySegment<byte>(successBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                         }
+
                         else
                         {
                             await socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "Invalid token", CancellationToken.None);
@@ -91,6 +95,13 @@ namespace Service.Implements
 
                         if (chatMessage != null)
                         {
+                            if (userId == null)
+                            {
+                                var failureResponse = "Gửi tin nhắn thất bại";
+                                var failureBytes = Encoding.UTF8.GetBytes(failureResponse);
+                                await socket.SendAsync(new ArraySegment<byte>(failureBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                                continue; // Bỏ qua xử lý tin nhắn này
+                            }
                             string imageUrl = null;
 
                             // Nếu tin nhắn có hình ảnh, tải lên Firebase
@@ -119,7 +130,9 @@ namespace Service.Implements
 
                                 unitOfWork.MessageRepository.Insert(message);
                                 unitOfWork.Save();
-
+                                var response = "Gửi tin nhắn thành công";
+                                var responseBytes = Encoding.UTF8.GetBytes(response);
+                                await socket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                                 // Phát tin nhắn tới các người dùng trong cuộc trò chuyện
                                 await BroadcastMessage(chatMessage.ConversationId, message, unitOfWork);
                             }

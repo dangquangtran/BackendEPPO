@@ -53,7 +53,7 @@ namespace Service
 
         public IEnumerable<PlantVM> GetAllPlantsToResgister(int pageIndex, int pageSize)
         {
-            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status != 0 && c.IsActive == false, orderBy: query => query.OrderByDescending(c => c.PlantId), pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
+            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status == 2 && c.IsActive == false, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 
@@ -130,7 +130,7 @@ namespace Service
         public IEnumerable<PlantVM> GetPlantsByCategoryId(int pageIndex, int pageSize, int categoryId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
-                filter: c => c.CategoryId == categoryId && c.Status != 0 && c.IsActive == true,
+                filter: c => c.CategoryId == categoryId && c.Status == 2 && c.IsActive == true,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
@@ -142,7 +142,7 @@ namespace Service
         public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
-                filter: c => c.TypeEcommerceId == typeEcommerceId && c.Status != 0 && c.IsActive == true,
+                filter: c => c.TypeEcommerceId == typeEcommerceId && c.Status == 2 && c.IsActive == true,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
@@ -156,7 +156,7 @@ namespace Service
             var plants = _unitOfWork.PlantRepository.Get(
                 filter: c => 
                 c.Code == code && // check owner Id
-                //c.Status != 0 &&
+                //c.Status == 2 &&
                 (typeEcommerceId == null || c.TypeEcommerceId == typeEcommerceId),   // check ecomerce
                 pageIndex: pageIndex,
                 pageSize: pageSize,
@@ -170,7 +170,7 @@ namespace Service
         public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId)
         {
                var plants = _unitOfWork.PlantRepository.Get(
-               filter: c => c.TypeEcommerceId == typeEcommerceId && c.CategoryId == categoryId && c.Status != 0 && c.IsActive == true,
+               filter: c => c.TypeEcommerceId == typeEcommerceId && c.CategoryId == categoryId && c.Status == 2 && c.IsActive == true,
                orderBy: query => query.OrderByDescending(c => c.PlantId),
                pageIndex: pageIndex,
                pageSize: pageSize,
@@ -185,7 +185,7 @@ namespace Service
             // Tìm kiếm cây theo từ khóa (có thể là tên hoặc một thuộc tính khác)
             var plants = _unitOfWork.PlantRepository.Get(
                 filter: c => (c.PlantName.Contains(keyword) || c.Description.Contains(keyword))
-                              && c.Status != 0
+                              && c.Status == 2
                               && c.TypeEcommerceId == typeEcommerceId
                               && c.IsActive == true,
                 pageIndex: pageIndex,
@@ -202,7 +202,7 @@ namespace Service
             var plants = await _unitOfWork.PlantRepository.GetAsync(
                 filter: c => (c.PlantName.Contains(keyword) || c.Title.Contains(keyword) || c.Description.Contains(keyword))
                               && c.TypeEcommerceId == typeEcommerceId
-                              && c.Status != 0
+                              && c.Status == 2
                               && c.IsActive == true,
                 pageIndex: pageIndex,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Order;
+using Microsoft.AspNetCore.Http;
 using Repository.Implements;
 using Repository.Interfaces;
 using Service.Interfaces;
@@ -16,11 +17,13 @@ namespace Service.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly FirebaseStorageService _firebaseStorageService;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _firebaseStorageService = firebaseStorageService;
         }
 
         public IEnumerable<OrderVM> GetAllOrders(int pageIndex, int pageSize)
@@ -75,7 +78,7 @@ namespace Service.Implements
 
             Order order = _mapper.Map<Order>(createOrderDTO);
             order.CreationDate = DateTime.UtcNow.AddHours(7);
-            order.Status = 1;
+            order.Status = createOrderDTO.PaymentId == 2 ? 2 : 1;
             order.UserId = userId;
             order.FinalPrice = order.TotalPrice + order.DeliveryFee;
             order.PaymentStatus = createOrderDTO.PaymentId == 2 ? "Đã thanh toán" : "Chưa thanh toán";
@@ -249,14 +252,14 @@ namespace Service.Implements
                     var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId);
                     if (plant != null)
                     {
-                        // Tính giá cho OrderDetail = giá cây * số tháng
-                        double priceForOrderDetail = plant.Price * orderDetail.NumberMonth.Value;
+                        //// Tính giá cho OrderDetail = giá cây * số tháng
+                        //double priceForOrderDetail = plant.Price * orderDetail.NumberMonth.Value;
 
-                        // Cộng dồn giá này vào tổng giá của Order
-                        order.TotalPrice += priceForOrderDetail;
+                        //// Cộng dồn giá này vào tổng giá của Order
+                        //order.TotalPrice += priceForOrderDetail;
 
                         // Tính RentalEndDate
-                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value).AddDays(3);
                     }
                     else
                     {
@@ -280,6 +283,8 @@ namespace Service.Implements
                         {
                             throw new Exception($"Cây với ID {plant.PlantId} không thể được thuê vì đã ngừng hoạt động.");
                         }
+                        plant.IsActive = false;
+                        _unitOfWork.PlantRepository.Update(plant);
                     }
                 }
             }
@@ -316,6 +321,10 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
+            if (order.Status == 5)
+            {
+                throw new Exception("Không thể thanh toán cho đơn hàng này vì trạng thái đơn hàng là đã huỷ.");
+            }
 
             // Kiểm tra paymentId để quyết định logic cần thực hiện
             if (paymentId == 2)
@@ -347,21 +356,9 @@ namespace Service.Implements
 
                 // Cập nhật trạng thái thanh toán đơn hàng
                 order.PaymentStatus = "Đã thanh toán";
+                order.Status = 2;
             }
-            foreach (var orderDetail in order.OrderDetails)
-            {
-                // Cập nhật trạng thái của cây nếu cần
-                if (orderDetail.PlantId.HasValue)
-                {
-                    var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
-                    if (plant != null)
-                    {
-                        plant.IsActive = false; // Kích hoạt lại cây nếu đơn hàng bị hủy
-                        _unitOfWork.PlantRepository.Update(plant);
-                    }
-                }
-            }
-
+            
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
@@ -434,6 +431,50 @@ namespace Service.Implements
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
         }
+
+        public async Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId)
+        {
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật mô tả giao hàng
+            order.DeliveryDescription = "Giao hàng thành công";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            // Kiểm tra danh sách file
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    // Mở stream từ file
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload file lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadOrderDeliveryImageAsync(stream, fileName);
+
+                    // Tạo đối tượng ImageDeliveryOrder và thêm vào cơ sở dữ liệu
+                    var imageDeliveryOrder = new ImageDeliveryOrder
+                    {
+                        OrderId = orderId,
+                        ImageUrl = imageUrl,
+                        UploadDate = DateTime.UtcNow.AddHours(7)
+                    };
+
+                    order.ImageDeliveryOrders.Add(imageDeliveryOrder);
+                }
+            }
+
+            // Cập nhật thông tin đơn hàng và lưu thay đổi
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
+
 
     }
 
