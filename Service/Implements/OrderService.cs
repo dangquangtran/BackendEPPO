@@ -510,6 +510,23 @@ namespace Service.Implements
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
+        public IEnumerable<OrderVM> GetOrdersByTypeEcommerceId(int typeEcommerceId, DateTime? startDate, DateTime? endDate, int pageIndex, int pageSize)
+        {
+            // Lấy danh sách đơn hàng theo typeEcommerceId và lọc theo ngày nếu có
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.TypeEcommerceId == typeEcommerceId &&
+                            (!startDate.HasValue || o.CreationDate >= startDate.Value) &&
+                            (!endDate.HasValue || o.CreationDate <= endDate.Value),
+                orderBy: o => o.OrderByDescending(order => order.OrderId), // Sắp xếp theo OrderId giảm dần
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
+
     }
 
 }

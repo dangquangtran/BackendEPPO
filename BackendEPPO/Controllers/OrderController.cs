@@ -424,5 +424,47 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("GetOrdersByTypeEcommerceId")]
+        public IActionResult GetOrdersByTypeEcommerceId(
+           [FromQuery] int typeEcommerceId,
+            DateTime? startDate,
+            DateTime? endDate,
+            int pageIndex,
+            int pageSize)
+        {
+            try
+            {
+                // Gọi phương thức trong service để lấy danh sách đơn hàng
+                var result = _orderService.GetOrdersByTypeEcommerceId(typeEcommerceId, startDate, endDate, pageIndex, pageSize);
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không tìm thấy đơn hàng nào.",
+                        Data = (object)null
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
     }
 }
