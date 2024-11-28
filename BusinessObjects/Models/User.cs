@@ -37,8 +37,8 @@ namespace BusinessObjects.Models
         public int? RoleId { get; set; }
         public string RankLevel { get; set; }
         public bool? IsActive { get; set; }
-        public bool? IsSigned { get; set; } 
-        public bool? IsUpdated { get; set; } 
+        public bool? IsSigned { get; set; }
+        public bool? IsUpdated { get; set; }
         public DateTime? CreationDate { get; set; }
         public int? CreationBy { get; set; }
         public DateTime? ModificationDate { get; set; }
