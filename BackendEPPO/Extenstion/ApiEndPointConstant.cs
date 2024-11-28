@@ -197,6 +197,7 @@ namespace BackendEPPO.Extenstion
             public const string GetListFeedbackByPlant = ApiEndpoint + "/GetList/Feedback/ByPlant";
 
             public const string GetListFeedbackOrderStatus = ApiEndpoint + "/GetList/Feedback/OrderStatus";
+            public const string GetListFeedbackOrderStatusDelivered = ApiEndpoint + "/GetList/Feedback/Order/Delivered";
 
         }
         // Do Huu Thuan
