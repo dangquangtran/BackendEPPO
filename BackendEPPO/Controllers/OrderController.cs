@@ -302,6 +302,47 @@ namespace BackendEPPO.Controllers
         }
 
         [Authorize]
+        [HttpPut("UpdatePreparedOrderSuccess/{orderId}")]
+        public async Task<IActionResult> UpdatePreparedOrderSuccess(int orderId)
+        {
+            try
+            {
+                // Lấy userId từ JWT claims
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new
+                    {
+                        StatusCode = 401,
+                        Message = "Không có quyền truy cập.",
+                        Data = (object)null
+                    });
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                // Gọi hàm dịch vụ để cập nhật đơn hàng
+                await _orderService.UpdatePreparedOrderSuccess(orderId, userId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã cập nhật trạng thái giao hàng thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [Authorize]
         [HttpPut("UpdateDeliverOrderSuccess/{orderId}")]
         public async Task<IActionResult> UpdateDeliverOrderSuccess(int orderId, [FromForm] List<IFormFile> imageFiles)
         {
@@ -364,6 +405,47 @@ namespace BackendEPPO.Controllers
 
                 // Gọi hàm dịch vụ để cập nhật đơn hàng
                 await _orderService.UpdateDeliverOrderFail(orderId, imageFiles, userId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã cập nhật trạng thái giao hàng thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpPut("UpdateReturnOrderSuccess/{orderId}")]
+        public async Task<IActionResult> UpdateReturnOrderSuccess(int orderId, [FromForm] List<IFormFile> imageFiles)
+        {
+            try
+            {
+                // Lấy userId từ JWT claims
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new
+                    {
+                        StatusCode = 401,
+                        Message = "Không có quyền truy cập.",
+                        Data = (object)null
+                    });
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                // Gọi hàm dịch vụ để cập nhật đơn hàng
+                await _orderService.UpdateReturnOrderSuccess(orderId, imageFiles, userId);
 
                 return Ok(new
                 {
