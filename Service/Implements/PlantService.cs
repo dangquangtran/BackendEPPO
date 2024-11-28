@@ -130,7 +130,7 @@ namespace Service
         public IEnumerable<PlantVM> GetPlantsByCategoryId(int pageIndex, int pageSize, int categoryId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
-                filter: c => c.CategoryId == categoryId && c.Status == 2 && c.IsActive == true,
+                filter: c => c.CategoryId == categoryId,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
@@ -142,7 +142,7 @@ namespace Service
         public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
-                filter: c => c.TypeEcommerceId == typeEcommerceId && c.Status == 2 && c.IsActive == true,
+                filter: c => c.TypeEcommerceId == typeEcommerceId,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
