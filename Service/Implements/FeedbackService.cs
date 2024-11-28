@@ -120,5 +120,22 @@ namespace Service.Implements
             await _unitOfWork.SaveAsync();
         }
 
+        public async Task<IEnumerable<Feedback>> GetFeedbackByDeliveredPlants(int page, int size , int userId)
+        {
+                    var feedbacks = await _unitOfWork.FeedbackRepository.GetAsync(
+                 filter: f => f.PlantId != null // Cây có feedback
+                           && f.Plant.OrderDetails.Any(od => od.Order.Status == 4 // Đã giao thành công
+                                                            && od.Order.PaymentStatus == "Đã thanh toán"
+                                                            && od.Order.UserId == userId), // Thanh toán hoàn tất
+                 orderBy: query => query.OrderByDescending(f => f.CreationDate), // Sắp xếp theo ngày tạo mới nhất
+                 pageIndex: page,
+                 pageSize: size,
+                 includeProperties: "Plant,User,ImageFeedbacks"
+             );
+
+
+            return feedbacks;
+        }
+
     }
 }

@@ -185,5 +185,54 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Lấy danh sách feedback của các cây đã giao thành công và đã thanh toán.
+        /// </summary>
+        /// <param name="page">Trang hiện tại (bắt đầu từ 1).</param>
+        /// <param name="size">Kích thước trang.</param>
+        /// <returns>Get feedback with all role</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackOrderStatus)]
+        //[HttpGet("delivered-plants-feedback")]
+        public async Task<IActionResult> GetFeedbackByDeliveredPlants([FromQuery] int page, [FromQuery] int size)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+
+                // Gọi service để lấy danh sách feedback
+                var feedbacks = await _service.GetFeedbackByDeliveredPlants(page, size, userId);
+
+                // Kiểm tra nếu không có dữ liệu
+                if (feedbacks == null || !feedbacks.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không tìm thấy feedback nào phù hợp."
+                    });
+                }
+
+                // Trả về danh sách feedback
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Lấy danh sách feedback thành công.",
+                    Data = feedbacks
+                });
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Message = "Đã xảy ra lỗi khi xử lý yêu cầu.",
+                    Error = ex.Message
+                });
+            }
+        }
     }
 }

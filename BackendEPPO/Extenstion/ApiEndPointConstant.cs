@@ -195,6 +195,9 @@ namespace BackendEPPO.Extenstion
             public const string DeleteFeedbackID = GetListFeedback_Endpoint + "/Delete/Feedback/Id";
 
             public const string GetListFeedbackByPlant = ApiEndpoint + "/GetList/Feedback/ByPlant";
+
+            public const string GetListFeedbackOrderStatus = ApiEndpoint + "/GetList/Feedback/OrderStatus";
+
         }
         // Do Huu Thuan
         public static class Accessory
