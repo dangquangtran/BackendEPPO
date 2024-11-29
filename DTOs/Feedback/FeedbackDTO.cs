@@ -39,6 +39,7 @@ namespace DTOs.Feedback
         //public string Title { get; set; }
         public string Description { get; set; }
         public DateTime? CreationDate { get; set; }
+        public bool? IsFeedback { get; set; }
         public int? PlantId { get; set; }
         public int? Rating { get; set; }
         public int? UserId { get; set; }

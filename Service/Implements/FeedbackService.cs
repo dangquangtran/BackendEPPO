@@ -58,6 +58,7 @@ namespace Service.Implements
             entity.UserId = feedback.UserId;
             entity.ModificationDate = feedback.ModificationDate;
             entity.ModificationByUserId = feedback.ModificationByUserId;
+            entity.IsFeedback = feedback.IsFeedback;
             entity.Status = feedback.Status;
 
             _unitOfWork.FeedbackRepository.Update(entity);
@@ -80,15 +81,11 @@ namespace Service.Implements
                 PlantId = feedback.PlantId,
                 Title = "Đánh Giá Sản Phẩm Từ Khách Hàng",
                 Description = feedback.Description,
-
+                IsFeedback = true,
                 CreationDate = DateTime.Now,
                 Rating = feedback.Rating,
                 UserId = userId,
                 ModificationDate = DateTime.Now,
-
-          
-  
-
                 Status = 1,
             };
             if (imageFiles != null && imageFiles.Count > 0)
@@ -163,11 +160,12 @@ namespace Service.Implements
             // Lấy các OrderDetails có liên quan từ các đơn hàng đã giao hàng thành công
             var orderDetails = await _unitOfWork.OrderDetailRepository.GetAsync(
                 filter: od => od.Order.Status == 4 // Đã giao hàng thành công
-                              && od.Order.UserId == userId, // Lọc theo người dùng
+                              && od.Order.UserId == userId
+                              && (od.Plant.Feedbacks.All(f => f.IsFeedback != true)),// Lọc theo người dùng
                 orderBy: query => query.OrderByDescending(od => od.Order.CreationDate), // Sắp xếp mới nhất
                 pageIndex: page,
                 pageSize: size,
-                includeProperties: "Plant,Order" // Bao gồm thông tin Plant và Order
+                 includeProperties: "Plant.Feedbacks,Order" // Bao gồm thông tin Plant và Order
             );
 
             // Lấy danh sách các Plant từ OrderDetails
