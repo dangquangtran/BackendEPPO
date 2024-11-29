@@ -42,5 +42,7 @@ namespace Service.Interfaces
         Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant,int plantId, IFormFile mainImageFile);
 
         Task<int> CountShipByPlant(int plantId);
+
+        IEnumerable<PlantVM> GetListPlantsByTypeEcommerceIdManage(int pageIndex, int pageSize, int typeEcommerceId);
     }
 }

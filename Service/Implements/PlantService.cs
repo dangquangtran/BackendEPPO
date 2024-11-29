@@ -142,6 +142,19 @@ namespace Service
         public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceId(int pageIndex, int pageSize, int typeEcommerceId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
+                filter: c => c.TypeEcommerceId == typeEcommerceId && c.IsActive != false && c.Status == 2, 
+                orderBy: query => query.OrderByDescending(c => c.PlantId),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "ImagePlants,Category"
+            );
+
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+
+        public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceIdManage(int pageIndex, int pageSize, int typeEcommerceId)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(
                 filter: c => c.TypeEcommerceId == typeEcommerceId,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
                 pageIndex: pageIndex,
@@ -151,6 +164,7 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
+
         public IEnumerable<PlantVM> GetListPlantOfOwnerByTypeEcommerceId(int pageIndex, int pageSize, int? typeEcommerceId, string code)
         {
             var plants = _unitOfWork.PlantRepository.Get(
