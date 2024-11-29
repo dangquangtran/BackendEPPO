@@ -22,7 +22,7 @@ namespace DTOs.Feedback
     }
     public class CreateFeedbackDTO
     {
-        public string Title { get; set; }
+        //public string Title { get; set; }
         public string Description { get; set; }
         //public DateTime? CreationDate { get; set; }
         public int? PlantId { get; set; }
@@ -36,7 +36,7 @@ namespace DTOs.Feedback
     public class UpdateFeedbackDTO
     {
         public int FeedbackId { get; set; }
-        public string Title { get; set; }
+        //public string Title { get; set; }
         public string Description { get; set; }
         public DateTime? CreationDate { get; set; }
         public int? PlantId { get; set; }
