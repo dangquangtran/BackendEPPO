@@ -510,6 +510,16 @@ namespace Service
 
             return userCount;
         }
+
+        public async Task<int> CountAccountCustomer(int status)
+        {
+            var userCount = await Task.FromResult(_unitOfWork.UserRepository.Get(
+                filter: o => o.Status == status && o.RoleId == 5
+            ).Count());
+
+            return userCount;
+        }
+
         public async Task UpdateRankVler(UpdateRankVler account)
         {
             var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(account.UserId));

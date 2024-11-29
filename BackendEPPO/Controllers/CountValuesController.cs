@@ -146,6 +146,47 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Function for web: Count account by status.
+        /// </summary>
+        /// <returns> Function for web: Count account by status.</returns>
+        //[Authorize(Roles = "admin, manager, staff")]
+        [HttpGet(ApiEndPointConstant.Count.CountCustomerByStatus_Endpoint)]
+        public IActionResult CountAccountCustomer()
+        {
+            try
+            {
+                int result = _userService.CountAccountCustomer(1).Result;
+
+                if (result == 0)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.ORDER_FOUND_ERROR,
+                        Data = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = $"Số tài khoảng là: {result}"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = Error.ORDER_FOUND_ERROR + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
         /// <summary>
         /// Function for web: Count revenue the order by status.
         /// </summary>

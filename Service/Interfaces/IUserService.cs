@@ -29,5 +29,7 @@ namespace Service.Interfaces
         Task<int> CountAccountByStatus(int status);
         Task UpdateRankVler(UpdateRankVler account);
         //Task<bool> UpdateUserIsSignedAsync(int userId, bool isSigned);
+
+        Task<int> CountAccountCustomer(int status);
     }
 }
