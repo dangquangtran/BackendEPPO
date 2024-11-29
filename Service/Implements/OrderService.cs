@@ -702,19 +702,22 @@ namespace Service.Implements
         }
         public async Task<double> CountOrderPriceDateNow(int status)
         {
-            var today = DateTime.Today;
+            var todayStart = DateTime.Today; // 00:00:00 của ngày hiện tại
+            var todayEnd = todayStart.AddDays(1).AddTicks(-1); // 23:59:59.9999999 của ngày hiện tại
 
             var query = _unitOfWork.OrderRepository.Get(
                 filter: o =>
                     o.FinalPrice.HasValue &&
                     o.Status != status &&
-                    o.CreationDate == today
+                    o.CreationDate >= todayStart && // Từ đầu ngày
+                    o.CreationDate <= todayEnd // Đến cuối ngày
             );
 
             var totalRevenue = query.Any() ? query.Sum(o => o.FinalPrice.Value) : 0;
 
             return totalRevenue;
         }
+
     }
 
 }
