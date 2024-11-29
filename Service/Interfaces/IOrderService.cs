@@ -35,5 +35,8 @@ namespace Service.Interfaces
         IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize);
         IEnumerable<OrderVM> GetOrdersByTypeEcommerceId(int typeEcommerceId, DateTime? startDate, DateTime? endDate, int pageIndex, int pageSize);
 
+        Task<int> CountOrderByStatus(int status);
+        Task<double> CountOrderPrice(int status);
+        Task<double> CountOrderPriceDateNow(int status);
     }
 }

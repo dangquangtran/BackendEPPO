@@ -24,5 +24,6 @@ namespace Service.Interfaces
 
         Task<IEnumerable<Feedback>> GetFeedbackByDeliveredPlants(int page, int size, int userId, int TypeEcommerceId);
         Task<IEnumerable<Order>> GetDeliveredOrdersForFeedback(int userId, int page, int size);
+        Task<IEnumerable<Plant>> GetDeliveredPlantsForFeedback(int userId, int page, int size);
     }
 }

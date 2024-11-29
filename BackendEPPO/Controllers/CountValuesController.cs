@@ -173,8 +173,8 @@ namespace BackendEPPO.Controllers
                 {
                     StatusCode = 200,
                     Message = Error.REQUESR_SUCCESFULL,
-                    Data = $"Số tài khoảng là: {result}"
-                });
+                    Data =  result
+            });
             }
             catch (Exception ex)
             {
@@ -360,7 +360,122 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Function for web: Count the order by status.
+        /// </summary>
+        /// <returns>Function off manager: Count the order by status.</returns>
+        [HttpGet(ApiEndPointConstant.Count.CountOrderStatus_Endpoint)]
+        public IActionResult CountOrderByStatus()
+        {
+            try
+            {
+                int result = _orderService.CountOrderByStatus( 0).Result;
 
+                if (result == 0)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.ORDER_FOUND_ERROR,
+                        Data = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = Error.ORDER_FOUND_ERROR + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        /// <summary>
+        /// Function for web: Count the order by status.
+        /// </summary>
+        /// <returns>Function off manager: Count the order by status.</returns>
+        [HttpGet(ApiEndPointConstant.Count.CountOrderTotalRevenue_Endpoint)]
+        public IActionResult CountOrderPrice()
+        {
+            try
+            {
+                double result = _orderService.CountOrderPrice(0).Result;
+
+                if (result == 0)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.ORDER_FOUND_ERROR,
+                        Data = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = Error.ORDER_FOUND_ERROR + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        /// <summary>
+        /// Function for web: Count the order by status.
+        /// </summary>
+        /// <returns>Function off manager: Count the order by status.</returns>
+        [HttpGet(ApiEndPointConstant.Count.CountOrderTodayRevenue_Endpoint)]
+        public IActionResult CountOrderPriceDateNow()
+        {
+            try
+            {
+                double result = _orderService.CountOrderPriceDateNow(0).Result;
+
+                if (result == 0)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.ORDER_FOUND_ERROR,
+                        Data = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = Error.ORDER_FOUND_ERROR + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
 
     }
 }
