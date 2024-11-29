@@ -31,5 +31,7 @@ namespace Service.Interfaces
         //Task<bool> UpdateUserIsSignedAsync(int userId, bool isSigned);
 
         Task<int> CountAccountCustomer(int status);
+
+        Task<IEnumerable<User>> GetTopCustomersByWalletBalance(int page, int size);
     }
 }

@@ -71,6 +71,9 @@ namespace BackendEPPO.Extenstion
             public const string ChangePassword = GetUserEndpoint + "/UpdateAccount/ChangePassword/Id";
             public const string ChangePasswordByToken = GetUserEndpoint + "/UpdateAccount/ChangePassword/ByToken/Id";
             public const string ChangeStatus = GetUserEndpoint + "/UpdateAccount/ChangeStatus/Id";
+
+            public const string GetListTopCustomers = GetUserEndpoint + "/TopCustomers";
+
         }
         // Do Huu Thuan
         public static class Room
