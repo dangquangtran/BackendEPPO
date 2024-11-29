@@ -50,7 +50,7 @@ namespace Service.Implements
             {
                 throw new Exception($"Feedback with ID {feedback.FeedbackId} not found.");
             }
-            entity.Title = feedback.Title;
+            //entity.Title = feedback.Title;
             entity.Description = feedback.Description;
             entity.CreationDate = feedback.CreationDate;
             entity.PlantId = feedback.PlantId;
@@ -78,7 +78,7 @@ namespace Service.Implements
             var entity = new Feedback
             {
                 PlantId = feedback.PlantId,
-                Title = feedback.Title,
+                //Title = feedback.Title,
                 Description = feedback.Description,
 
                 CreationDate = DateTime.Now,
