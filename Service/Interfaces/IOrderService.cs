@@ -25,10 +25,15 @@ namespace Service.Interfaces
         Task<double> CountOrderPrice(int status, int? month = null, int? year = null );
         Task UpdatePreparedOrderSuccess(int orderId, int userId);
         Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId);
+
+        Task<List<double>> CountOrderPriceForYear(int status, int year);
+        Task<List<double>> CountOrderPriceByTypeEcom(int status, int year, int typeEcommerceId);
+
         Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId);
         Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId);
         void UpdateOrderStatus(int orderId, int newStatus, int userId);
         IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize);
         IEnumerable<OrderVM> GetOrdersByTypeEcommerceId(int typeEcommerceId, DateTime? startDate, DateTime? endDate, int pageIndex, int pageSize);
+
     }
 }

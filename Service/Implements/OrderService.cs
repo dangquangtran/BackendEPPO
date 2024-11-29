@@ -141,6 +141,58 @@ namespace Service.Implements
 
             return totalRevenue;
         }
+        public async Task<List<double>> CountOrderPriceForYear(int status, int year)
+        {
+            var monthlyRevenue = new List<double>(new double[12]); // Khởi tạo 12 tháng với giá trị mặc định là 0
+
+            var query = _unitOfWork.OrderRepository.Get(
+                filter: o => o.FinalPrice.HasValue && o.Status == status && o.CreationDate.HasValue && o.CreationDate.Value.Year == year
+            );
+
+            // Nhóm doanh thu theo tháng
+            var groupedByMonth = query.GroupBy(o => o.CreationDate.Value.Month)
+                                       .Select(g => new
+                                       {
+                                           Month = g.Key,
+                                           TotalRevenue = g.Sum(o => o.FinalPrice.Value)
+                                       })
+                                       .ToList();
+
+            // Gán doanh thu vào danh sách tương ứng với từng tháng
+            foreach (var item in groupedByMonth)
+            {
+                monthlyRevenue[item.Month - 1] = item.TotalRevenue; // Month - 1 để phù hợp với index của danh sách
+            }
+
+            return monthlyRevenue;
+        }
+
+        public async Task<List<double>> CountOrderPriceByTypeEcom(int status, int year, int typeEcommerceId)
+        {
+            var monthlyRevenue = new List<double>(new double[12]); // Khởi tạo 12 tháng với giá trị mặc định là 0
+
+            var query = _unitOfWork.OrderRepository.Get(
+                filter: o => o.FinalPrice.HasValue && o.Status == status && o.CreationDate.HasValue && o.CreationDate.Value.Year == year && o.TypeEcommerceId == typeEcommerceId
+            );
+
+            // Nhóm doanh thu theo tháng
+            var groupedByMonth = query.GroupBy(o => o.CreationDate.Value.Month)
+                                       .Select(g => new
+                                       {
+                                           Month = g.Key,
+                                           TotalRevenue = g.Sum(o => o.FinalPrice.Value)
+                                       })
+                                       .ToList();
+
+            // Gán doanh thu vào danh sách tương ứng với từng tháng
+            foreach (var item in groupedByMonth)
+            {
+                monthlyRevenue[item.Month - 1] = item.TotalRevenue; // Month - 1 để phù hợp với index của danh sách
+            }
+
+            return monthlyRevenue;
+        }
+
 
         public async Task<int> CountOrderByStatus(int userId, int status)
         {
