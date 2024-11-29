@@ -346,7 +346,7 @@ namespace Service
 
             if (!accountDTO.DateOfBirth.HasValue)
             {
-                userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
+                userEntity.DateOfBirth = accountDTO.DateOfBirth;
             }
             //if (!string.IsNullOrEmpty(accountDTO.DateOfBirthInput))
             //{
