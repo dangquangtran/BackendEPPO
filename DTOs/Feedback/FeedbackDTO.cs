@@ -24,13 +24,13 @@ namespace DTOs.Feedback
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public DateTime? CreationDate { get; set; }
+        //public DateTime? CreationDate { get; set; }
         public int? PlantId { get; set; }
         public int? Rating { get; set; }
         //public int? UserId { get; set; }
-        public DateTime? ModificationDate { get; set; }
+        //public DateTime? ModificationDate { get; set; }
         //public int? ModificationByUserId { get; set; }
-        public int? Status { get; set; }
+        //public int? Status { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }
     }
     public class UpdateFeedbackDTO
