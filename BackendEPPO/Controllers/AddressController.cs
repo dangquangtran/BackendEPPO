@@ -229,6 +229,12 @@ namespace BackendEPPO.Controllers
             }
             try
             {
+                var allAddresses = await _IService.GetLisAddressByUserID(userId);
+                if (allAddresses.Count() == 1)
+                {
+                    return BadRequest(new { Message = "Không thể xóa địa chỉ. Bạn phải có ít nhất một địa chỉ." });
+                }
+
                 await _IService.DeleteAddress(address);
                 var updatedAddress = await _IService.GetAddressByID(userId);
 

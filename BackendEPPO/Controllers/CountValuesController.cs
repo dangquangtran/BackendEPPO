@@ -187,6 +187,100 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
+        /// Function for web: Count revenue the order by status.
+        /// </summary>
+        /// <returns>Function off manager: Count the order by status.</returns>
+        //[Authorize(Roles = "admin, manager, staff")]
+        [HttpGet(ApiEndPointConstant.Count.CountOrderPriceRevenue12M_Endpoint)]
+        public async Task<IActionResult> CountOrderPriceForYear(int status, int year)
+        {
+            try
+            {
+                var revenueData = await _orderService.CountOrderPriceForYear(status, year);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = revenueData
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Đã xảy ra lỗi: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        /// <summary>
+        /// Function for web: Count revenue the order by status.
+        /// </summary>
+        /// <returns>Function off manager: Count the order by status.</returns>
+        //[Authorize(Roles = "admin, manager, staff")]
+        [HttpGet(ApiEndPointConstant.Count.CountOrderTypeEcommerceId_Endpoint)]
+        public async Task<IActionResult> CountOrderPriceByTypeEcom(int status, int year)
+        {
+            try
+            {
+                // Lấy dữ liệu doanh thu theo từng loại
+                var sellRevenue = await _orderService.CountOrderPriceByTypeEcom(status, year, 1);
+                var  rentRevenue = await _orderService.CountOrderPriceByTypeEcom(status, year, 2);
+                var  auctionRevenue = await _orderService.CountOrderPriceByTypeEcom(status, year, 3);
+
+                // Tính tổng doanh thu từng loại
+                var totalAuction = auctionRevenue.Sum();
+                var totalSell = sellRevenue.Sum();
+                var totalRent = rentRevenue.Sum();
+
+                // Tính tổng doanh thu
+                var totalRevenue = totalAuction + totalSell + totalRent;
+
+                // Tính phần trăm
+                var auctionPercentage = totalRevenue > 0 ? (totalAuction * 100.0) / totalRevenue : 0;
+                var sellPercentage = totalRevenue > 0 ? (totalSell * 100.0) / totalRevenue : 0;
+                var rentPercentage = totalRevenue > 0 ? (totalRent * 100.0) / totalRevenue : 0;
+
+                // Trả về dữ liệu
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = new
+                    {
+                        Percentages = new
+                        {
+                            Auction = auctionPercentage,
+                            Sell = sellPercentage,
+                            Rent = rentPercentage
+                        },
+                        Revenues = new
+                        {
+                            Auction = totalAuction,
+                            Sell = totalSell,
+                            Rent = totalRent
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Đã xảy ra lỗi: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+
+
+
+        /// <summary>
         /// Function for mobile: Count account register by status.
         /// </summary>
         /// <returns> Function for web: Count account by status.</returns>

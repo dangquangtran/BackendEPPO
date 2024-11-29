@@ -24,5 +24,7 @@ namespace Service.Interfaces
         Task<int> CountOrderByStatus(int userId, int status);
         Task<double> CountOrderPrice(int status, int? month = null, int? year = null );
         Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId);
+        Task<List<double>> CountOrderPriceForYear(int status, int year);
+        Task<List<double>> CountOrderPriceByTypeEcom(int status, int year, int typeEcommerceId);
     }
 }
