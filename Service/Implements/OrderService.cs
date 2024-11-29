@@ -484,6 +484,25 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
+        public async Task UpdatePreparedOrderSuccess(int orderId, int userId)
+        {
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật mô tả giao hàng
+            order.DeliveryDescription = "Chuẩn bị hàng thành công";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+           
+            // Cập nhật thông tin đơn hàng và lưu thay đổi
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
+
         public async Task UpdateDeliverOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId)
         {
             // Lấy thông tin đơn hàng
@@ -527,6 +546,141 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
+        public async Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId)
+        {
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật mô tả giao hàng
+            order.DeliveryDescription = "Giao hàng thất bại";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            // Kiểm tra danh sách file
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    // Mở stream từ file
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload file lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadOrderDeliveryImageAsync(stream, fileName);
+
+                    // Tạo đối tượng ImageDeliveryOrder và thêm vào cơ sở dữ liệu
+                    var imageDeliveryOrder = new ImageDeliveryOrder
+                    {
+                        OrderId = orderId,
+                        ImageUrl = imageUrl,
+                        UploadDate = DateTime.UtcNow.AddHours(7)
+                    };
+
+                    order.ImageDeliveryOrders.Add(imageDeliveryOrder);
+                }
+            }
+
+            // Cập nhật thông tin đơn hàng và lưu thay đổi
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
+
+        public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId)
+        {
+            // Lấy thông tin đơn hàng
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật mô tả giao hàng
+            order.DeliveryDescription = "Thu hồi thành công";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            // Kiểm tra danh sách file
+            if (imageFiles != null && imageFiles.Count > 0)
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    // Mở stream từ file
+                    using var stream = imageFile.OpenReadStream();
+                    string fileName = imageFile.FileName;
+
+                    // Upload file lên Firebase và lấy URL
+                    string imageUrl = await _firebaseStorageService.UploadOrderReturnImageAsync(stream, fileName);
+
+                    // Tạo đối tượng ImageDeliveryOrder và thêm vào cơ sở dữ liệu
+                    var imageReturnOrder = new ImageReturnOrder
+                    {
+                        OrderId = orderId,
+                        ImageUrl = imageUrl,
+                        UploadDate = DateTime.UtcNow.AddHours(7)
+                    };
+
+                    order.ImageReturnOrders.Add(imageReturnOrder);
+                }
+            }
+
+            // Cập nhật thông tin đơn hàng và lưu thay đổi
+            _unitOfWork.OrderRepository.Update(order);
+            _unitOfWork.Save();
+        }
+        public void UpdateOrderStatus(int orderId, int newStatus, int userId)
+        {
+            // Lấy thông tin đơn hàng từ cơ sở dữ liệu
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            // Cập nhật trạng thái đơn hàng
+            order.Status = newStatus;
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            _unitOfWork.Save();
+        }
+
+        public IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize)
+        {
+            // Lấy danh sách đơn hàng liên quan đến các Plant có Code trùng với userId
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+                orderBy: o => o.OrderBy(order => order.Status),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
+
+        public IEnumerable<OrderVM> GetOrdersByTypeEcommerceId(int typeEcommerceId, DateTime? startDate, DateTime? endDate, int pageIndex, int pageSize)
+        {
+            // Lấy danh sách đơn hàng theo typeEcommerceId và lọc theo ngày nếu có
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.TypeEcommerceId == typeEcommerceId &&
+                            (!startDate.HasValue || o.CreationDate >= startDate.Value) &&
+                            (!endDate.HasValue || o.CreationDate <= endDate.Value),
+                orderBy: o => o.OrderByDescending(order => order.OrderId), // Sắp xếp theo OrderId giảm dần
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
 
     }
 
