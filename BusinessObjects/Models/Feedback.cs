@@ -13,6 +13,7 @@ namespace BusinessObjects.Models
         public int FeedbackId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public bool? IsFeedback { get; set; }
         public DateTime? CreationDate { get; set; }
         public int? PlantId { get; set; }
         public int? Rating { get; set; }
