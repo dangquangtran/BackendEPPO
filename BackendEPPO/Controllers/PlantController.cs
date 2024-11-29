@@ -115,6 +115,32 @@ namespace BackendEPPO.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Get list Plant by Type Ecommerce with the page and the size.
+        /// </summary>
+        /// <returns> Get list Plant by Type Ecommerce with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.GetListPlantsByTypeEcommerceIdManager)]
+        public IActionResult GetListPlantsByTypeEcommerceIdManage(int pageIndex, int pageSize, int typeEcommerceId)
+        {
+            var plants = _plantService.GetListPlantsByTypeEcommerceIdManage(pageIndex, pageSize, typeEcommerceId);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào theo loại thương mại điện tử.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+        }
+
         /// <summary>
         /// Get list Plant by Type Ecommerce And Category with the page and the size.
         /// </summary>
