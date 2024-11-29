@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.Interfaces;
+using static BackendEPPO.Extenstion.ApiEndPointConstant;
 
 namespace BackendEPPO.Controllers
 {
@@ -476,6 +477,45 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Function for web: Count the top customer by status.
+        /// </summary>
+        /// <returns>Function off manager: Count the order by status.</returns>
+        [HttpGet(ApiEndPointConstant.User.GetListTopCustomers)]
+        public async Task<IActionResult> GetTopCustomersByWalletBalance(int page, int size)
+        {
+            try
+            {
+                var customers = await _userService.GetTopCustomersByWalletBalance(page, size);
+
+                if (customers == null || !customers.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không có khách hàng nào phù hợp."
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Lấy danh sách khách hàng thành công.",
+                    Data = customers
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Message = "Đã xảy ra lỗi khi xử lý yêu cầu.",
+                    Error = ex.Message
+                });
+            }
+        }
+
 
     }
 }

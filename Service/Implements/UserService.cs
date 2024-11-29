@@ -536,5 +536,17 @@ namespace Service
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
         }
+
+        public async Task<IEnumerable<User>> GetTopCustomersByWalletBalance(int page, int size)
+        {
+            return await _unitOfWork.UserRepository.GetAsync(
+                filter: u => u.Wallet != null && u.Wallet.NumberBalance.HasValue, // Chỉ lấy user có ví và số dư
+                orderBy: query => query.OrderByDescending(u => u.Wallet.NumberBalance), // Sắp xếp số dư giảm dần
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "Wallet" // Bao gồm ví trong truy vấn
+            );
+        }
+
     }
 }

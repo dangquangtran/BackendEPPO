@@ -78,7 +78,7 @@ namespace Service.Implements
             var entity = new Feedback
             {
                 PlantId = feedback.PlantId,
-                //Title = feedback.Title,
+                Title = "Đánh Giá Sản Phẩm Từ Khách Hàng",
                 Description = feedback.Description,
 
                 CreationDate = DateTime.Now,

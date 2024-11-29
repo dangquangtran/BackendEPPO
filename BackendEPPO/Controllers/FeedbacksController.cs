@@ -92,7 +92,7 @@ namespace BackendEPPO.Controllers
         /// Create feedback with all role.
         /// </summary>
         /// <returns>Create feedback with all role.</returns>
-        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPost(ApiEndPointConstant.Feedback.CreateFeedback)]
         public async Task<IActionResult> CreateFeedback([FromForm] CreateFeedbackDTO feedback)
         {
