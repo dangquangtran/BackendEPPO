@@ -26,6 +26,11 @@ namespace Service.Implements
                 && c.EndDate >= DateTime.Now,
                 orderBy: query => query.OrderByDescending(c => c.RoomId), pageIndex: page, pageSize: size, includeProperties: "Plant,Plant.ImagePlants");
         }
+        public async Task<IEnumerable<Room>> GetListRoomsManager(int page, int size)
+        {
+            return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status != 0,
+                orderBy: query => query.OrderByDescending(c => c.RoomId), pageIndex: page, pageSize: size, includeProperties: "Plant,Plant.ImagePlants");
+        }
         public async Task<IEnumerable<Room>> GetListRoomsByStatus(int page, int size, int status)
         {
             return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status == status, orderBy: query => query.OrderByDescending(c => c.RoomId), pageIndex: page, pageSize: size, includeProperties: "Plant,Plant.ImagePlants");

@@ -42,6 +42,26 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
+        /// <summary>
+        /// Get list all room in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all room in database.</returns>
+        [HttpGet(ApiEndPointConstant.Room.GetListRoomManager_Endpoint)]
+        public async Task<IActionResult> GetListRoomsManager(int page, int size)
+        {
+            var room = await _roomService.GetListRoomsManager(page, size);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = room
+            });
+        }
 
         /// <summary>
         /// Get list all room by status in database with the page and the size.
