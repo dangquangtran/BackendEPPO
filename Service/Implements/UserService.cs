@@ -227,7 +227,7 @@ namespace Service
                 userEntity.Gender = accountDTO.Gender;
             }
 
-            if (!accountDTO.DateOfBirth.HasValue)
+            if (accountDTO.DateOfBirth.HasValue)
             {
                 userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
             }
@@ -343,7 +343,7 @@ namespace Service
                 userEntity.Gender = accountDTO.Gender;
             }
 
-            if (!accountDTO.DateOfBirth.HasValue)
+            if (accountDTO.DateOfBirth.HasValue)
             {
                 userEntity.DateOfBirth = accountDTO.DateOfBirth.Value;
             }
