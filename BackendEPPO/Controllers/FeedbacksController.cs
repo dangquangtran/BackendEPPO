@@ -283,6 +283,47 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+
+        [HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackOrderDelivered)]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        public async Task<IActionResult> GetDeliveredPlantsForFeedback([FromQuery] int page, [FromQuery] int size)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+                // Gọi service để lấy danh sách đơn hàng
+                var orders = await _service.GetDeliveredPlantsForFeedback(userId, page, size);
+
+                // Kiểm tra nếu không có dữ liệu
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không có đơn hàng nào phù hợp để tạo feedback."
+                    });
+                }
+
+                // Trả về danh sách đơn hàng
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Lấy danh sách đơn hàng thành công.",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Message = "Đã xảy ra lỗi khi xử lý yêu cầu.",
+                    Error = ex.Message
+                });
+            }
+        }
     }
 }
 

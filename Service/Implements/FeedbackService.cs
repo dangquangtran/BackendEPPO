@@ -158,5 +158,24 @@ namespace Service.Implements
             return orders;
         }
 
+        public async Task<IEnumerable<Plant>> GetDeliveredPlantsForFeedback(int userId, int page, int size)
+        {
+            // Lấy các OrderDetails có liên quan từ các đơn hàng đã giao hàng thành công
+            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAsync(
+                filter: od => od.Order.Status == 4 // Đã giao hàng thành công
+                              && od.Order.UserId == userId, // Lọc theo người dùng
+                orderBy: query => query.OrderByDescending(od => od.Order.CreationDate), // Sắp xếp mới nhất
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "Plant,Order" // Bao gồm thông tin Plant và Order
+            );
+
+            // Lấy danh sách các Plant từ OrderDetails
+            var plants = orderDetails.Select(od => od.Plant).Distinct(); // Loại bỏ trùng lặp
+
+            return plants;
+        }
+
+
     }
 }

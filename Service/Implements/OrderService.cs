@@ -682,6 +682,39 @@ namespace Service.Implements
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
+        public async Task<int> CountOrderByStatus(int status)
+        {
+            var orderCount = await Task.FromResult(_unitOfWork.OrderRepository.Get(
+                filter: o => o.Status != status
+            ).Count());
+
+            return orderCount;
+        }
+        public async Task<double> CountOrderPrice(int status)
+        {
+            var query = _unitOfWork.OrderRepository.Get(
+                filter: o => o.FinalPrice.HasValue && o.Status != status 
+            );
+       
+            var totalRevenue = query.Any() ? query.Sum(o => o.FinalPrice.Value) : 0;
+
+            return totalRevenue;
+        }
+        public async Task<double> CountOrderPriceDateNow(int status)
+        {
+            var today = DateTime.Today;
+
+            var query = _unitOfWork.OrderRepository.Get(
+                filter: o =>
+                    o.FinalPrice.HasValue &&
+                    o.Status != status &&
+                    o.CreationDate == today
+            );
+
+            var totalRevenue = query.Any() ? query.Sum(o => o.FinalPrice.Value) : 0;
+
+            return totalRevenue;
+        }
     }
 
 }
