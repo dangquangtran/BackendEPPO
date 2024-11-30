@@ -232,5 +232,41 @@ namespace Service.Implements
 
             return uCount;
         }
+
+        public async Task<IEnumerable<object>> GetListHistoryRooms(int userId, int page, int size)
+        {
+            // Lấy danh sách phòng đã kết thúc đấu giá và có trạng thái thành công
+            var rooms = await _unitOfWork.RoomRepository.GetAsync(
+                filter: r => r.Status == 1 && // Giả sử Status = 1 là phòng đấu giá thành công
+                             r.EndDate.HasValue && r.EndDate.Value <= DateTime.UtcNow, // Đảm bảo phòng đã kết thúc
+                orderBy: query => query.OrderByDescending(r => r.EndDate), // Sắp xếp theo ngày kết thúc
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "UserRooms,HistoryBids,Plant,Plant.ImagePlants" // Bao gồm các thông tin cần thiết
+            );
+
+            // Duyệt qua danh sách phòng để kiểm tra người dùng có thắng hay không
+            var historyRooms = rooms.Select(room => new
+            {
+                RoomId = room.RoomId,
+                RoomName = room.Plant?.PlantName, // Lấy tên cây đấu giá
+                Image = room.Plant.MainImage,
+                RegistrationFee = room.RegistrationFee,
+                PriceStep = room.PriceStep,
+                EndDate = room.EndDate,
+                UserBidAmount = room.HistoryBids
+                .Where(bid => bid.UserId == userId) // Lọc giá trị mà người dùng đã nhập
+                .OrderByDescending(bid => bid.BidTime) // Sắp xếp theo thời gian nhập gần nhất
+                .FirstOrDefault()?.BidAmount, // Lấy giá trị đấu giá gần nhất của người dùng
+                UserIsWinner = room.HistoryBids.Any(bid => bid.IsWinner == true && bid.UserId == userId), // Kiểm tra nếu người dùng thắng
+                WinningBid = room.HistoryBids
+                    .Where(bid => bid.IsWinner == true)
+                    .OrderByDescending(bid => bid.BidTime)
+                    .FirstOrDefault()?.BidAmount // Lấy giá trị đấu giá thắng cuộc
+            });
+
+            return historyRooms;
+        }
+
     }
 }

@@ -92,6 +92,8 @@ namespace BackendEPPO.Extenstion
             public const string GetListRoomStatus_Endpoint = ApiEndpoint + "/GetList/Rooms/Status";
             public const string GetListRoomActive_Endpoint = ApiEndpoint + "/GetList/Rooms/Active";
             public const string GetListRoomManager_Endpoint = ApiEndpoint + "/GetList/AllRoom";
+
+            public const string GetListHistoryRoom_Endpoint = ApiEndpoint + "/GetList/History/AllRoom";
         }
         // Do Huu Thuan
         public static class UserRoom
@@ -211,7 +213,7 @@ namespace BackendEPPO.Extenstion
             public const string GetListFeedbackOrderStatusDelivered = ApiEndpoint + "/GetList/Feedback/Order/Delivered";
 
             public const string GetListFeedbackOrderDelivered = ApiEndpoint + "/GetList/Feedback/Order/Delivered/Plant";
-
+            public const string GetListFeedbackOrderDeliveredReting = ApiEndpoint + "/GetList/Feedback/Order/Delivered/Plant/Reting";
         }
         // Do Huu Thuan
         public static class Accessory

@@ -174,6 +174,35 @@ namespace Service.Implements
             return plants;
         }
 
+        public async Task<IEnumerable<Plant>> GetDeliveredPlantsFeedbackRenting(int page, int size)
+        {
+            // Lấy các OrderDetails có liên quan từ các đơn hàng đã giao hàng thành công
+            var orderDetails = await _unitOfWork.OrderDetailRepository.GetAsync(
+                filter: od => od.Order.Status == 4 // Đã giao hàng thành công
+                              && (od.Plant.Feedbacks.All(f => f.IsFeedback != true)), // Chỉ lấy các cây chưa được đánh giá
+                orderBy: query => query.OrderByDescending(od => od.Order.CreationDate), // Sắp xếp mới nhất
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "Plant.Feedbacks,Order" // Bao gồm thông tin Plant và Order
+            );
+
+            // Lấy danh sách cây từ OrderDetails
+            var plants = orderDetails
+                .Select(od => od.Plant) // Chọn cây từ OrderDetails
+                .GroupBy(p => p.PlantId) // Nhóm cây theo PlantId
+                .Select(group => new
+                {
+                    Plant = group.First(), // Lấy cây đại diện trong nhóm
+                    TotalRating = group.Sum(g => g.Feedbacks.Sum(f => f.Rating ?? 0)), // Tổng số điểm đánh giá
+                    Count = group.Count() // Số lượng cây giống nhau
+                })
+                .OrderByDescending(p => p.TotalRating) // Sắp xếp theo tổng Rating giảm dần
+                .ThenByDescending(p => p.Count) // Nếu Rating bằng nhau, sắp xếp theo số lượng cây giảm dần
+                .Select(p => p.Plant) // Lấy danh sách cây
+                .Distinct(); // Loại bỏ trùng lặp
+
+            return plants;
+        }
 
     }
 }
