@@ -20,7 +20,7 @@ namespace Service.Interfaces
         Task UpdateFeedback(UpdateFeedbackDTO feedback);
         Task DeleteFeedback(DeleteFeedbackDTO feedback);
 
-        Task<IEnumerable<Feedback>> GetListFeedbackByPlant(int page, int size, int plantId);
+        Task<(IEnumerable<Feedback> Feedbacks, int TotalRating, int NumberOfFeedbacks)> GetListFeedbackByPlant(int page, int size, int plantId);
 
         Task<IEnumerable<Feedback>> GetFeedbackByDeliveredPlants(int page, int size, int userId, int TypeEcommerceId);
         Task<IEnumerable<Order>> GetDeliveredOrdersForFeedback(int userId, int page, int size);

@@ -33,10 +33,24 @@ namespace Service.Implements
 
         }
 
-        public async Task<IEnumerable<Feedback>> GetListFeedbackByPlant(int page, int size, int plantId)
+        public async Task<(IEnumerable<Feedback> Feedbacks, int TotalRating, int NumberOfFeedbacks)> GetListFeedbackByPlant(int page, int size, int plantId)
         {
-            return await _unitOfWork.FeedbackRepository.GetAsync(filter: c => c.PlantId == plantId && c.Status != 0, orderBy: query => query.OrderByDescending(c => c.FeedbackId), pageIndex: page, pageSize: size, includeProperties: "Plant,User,ImageFeedbacks");
+            var feedbacks = await _unitOfWork.FeedbackRepository.GetAsync(
+                filter: c => c.PlantId == plantId && c.Status != 0,
+                orderBy: query => query.OrderByDescending(c => c.FeedbackId),
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "Plant,User,ImageFeedbacks"
+            );
+
+            // Tính tổng Rating và số lượng người feedback
+            var totalRating = feedbacks.Sum(f => f.Rating ?? 0);  // Dùng ?? 0 để thay thế null thành 0
+            var numberOfFeedbacks = feedbacks.Count();
+
+            return (feedbacks, totalRating, numberOfFeedbacks);
         }
+
+
 
         public async Task<Feedback> GetFeedbackByID(int Id)
         {
