@@ -50,9 +50,9 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackByPlant)]
         public async Task<IActionResult> GetListFeedbackByPlant(int page, int size, int plantId)
         {
-            var _feedback = await _service.GetListFeedbackByPlant(page, size,plantId);
+            var _feedback = await _service.GetListFeedbackByPlant(page, size, plantId);
 
-            if (_feedback == null || !_feedback.Any())
+            if (_feedback.Feedbacks == null || !_feedback.Feedbacks.Any())
             {
                 return BadRequest(ModelState);
             }
@@ -61,9 +61,15 @@ namespace BackendEPPO.Controllers
             {
                 StatusCode = 201,
                 Message = Error.REQUESR_SUCCESFULL,
-                Data = _feedback
+                Data = new
+                {
+                    Feedbacks = _feedback.Feedbacks,
+                    TotalRating = _feedback.TotalRating,
+                    NumberOfFeedbacks = _feedback.NumberOfFeedbacks
+                }
             });
         }
+
 
 
         /// <summary>
