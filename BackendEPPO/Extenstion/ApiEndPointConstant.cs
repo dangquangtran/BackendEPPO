@@ -213,7 +213,7 @@ namespace BackendEPPO.Extenstion
             public const string GetListFeedbackOrderStatusDelivered = ApiEndpoint + "/GetList/Feedback/Order/Delivered";
 
             public const string GetListFeedbackOrderDelivered = ApiEndpoint + "/GetList/Feedback/Order/Delivered/Plant";
-            public const string GetListFeedbackOrderDeliveredReting = ApiEndpoint + "/GetList/Feedback/Order/Delivered/Plant/Reting";
+            public const string GetListFeedbackOrderDeliveredRenting = ApiEndpoint + "/GetList/Feedback/Order/Delivered/Plant/Renting";
         }
         // Do Huu Thuan
         public static class Accessory
