@@ -174,35 +174,62 @@ namespace Service.Implements
             return plants;
         }
 
-        public async Task<IEnumerable<Plant>> GetDeliveredPlantsFeedbackRenting(int page, int size)
+        public async Task<IEnumerable<object>> GetDeliveredPlantsFeedbackRenting(int page, int size)
         {
-            // Lấy các OrderDetails có liên quan từ các đơn hàng đã giao hàng thành công
+            // Lấy các OrderDetails từ các đơn hàng đã giao thành công và các cây đã được đánh giá
             var orderDetails = await _unitOfWork.OrderDetailRepository.GetAsync(
-                filter: od => od.Order.Status == 4 // Đã giao hàng thành công
-                              && (od.Plant.Feedbacks.All(f => f.IsFeedback != true)), // Chỉ lấy các cây chưa được đánh giá
+                filter: od => od.Order.Status == 4 || od.Order.Status == 5  // Đã giao hàng thành công
+                              && od.Plant.Feedbacks.Any(f => f.IsFeedback == true), // Chỉ lấy cây đã được đánh giá
                 orderBy: query => query.OrderByDescending(od => od.Order.CreationDate), // Sắp xếp mới nhất
                 pageIndex: page,
                 pageSize: size,
-                includeProperties: "Plant.Feedbacks,Order" // Bao gồm thông tin Plant và Order
+                includeProperties: "Plant.Feedbacks,Plant.Category,Plant.ImagePlants" // Bao gồm thông tin cây và đánh giá
             );
 
-            // Lấy danh sách cây từ OrderDetails
+            // Tính tổng số sao đánh giá và trả về danh sách cây
             var plants = orderDetails
-                .Select(od => od.Plant) // Chọn cây từ OrderDetails
-                .GroupBy(p => p.PlantId) // Nhóm cây theo PlantId
-                .Select(group => new
+                .GroupBy(od => od.Plant.PlantId) // Nhóm cây theo PlantId
+                .Select(group =>
                 {
-                    Plant = group.First(), // Lấy cây đại diện trong nhóm
-                    TotalRating = group.Sum(g => g.Feedbacks.Sum(f => f.Rating ?? 0)), // Tổng số điểm đánh giá
-                    Count = group.Count() // Số lượng cây giống nhau
+                    var plant = group.First().Plant;
+                    var totalRating = group.Sum(g => g.Plant.Feedbacks.Sum(f => f.Rating ?? 0)); // Tổng số điểm đánh giá
+                    var totalFeedbacks = group.Sum(g => g.Plant.Feedbacks.Count(f => f.IsFeedback == true)); // Tổng số đánh giá
+                    var totalAvg = totalFeedbacks > 0 ? (double)totalRating / totalFeedbacks : 0; // Tính điểm trung bình
+
+                    // Lấy thông tin người dùng dựa trên mã chủ cây
+                    var user = _unitOfWork.UserRepository.Get(u => u.UserId == int.Parse(plant.Code)).FirstOrDefault();
+
+                    return new
+                    {
+                        PlantId = plant.PlantId,
+                        PlantName = plant.PlantName,
+                        Title = plant.Title,
+                        Description = plant.Description,
+                        Length = plant.Length,
+                        Width = plant.Width,
+                        Height = plant.Height,
+                        Price = plant.Price,
+                        Discounts = plant.Discounts,
+                        FinalPrice = plant.Price - (plant.Price * (plant.Discounts / 100)), // Tính giá cuối cùng
+                        MainImage = plant.MainImage,
+                        CategoryId = plant.CategoryId,
+                        Code = plant.Code, // Mã chủ cây
+                        OwnerName = user?.FullName ?? "Không rõ", // Tên chủ cây (hoặc "Không rõ" nếu không tìm thấy)
+                        Status = plant.Status,
+                        CreationDate = plant.CreationDate,
+                        TotalRating = totalRating,
+                        TotalFeedbacks = totalFeedbacks,
+                        TotalAvg = totalAvg
+                    };
                 })
-                .OrderByDescending(p => p.TotalRating) // Sắp xếp theo tổng Rating giảm dần
-                .ThenByDescending(p => p.Count) // Nếu Rating bằng nhau, sắp xếp theo số lượng cây giảm dần
-                .Select(p => p.Plant) // Lấy danh sách cây
+                .OrderByDescending(p => p.TotalRating) // Sắp xếp theo tổng số điểm đánh giá giảm dần
+                .ThenByDescending(p => p.TotalFeedbacks) // Nếu điểm bằng nhau, sắp xếp theo số lượng đánh giá giảm dần
                 .Distinct(); // Loại bỏ trùng lặp
 
             return plants;
         }
+
+
 
     }
 }
