@@ -192,7 +192,7 @@ namespace BackendEPPO.Controllers
         /// Function for web: Count revenue the order by status.
         /// </summary>
         /// <returns>Function off manager: Count the order by status.</returns>
-        [Authorize(Roles = "admin, manager, staff")]
+        //[Authorize(Roles = "admin, manager, staff")]
         [HttpGet(ApiEndPointConstant.Count.CountOrderPriceRevenue_Endpoint)]
         public IActionResult CountOrderPriceCountOrderPrice(int status, int? month = null, int? year = null )
         {
@@ -232,7 +232,7 @@ namespace BackendEPPO.Controllers
         /// Function for web: Count revenue the order by status.
         /// </summary>
         /// <returns>Function off manager: Count the order by status.</returns>
-        [Authorize(Roles = "admin, manager, staff")]
+        //[Authorize(Roles = "admin, manager, staff")]
         [HttpGet(ApiEndPointConstant.Count.CountOrderPriceRevenue12M_Endpoint)]
         public async Task<IActionResult> CountOrderPriceForYear(int status, int year)
         {
@@ -262,7 +262,7 @@ namespace BackendEPPO.Controllers
         /// Function for web: Count revenue the order by status.
         /// </summary>
         /// <returns>Function off manager: Count the order by status.</returns>
-        [Authorize(Roles = "admin, manager, staff")]
+        //[Authorize(Roles = "admin, manager, staff")]
         [HttpGet(ApiEndPointConstant.Count.CountOrderTypeEcommerceId_Endpoint)]
         public async Task<IActionResult> CountOrderPriceByTypeEcom(int status, int year)
         {
@@ -326,7 +326,7 @@ namespace BackendEPPO.Controllers
         /// Function for mobile: Count account register by status.
         /// </summary>
         /// <returns> Function for web: Count account by status.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Count.CountShipByPlant)]
         public IActionResult CountShipByPlant(int plantId)
         {
@@ -365,7 +365,7 @@ namespace BackendEPPO.Controllers
         /// Function for web: Count the order by status.
         /// </summary>
         /// <returns>Function off manager: Count the order by status.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Count.CountOrderStatus_Endpoint)]
         public IActionResult CountOrderByStatus()
         {
@@ -405,7 +405,7 @@ namespace BackendEPPO.Controllers
         /// Function for web: Count the order by status.
         /// </summary>
         /// <returns>Function off manager: Count the order by status.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Count.CountOrderTotalRevenue_Endpoint)]
         public IActionResult CountOrderPrice()
         {
@@ -445,7 +445,7 @@ namespace BackendEPPO.Controllers
         /// Function for web: Count the order by status.
         /// </summary>
         /// <returns>Function off manager: Count the order by status.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Count.CountOrderTodayRevenue_Endpoint)]
         public IActionResult CountOrderPriceDateNow()
         {
@@ -485,7 +485,7 @@ namespace BackendEPPO.Controllers
         /// Function for web: Count the top customer by status.
         /// </summary>
         /// <returns>Function off manager: Count the order by status.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.User.GetListTopCustomers)]
         public async Task<IActionResult> GetTopCustomersByWalletBalance(int page, int size)
         {
