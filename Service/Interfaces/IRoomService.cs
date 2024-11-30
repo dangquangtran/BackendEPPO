@@ -25,5 +25,7 @@ namespace Service.Interfaces
         Task UpdateStatusRoom(UpdateStatusRoomDTO room, int roomId);
         Task<IEnumerable<Room>> GetListRoomsByStatus(int page, int size, int status);
         Task<IEnumerable<Room>> GetListRoomActive(int page, int size);
+
+        Task<IEnumerable<object>> GetListHistoryRooms(int userId, int page, int size);
     }
 }

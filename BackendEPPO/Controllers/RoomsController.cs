@@ -405,5 +405,30 @@ namespace BackendEPPO.Controllers
                 Data = room
             });
         }
+
+
+        /// <summary>
+        /// Get list history room in database with the page and the size.
+        /// </summary>
+        /// <returns>Get list all room in database.</returns>
+        [HttpGet(ApiEndPointConstant.Room.GetListHistoryRoom_Endpoint)]
+        public async Task<IActionResult> GetListHistoryRooms(int page, int size)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            var room = await _roomService.GetListHistoryRooms(userId,page, size);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound(new { Message = Error.NO_DATA_FOUND });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = room
+            });
+        }
     }
 }

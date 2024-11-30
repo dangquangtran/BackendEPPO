@@ -284,6 +284,15 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách đơn hàng đã giao thành công để tạo feedback.
+        /// </summary>
+        /// <param name="userId">ID người dùng.</param>
+        /// <param name="page">Trang hiện tại.</param>
+        /// <param name="size">Số lượng đơn hàng trên mỗi trang.</param>
+        /// <returns>Danh sách đơn hàng.</returns>
+        /// [Authorize(Roles = "admin, manager, staff, owner, customer")]
+
         [HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackOrderDelivered)]
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         public async Task<IActionResult> GetDeliveredPlantsForFeedback([FromQuery] int page, [FromQuery] int size)
@@ -323,6 +332,52 @@ namespace BackendEPPO.Controllers
                     Error = ex.Message
                 });
             }
+            /// <summary>
+            /// Lấy danh sách đơn hàng đã giao thành công để tạo feedback.
+            /// </summary>
+            /// <param name="page">Trang hiện tại.</param>
+            /// <param name="size">Số lượng đơn hàng trên mỗi trang.</param>
+            /// <returns>Danh sách đơn hàng.</returns>
+            /// [Authorize(Roles = "admin, manager, staff, owner, customer")]
+
+            //[HttpGet(ApiEndPointConstant.Feedback.GetListFeedbackOrderDelivered)]
+            //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+            //public async Task<IEnumerable<IActionResult>> GetDeliveredPlantsFeedbackReting(int page, int size)
+            //{
+            //    try
+            //    {
+            //        // Gọi service để lấy danh sách cây
+            //        var plants = await _service.GetDeliveredPlantsFeedbackReting(page, size);
+
+            //        // Kiểm tra nếu không có dữ liệu
+            //        if (plants == null || !plants.Any())
+            //        {
+            //            return NotFound(new
+            //            {
+            //                StatusCode = 404,
+            //                Message = "Không có cây nào phù hợp để tạo feedback."
+            //            });
+            //        }
+
+            //        // Trả về danh sách cây
+            //        return Ok(new
+            //        {
+            //            StatusCode = 200,
+            //            Message = "Lấy danh sách cây thành công.",
+            //            Data = plants
+            //        });
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Xử lý lỗi
+            //        return StatusCode(500, new
+            //        {
+            //            StatusCode = 500,
+            //            Message = "Đã xảy ra lỗi khi xử lý yêu cầu.",
+            //            Error = ex.Message
+            //        });
+                //}
+            //} 
         }
     }
 }
