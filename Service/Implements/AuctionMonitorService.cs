@@ -49,15 +49,26 @@ namespace Service.Implements
                             highestBid.IsPayment = true;
                             double deliveryFee = 0;
                             var userAddress = await _unitOfWork.AddressRepository
-                        .GetFirstOrDefaultAsync(addr => addr.UserId == highestBid.UserId && addr.Status == 2);
+                        .GetFirstOrDefaultAsync(addr => addr.UserId == highestBid.UserId);
 
-                            string deliveryAddress = userAddress?.Description ?? null;
+
+                            var userAddressList = await _unitOfWork.AddressRepository.GetAsync(addr => addr.UserId == highestBid.UserId && addr.Status == 1);
+
+                            var selectedAddress = userAddressList.OrderByDescending(addr => addr.CreationDate).FirstOrDefault();
+                            //var selectedAddress = userAddressList.ElementAtOrDefault(1);
+                            if (selectedAddress == null)
+                            {
+                                throw new InvalidOperationException("Người dùng chưa có cập nhật địa chỉ.");
+                            }
+                         
+                            string deliveryAddress = selectedAddress?.Description ?? "Chưa cập nhật";
+                         
                             var newOrder = new BusinessObjects.Models.Order
                             {
                                 UserId = highestBid.UserId,
                                 TotalPrice = highestBid.BidAmount,
                                 DeliveryFee = 0,
-                                DeliveryAddress = "Chưa cập nhật",
+                                DeliveryAddress = deliveryAddress,
                                 FinalPrice = highestBid.BidAmount + deliveryFee,
                                 TypeEcommerceId = 3,
                                 PaymentId = 2,
