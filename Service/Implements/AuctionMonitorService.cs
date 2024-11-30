@@ -54,7 +54,7 @@ namespace Service.Implements
 
                             var userAddressList = await _unitOfWork.AddressRepository.GetAsync(addr => addr.UserId == highestBid.UserId && addr.Status == 1);
 
-                            var selectedAddress = userAddressList.OrderByDescending(addr => addr.CreationDate).FirstOrDefault();
+                            var selectedAddress = userAddressList.OrderByDescending(addr => addr.ModificationDate).FirstOrDefault();
                             //var selectedAddress = userAddressList.ElementAtOrDefault(1);
                             if (selectedAddress == null)
                             {
