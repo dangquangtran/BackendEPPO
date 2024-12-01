@@ -302,6 +302,10 @@ namespace BackendEPPO.Extenstion
             public const string GetListConversation_Endpoint = ApiEndpoint + "/GetList/Conversations";
             public const string GetConversationByID = GetListConversation_Endpoint + "/Id";
         }
+        public static class Payment
+        {
+            public const string PaymentRecharge_Endpoint = ApiEndpoint + "/Payment/ZaloPay/Recharge";
+        }
 
     }
    
