@@ -95,6 +95,18 @@ namespace Service
 
             _unitOfWork.AddressRepository.Insert(addressEntity);
             await _unitOfWork.SaveAsync();
+
+
+            var conversationEntity = new Conversation
+            {
+                UserOne = 6,
+                UserTwo = customerEntity.UserId,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                Status = 1,
+            };
+
+            _unitOfWork.ConversationRepository.Insert(conversationEntity);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task CreateAccountByOwner(CreateAccountByOwnerDTO owner)
@@ -148,6 +160,16 @@ namespace Service
             _unitOfWork.AddressRepository.Insert(addressEntity);
             await _unitOfWork.SaveAsync();
 
+            var conversationEntity = new Conversation
+            {
+                UserOne = 6,
+                UserTwo = customerEntity.UserId,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                Status = 1,
+            };
+
+            _unitOfWork.ConversationRepository.Insert(conversationEntity);
+            await _unitOfWork.SaveAsync();
 
         }
 
@@ -177,6 +199,31 @@ namespace Service
             };
 
             _unitOfWork.UserRepository.Insert(customerEntity);
+            await _unitOfWork.SaveAsync();
+
+            var addressEntity = new Address
+            {
+                UserId = customerEntity.UserId,
+                Description = admin.AddressDescription,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                ModificationDate = DateTime.UtcNow.AddHours(7),
+                Status = 1,
+            };
+
+
+
+            _unitOfWork.AddressRepository.Insert(addressEntity);
+            await _unitOfWork.SaveAsync();
+
+            var conversationEntity = new Conversation
+            {
+                UserOne = 6,
+                UserTwo = customerEntity.UserId,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                Status = 1,
+            };
+
+            _unitOfWork.ConversationRepository.Insert(conversationEntity);
             await _unitOfWork.SaveAsync();
         }
 
