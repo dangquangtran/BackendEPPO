@@ -126,6 +126,18 @@ namespace Service.Implements
 
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
+
+        public IEnumerable<OrderVM> GetOrdersAuctionByUserId(int userId, int pageIndex, int pageSize, int status)
+        {
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 3,
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
         public async Task<double> CountOrderPrice(int status, int? month = null, int? year = null)
         {
             var query = _unitOfWork.OrderRepository.Get(

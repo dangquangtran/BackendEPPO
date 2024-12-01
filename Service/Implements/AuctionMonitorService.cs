@@ -73,7 +73,7 @@ namespace Service.Implements
                                 TypeEcommerceId = 3,
                                 PaymentId = 2,
                                 PaymentStatus = "Đã thanh toán",
-                                Status = 1, // Đơn hàng mới tạo, chưa xử lý
+                                Status = 2,
                                 CreationDate = DateTime.UtcNow.AddHours(7),
                             };
 

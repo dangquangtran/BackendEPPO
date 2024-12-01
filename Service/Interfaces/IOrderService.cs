@@ -38,5 +38,6 @@ namespace Service.Interfaces
         Task<int> CountOrderByStatus(int status);
         Task<double> CountOrderPrice(int status);
         Task<double> CountOrderPriceDateNow(int status);
+        IEnumerable<OrderVM> GetOrdersAuctionByUserId(int userId, int pageIndex, int pageSize, int status);
     }
 }

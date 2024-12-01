@@ -22,6 +22,7 @@ namespace BusinessObjects.Models
         public string TypeContract { get; set; }
         public string ContractUrl { get; set; }
         public string ContractFileName { get; set; }
+        public bool? IsAddendum { get; set; }
         public ulong? IsActive { get; set; }
         public int? Status { get; set; }
 
