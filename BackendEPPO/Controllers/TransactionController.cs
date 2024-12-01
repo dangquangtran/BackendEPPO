@@ -4,8 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Service.Interfaces;
-using ZaloPay.Helper.Crypto;
-using ZaloPay.Helper;
+
+using DTOs.ZaloPay.Config;
+using Microsoft.Extensions.Options;
+using BackendEPPO.ZaloPayHelper.Crypto;
+using BackendEPPO.ZaloPayHelper;
+using DTOs.Order;
+using BackendEPPO.Extenstion;
 
 namespace BackendEPPO.Controllers
 {
@@ -19,9 +24,12 @@ namespace BackendEPPO.Controllers
         private string callbackUrl = "https://sep490ne-001-site1.atempurl.com/api/v1/Transaction/Callback";
         private readonly string redirectUrl = "https://localhost:7097/UserPage/MyOrder/OrderDetail?id=";
         private ITransactionService _transactionService;
-        public TransactionController(ITransactionService transactionService)
+        private readonly ZaloPayConfig _zaloPayConfig;
+
+        public TransactionController(ITransactionService transactionService, IOptions<ZaloPayConfig> zaloPayConfig)
         {
             _transactionService = transactionService;
+            _zaloPayConfig = zaloPayConfig.Value;
         }
 
         [HttpGet]
@@ -36,26 +44,27 @@ namespace BackendEPPO.Controllers
             return Ok(_transactionService.GetTransactionById(id));
         }
 
-        //[HttpPost]
-        //public IActionResult CreateTransaction([FromBody] CreateTransactionDTO createTransaction)
-        //{
-        //    _transactionService.CreateTransaction(createTransaction);
-        //    return Ok("Đã tạo thành công");
-        //}
-      
-        [Authorize]
-        [HttpPost("CreateTransaction")]
-        public async Task<IActionResult> CreateTransaction([FromForm] CreateTransactionDTO createTransaction)
+        /// <summary>
+        /// Function for mobile: Recharge Number  payment zalo pay.
+        /// </summary>
+        /// <returns> Function for web: Count account by status.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPost(ApiEndPointConstant.Payment.PaymentRecharge_Endpoint)]
+        //[HttpPost("CreateTransaction")]
+        public async Task<IActionResult> CreateTransaction([FromForm] RechargeNumberDTO createTransaction)
         {
-            var userIdClaim = User.FindFirst("userId")?.Value;
+            var userIdClaim = User.FindFirst("userId")?.Value; 
             int userId = int.Parse(userIdClaim);
+
+            var walletIdClaim = User.FindFirst("walletId")?.Value;
+            int walletId = int.Parse(walletIdClaim);
+
             Random rnd = new Random();
             //var embed_data = new { redirecturl = redirectUrl + id };
                 var embed_data = new
                 {
-                    WalletId = createTransaction.WalletId,
+                    WalletId = walletId,
                     PaymentId = createTransaction.PaymentId,
-                    WithdrawNumber = createTransaction.WithdrawNumber,
                     RechargeNumber = createTransaction.RechargeNumber
                 };
             var items = new[] { new { } };
@@ -130,7 +139,7 @@ namespace BackendEPPO.Controllers
 
         [Authorize]
         [HttpPost("Withdraw")]
-        public IActionResult Withdraw([FromBody] CreateTransactionDTO createTransaction)
+        public IActionResult Withdraw([FromForm] CreateTransactionDTO createTransaction)
         {
             try
             {
@@ -155,5 +164,7 @@ namespace BackendEPPO.Controllers
         {
             return Ok(_transactionService.GetAllTransactionsInWallet(page, size, walletId));
         }
+
+
     }
 }

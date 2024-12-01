@@ -13,4 +13,14 @@ namespace DTOs.Transaction
         public double? WithdrawNumber { get; set; }
         public double? RechargeNumber { get; set; }
     }
+     public class RechargeNumberDTO
+    {
+        public int? PaymentId { get; set; }
+        public double? RechargeNumber { get; set; }
+    }
+    public class WithdrawNumberDTO
+    {
+        public int? PaymentId { get; set; }
+        public double? WithdrawNumber { get; set; }
+    }
 }
