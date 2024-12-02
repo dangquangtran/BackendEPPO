@@ -63,10 +63,8 @@ namespace BackendEPPO.Controllers
             //var embed_data = new { redirecturl = redirectUrl + id };
                 var embed_data = new
                 {
-                    WalletId = walletId,
                     PaymentId = createTransaction.PaymentId,
-                    RechargeNumber = createTransaction.RechargeNumber
-                    WithdrawNumber = createTransaction.WithdrawNumber,
+                    RechargeNumber = createTransaction.RechargeNumber,
                     UserId = userId
                 };
             var items = new[] { new { } };
