@@ -21,10 +21,26 @@ namespace Service.Implements
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Notification>> GetListNotification(int page, int size)
+        public async Task<Dictionary<DateTime, List<Notification>>> GetListNotification(int page, int size, int userId)
         {
-            return await _unitOfWork.NotificationRepository.GetAsync(pageIndex: page, pageSize: size);
+            var notifications = await _unitOfWork.NotificationRepository.GetAsync(
+                filter: x => x.UserId == userId,
+                pageIndex: page,
+                pageSize: size
+            );
+
+            if (notifications == null || !notifications.Any())
+                return null;
+
+            // Nhóm theo ngày
+            var groupedNotifications = notifications
+                .Where(n => n.CreatedDate.HasValue)
+                .GroupBy(n => n.CreatedDate.Value.Date) // Lấy theo ngày
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            return groupedNotifications;
         }
+
         public async Task<Notification> GetNotificationByID(int Id)
         {
             return await Task.FromResult(_unitOfWork.NotificationRepository.GetByID(Id));

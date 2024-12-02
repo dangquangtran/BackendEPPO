@@ -27,17 +27,48 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Notification.GetListNotification_Endpoint)]
         public async Task<IActionResult> GetListNotification(int page, int size)
         {
-            var noti = await _iNotificationService.GetListNotification(page, size);
+            //var userIdClaim = User.FindFirst("userId")?.Value;
+            //int userId = int.Parse(userIdClaim);
 
-            if (noti == null || !noti.Any())
+            //var noti = await _iNotificationService.GetListNotification(page, size, userId);
+
+            //if (noti == null || !noti.Any())
+            //{
+            //    return NotFound("No notification found.");
+            //}
+            //return Ok(new
+            //{
+            //    StatusCode = 200,
+            //    Message = "Request was successful",
+            //    Data = noti
+            //});
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (!int.TryParse(userIdClaim, out int userId))
             {
-                return NotFound("No notification found.");
+                return BadRequest("Invalid user ID.");
             }
+
+            var groupedNotifications = await _iNotificationService.GetListNotification(page, size, userId);
+
+            if (groupedNotifications == null || !groupedNotifications.Any())
+            {
+                return NotFound("No notifications found.");
+            }
+
             return Ok(new
             {
                 StatusCode = 200,
                 Message = "Request was successful",
-                Data = noti
+                Data = groupedNotifications.Select(g => new
+                {
+                    Date = g.Key.ToString("yyyy-MM-dd"),
+                    Notifications = g.Value.Select(n => new
+                    {
+                        n.Title,
+                        n.Description,
+                        n.CreatedDate
+                    })
+                })
             });
         }
 
