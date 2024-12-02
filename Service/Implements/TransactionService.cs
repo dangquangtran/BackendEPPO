@@ -64,7 +64,7 @@ namespace Service.Implements
             transaction.IsActive = true;
             transaction.WithdrawDate = DateTime.UtcNow.AddHours(7);
             transaction.Description = "Rút tiền từ ví";
-            transaction.RechargeNumber = null;
+            //transaction.RechargeNumber = null;
 
             _unitOfWork.TransactionRepository.Insert(transaction);
             var wallet = _unitOfWork.WalletRepository.GetByID(createTransaction.WalletId);
