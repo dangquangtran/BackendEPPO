@@ -66,6 +66,8 @@ namespace BackendEPPO.Controllers
                     WalletId = walletId,
                     PaymentId = createTransaction.PaymentId,
                     RechargeNumber = createTransaction.RechargeNumber
+                    WithdrawNumber = createTransaction.WithdrawNumber,
+                    UserId = userId
                 };
             var items = new[] { new { } };
             var param = new Dictionary<string, string>();
@@ -115,7 +117,8 @@ namespace BackendEPPO.Controllers
 
                 var embedDataStr = Convert.ToString(dataJson["embed_data"]);
                 var createTransaction = JsonConvert.DeserializeObject<CreateTransactionDTO>(embedDataStr);
-                _transactionService.CreateRechargeTransaction(createTransaction);
+                var userId = int.Parse(JsonConvert.DeserializeObject<dynamic>(embedDataStr).UserId.ToString());
+                _transactionService.CreateRechargeTransaction(createTransaction, userId);
                 result["return_code"] = 1;
                 result["return_message"] = "success";
 
@@ -141,6 +144,8 @@ namespace BackendEPPO.Controllers
         [HttpPost("Withdraw")]
         public IActionResult Withdraw([FromForm] CreateTransactionDTO createTransaction)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
             try
             {
                 // Kiểm tra số tiền rút phải lớn hơn 0
@@ -149,7 +154,7 @@ namespace BackendEPPO.Controllers
                     return BadRequest("Số tiền rút phải lớn hơn 0.");
                 }
 
-                _transactionService.CreateWithdrawTransaction(createTransaction);
+                _transactionService.CreateWithdrawTransaction(createTransaction, userId);
                 return Ok("Giao dịch rút tiền thành công.");
             }
             catch (Exception ex)

@@ -31,7 +31,7 @@ namespace Service.Implements
             return _unitOfWork.TransactionRepository.GetByID(id);
         }
 
-        public void CreateRechargeTransaction(CreateTransactionDTO createTransaction)
+        public void CreateRechargeTransaction(CreateTransactionDTO createTransaction, int userId)
         {
             
             Transaction transaction = _mapper.Map<Transaction>(createTransaction);
@@ -49,13 +49,24 @@ namespace Service.Implements
                 throw new Exception("Không tìm thấy ví của người dùng.");
             }
 
-            wallet.NumberBalance += createTransaction.RechargeNumber; 
-
+            wallet.NumberBalance += createTransaction.RechargeNumber;
+            var noti = new Notification
+            {
+                UserId = userId,
+                Title = "Giao dịch nạp tiền",
+                Description = "Giao dịch nạp tiền từ ví của bạn đã được thực hiện thành công.",
+                CreatedDate = DateTime.UtcNow.AddHours(7),
+                UpdatedDate = DateTime.UtcNow.AddHours(7),
+                IsRead = false,
+                IsNotifications = true,
+                Status = 1
+            };
+            _unitOfWork.NotificationRepository.Insert(noti);
             _unitOfWork.WalletRepository.Update(wallet);
             _unitOfWork.Save();
         }
 
-        public void CreateWithdrawTransaction(CreateTransactionDTO createTransaction)
+        public void CreateWithdrawTransaction(CreateTransactionDTO createTransaction, int userId)
         {
            
             Transaction transaction = _mapper.Map<Transaction>(createTransaction);
@@ -79,8 +90,18 @@ namespace Service.Implements
             }
 
             wallet.NumberBalance -= createTransaction.WithdrawNumber;
-
-
+            var noti = new Notification
+                {
+                    UserId = userId,
+                    Title = "Giao dịch rút tiền",
+                    Description = "Giao dịch rút tiền từ ví của bạn đã được thực hiện thành công.",
+                    CreatedDate = DateTime.UtcNow.AddHours(7),
+                    UpdatedDate = DateTime.UtcNow.AddHours(7),
+                    IsRead = false,
+                    IsNotifications = true,
+                    Status = 1
+            };
+            _unitOfWork.NotificationRepository.Insert(noti);
             _unitOfWork.WalletRepository.Update(wallet);
             _unitOfWork.Save();
         }
@@ -107,7 +128,12 @@ namespace Service.Implements
 
         public IEnumerable<TransactionVM> GetAllTransactionsInWallet(int page, int size, int walletId)
         {
-            var transactions = _unitOfWork.TransactionRepository.Get(pageIndex: page, pageSize: size, filter: c => c.Status != 0 && c.WalletId == walletId);
+            var transactions = _unitOfWork.TransactionRepository.Get(
+         pageIndex: page,
+         pageSize: size,
+         filter: c => c.Status != 0 && c.WalletId == walletId,
+         orderBy: q => q.OrderByDescending(c => c.CreationDate)
+            );
             return _mapper.Map<IEnumerable<TransactionVM>>(transactions);
         }
 
