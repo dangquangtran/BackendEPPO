@@ -8,7 +8,7 @@ namespace Service.Interfaces
 {
     public interface INotificationService
     {
-        Task<IEnumerable<Notification>> GetListNotification(int page, int size);
+        Task<Dictionary<DateTime, List<Notification>>> GetListNotification(int page, int size, int userId);
         Task<Notification> GetNotificationByID(int Id);
         Task UpdateNotification(UpdateNotificationDTO notification);
         Task CreateNotification(CreateNotificationDTO notification);
