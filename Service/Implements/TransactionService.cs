@@ -31,7 +31,7 @@ namespace Service.Implements
             return _unitOfWork.TransactionRepository.GetByID(id);
         }
 
-        public void CreateRechargeTransaction(CreateTransactionDTO createTransaction)
+        public void CreateRechargeTransaction(CreateTransactionDTO createTransaction, int userId)
         {
             
             Transaction transaction = _mapper.Map<Transaction>(createTransaction);
@@ -52,7 +52,7 @@ namespace Service.Implements
             wallet.NumberBalance += createTransaction.RechargeNumber;
             var noti = new Notification
             {
-                UserId = ,
+                UserId = userId,
                 Title = "Giao dịch nạp tiền",
                 Description = "Giao dịch nạp tiền từ ví của bạn đã được thực hiện thành công.",
                 CreatedDate = DateTime.UtcNow.AddHours(7),
