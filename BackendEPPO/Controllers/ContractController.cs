@@ -326,7 +326,34 @@ namespace BackendEPPO.Controllers
         }
 
 
-        
+        /// <summary>
+        /// Create Contracts Addendum with all role for Renting.
+        /// </summary>
+        /// <returns>Create Contracts with all role for Renting.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPost(ApiEndPointConstant.Contract.CreateContractAddendum)]
+        public async Task<IActionResult> CreateContractAddendum([FromBody] CreateContractDTO contract, int userId)
+        {
+            //var userIdClaim = User.FindFirst("userId")?.Value;
+            //int userId = int.Parse(userIdClaim);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            int contractId = await _contractService.CreateContractAddendum(contract, userId);
+            string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract, userId);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = Error.REQUESR_SUCCESFULL,
+                PdfUrl = contractPdfUrl,
+                ContractId = contractId,
+                Data = contract,
+            });
+        }
 
 
 

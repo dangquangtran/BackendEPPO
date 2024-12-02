@@ -112,6 +112,63 @@ namespace Service
             _unitOfWork.ContractRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
+        public async Task<int> CreateContractAddendum(CreateContractDTO contract, int userId)
+        {
+
+            var entity = new Contract
+            {
+                UserId = userId,
+                ContractNumber = contract.ContractNumber,
+                Description = contract.Description,
+                CreationContractDate = contract.CreationContractDate,
+                EndContractDate = contract.EndContractDate,
+                TotalAmount = contract.TotalAmount,
+                CreatedAt = DateTime.UtcNow.AddHours(7),
+                UpdatedAt = DateTime.UtcNow.AddHours(7),
+                TypeContract = "Phụ Lục Hợp Đồng",
+                ContractUrl = contract.ContractUrl,
+                IsAddendum = true,
+                IsActive = 1,
+                Status = 1,
+            };
+
+            _unitOfWork.ContractRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
+
+            if (contract.ContractDetails != null && contract.ContractDetails.Any())
+            {
+                foreach (var contractDetail in contract.ContractDetails)
+                {
+                    var contractDetailEntity = new ContractDetail
+                    {
+                        ContractId = entity.ContractId,  // Gán ContractId từ hợp đồng đã tạo
+                        PlantId = contractDetail.PlantId,
+                        Quantity = 1,
+                        TotalPrice = contractDetail.TotalPrice,
+                        IsActive = true,  // Gán giá trị mặc định IsActive nếu null
+                        Status = 1,  // Gán mặc định Status nếu null
+                    };
+
+                    // Lưu mỗi ContractDetail vào cơ sở dữ liệu
+                    _unitOfWork.ContractDetailRepository.Insert(contractDetailEntity);
+                }
+                await _unitOfWork.SaveAsync();
+            }
+
+
+
+            string pdfUrl = await GenerateContractPdfAsync(contract, userId);
+            entity.ContractUrl = pdfUrl;
+            entity.ContractFileName = fileName;
+
+            _unitOfWork.ContractRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+
+            return entity.ContractId;
+        }
+
+
+
         public async Task<int> CreateContract(CreateContractDTO contract , int userId)
         {
 
@@ -127,6 +184,7 @@ namespace Service
                 UpdatedAt = DateTime.UtcNow.AddHours(7),
                 TypeContract = "Thuê Cây",
                 ContractUrl = contract.ContractUrl,
+                IsAddendum = false,
                 IsActive = 1,
                 Status = 1,
             };
@@ -188,6 +246,7 @@ namespace Service
                 UpdatedAt = DateTime.UtcNow.AddHours(7),
                 TypeContract = "Hợp Tác Kinh Doanh",
                 ContractUrl = contract.ContractUrl,
+                IsAddendum = false,
                 IsActive = 0, // 1= false ; 2=true 
                 Status = 1,
             };

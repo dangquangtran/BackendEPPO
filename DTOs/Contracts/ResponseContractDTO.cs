@@ -20,6 +20,7 @@ namespace DTOs.Contracts
         public DateTime? UpdatedAt { get; set; }
         public string TypeContract { get; set; }
         public string ContractUrl { get; set; }
+        public bool? IsAddendum { get; set; }
         public ulong? IsActive { get; set; }
         public int? Status { get; set; }
 
