@@ -119,6 +119,7 @@ namespace Service.Implements
         {
             var orders = _unitOfWork.OrderRepository.Get(
                 filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 1,
+                orderBy: q => q.OrderByDescending(o => o.CreationDate),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "OrderDetails,OrderDetails.Plant" // Bao gồm thông tin chi tiết đơn hàng
@@ -131,6 +132,7 @@ namespace Service.Implements
         {
             var orders = _unitOfWork.OrderRepository.Get(
                 filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 3,
+                orderBy: q => q.OrderByDescending(o => o.CreationDate),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "OrderDetails,OrderDetails.Plant"
@@ -219,6 +221,7 @@ namespace Service.Implements
         {
             var orders = _unitOfWork.OrderRepository.Get(
                 filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 2,
+                orderBy: q => q.OrderByDescending(o => o.CreationDate),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "OrderDetails,OrderDetails.Plant" // Bao gồm thông tin chi tiết đơn hàng
