@@ -61,7 +61,7 @@ namespace BackendEPPO.Controllers
                 Message = "Request was successful",
                 Data = groupedNotifications.Select(g => new
                 {
-                    Date = g.Key.ToString("yyyy-MM-dd"),
+                    Date = g.Key,
                     Notifications = g.Value.Select(n => new
                     {
                         n.Title,
