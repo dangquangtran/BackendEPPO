@@ -45,6 +45,8 @@ namespace Service.Interfaces
 
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceIdManage(int pageIndex, int pageSize, int typeEcommerceId);
 
-        IEnumerable<PlantVM> ViewPlantsToAccept(int pageIndex, int pageSize, string code);
+        IEnumerable<PlantVM> ViewPlantsToAccept(int pageIndex, int pageSize,  string code, int typeEcommerceId);
+        IEnumerable<PlantVM> ViewPlantsWaitAccept(int pageIndex, int pageSize, string code, int typeEcommerceId);
+        IEnumerable<PlantVM> ViewPlantsUnAccept(int pageIndex, int pageSize, string code, int typeEcommerceId);
     }
 }

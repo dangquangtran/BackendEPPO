@@ -495,13 +495,33 @@ namespace Service
             // Trả về giá trị làm tròn
             return (int)Math.Ceiling(shippingCost);
         }
-        public IEnumerable<PlantVM> ViewPlantsToAccept(int pageIndex, int pageSize, string code)
+        public IEnumerable<PlantVM> ViewPlantsToAccept(int pageIndex, int pageSize, string code, int typeEcommerceId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
-                filter: x => x.Code == code,
+                filter: x => x.Code == code && x.TypeEcommerceId == typeEcommerceId && x.Status == 2 && x.IsActive == true,
+                includeProperties: "ImagePlants");
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+        public IEnumerable<PlantVM> ViewPlantsWaitAccept(int pageIndex, int pageSize, string code, int typeEcommerceId)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                orderBy: query => query.OrderByDescending(c => c.PlantId),
+                filter: x => x.Code == code && x.TypeEcommerceId == typeEcommerceId && x.Status == 1 && x.IsActive == false,
+                includeProperties: "ImagePlants");
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+        public IEnumerable<PlantVM> ViewPlantsUnAccept(int pageIndex, int pageSize, string code, int typeEcommerceId)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                orderBy: query => query.OrderByDescending(c => c.PlantId),
+                filter: x => x.Code == code && x.TypeEcommerceId == typeEcommerceId && x.Status == 0 && x.IsActive == false,
                 includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
