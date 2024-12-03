@@ -501,7 +501,7 @@ namespace Service
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
-                filter: x => x.Code == code && x.TypeEcommerceId == typeEcommerceId && x.Status == 2 && x.IsActive == true,
+                filter: x => x.Code == code && x.TypeEcommerceId == typeEcommerceId && x.Status == 2,
                 includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
