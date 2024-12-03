@@ -445,11 +445,11 @@ namespace BackendEPPO.Controllers
         /// </summary>
         /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
         [HttpGet(ApiEndPointConstant.Plants.ViewPlantsWaitAccept)]
-        public IActionResult ViewPlantsWaitAccept(int pageIndex, int pageSize, int typeEcommerceId)
+        public IActionResult ViewPlantsWaitAccept(int pageIndex, int pageSize)
         {
             var code = User.FindFirst("userId")?.Value;
 
-            var plants = _plantService.ViewPlantsWaitAccept(pageIndex, pageSize, code, typeEcommerceId);
+            var plants = _plantService.ViewPlantsWaitAccept(pageIndex, pageSize, code);
             if (plants == null || !plants.Any())
             {
                 return NotFound(new
@@ -472,11 +472,11 @@ namespace BackendEPPO.Controllers
         /// </summary>
         /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
         [HttpGet(ApiEndPointConstant.Plants.ViewPlantsUnAccept)]
-        public IActionResult ViewPlantsUnAccept(int pageIndex, int pageSize, int typeEcommerceId)
+        public IActionResult ViewPlantsUnAccept(int pageIndex, int pageSize)
         {
             var code = User.FindFirst("userId")?.Value;
 
-            var plants = _plantService.ViewPlantsUnAccept(pageIndex, pageSize, code, typeEcommerceId);
+            var plants = _plantService.ViewPlantsUnAccept(pageIndex, pageSize, code);
             if (plants == null || !plants.Any())
             {
                 return NotFound(new
