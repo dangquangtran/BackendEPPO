@@ -485,6 +485,15 @@ namespace Service
             // Trả về giá trị làm tròn
             return (int)Math.Ceiling(shippingCost);
         }
-
+        public IEnumerable<PlantVM> ViewPlantsToAccept(int pageIndex, int pageSize, string code)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                orderBy: query => query.OrderByDescending(c => c.PlantId),
+                filter: x => x.Code == code,
+                includeProperties: "ImagePlants");
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
     }
 }
