@@ -417,6 +417,7 @@ namespace BackendEPPO.Controllers
         /// Function for mobile: View All Plants To accept for manager.
         /// </summary>
         /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Plants.ViewPlantsToAccept)]
         public IActionResult ViewPlantsToAccept(int pageIndex, int pageSize, int typeEcommerceId)
         {
@@ -444,6 +445,7 @@ namespace BackendEPPO.Controllers
         /// Function for mobile: View All Plants Wait to accept for manager.
         /// </summary>
         /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Plants.ViewPlantsWaitAccept)]
         public IActionResult ViewPlantsWaitAccept(int pageIndex, int pageSize)
         {
@@ -471,6 +473,7 @@ namespace BackendEPPO.Controllers
         /// Function for mobile: View All Plants Un to accept for manager.
         /// </summary>
         /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Plants.ViewPlantsUnAccept)]
         public IActionResult ViewPlantsUnAccept(int pageIndex, int pageSize)
         {
