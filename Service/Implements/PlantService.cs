@@ -505,23 +505,23 @@ namespace Service
                 includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-        public IEnumerable<PlantVM> ViewPlantsWaitAccept(int pageIndex, int pageSize, string code, int typeEcommerceId)
+        public IEnumerable<PlantVM> ViewPlantsWaitAccept(int pageIndex, int pageSize, string code)
         {
             var plants = _unitOfWork.PlantRepository.Get(
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
-                filter: x => x.Code == code && x.TypeEcommerceId == typeEcommerceId && x.Status == 1 && x.IsActive == false,
+                filter: x => x.Code == code && x.Status == 1 && x.IsActive == false,
                 includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-        public IEnumerable<PlantVM> ViewPlantsUnAccept(int pageIndex, int pageSize, string code, int typeEcommerceId)
+        public IEnumerable<PlantVM> ViewPlantsUnAccept(int pageIndex, int pageSize, string code)
         {
             var plants = _unitOfWork.PlantRepository.Get(
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
-                filter: x => x.Code == code && x.TypeEcommerceId == typeEcommerceId && x.Status == 0 && x.IsActive == false,
+                filter: x => x.Code == code && x.Status == 0 && x.IsActive == false,
                 includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
