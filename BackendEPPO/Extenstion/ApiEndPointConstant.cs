@@ -262,6 +262,8 @@ namespace BackendEPPO.Extenstion
             public const string GetListPlantsByTypeEcommerceIdManager = GetListPlants_Endpoint + "/Filter/TypeEcommerceId";
 
             public const string ViewPlantsToAccept = ApiEndpoint + "/GetList/Plants/Accept";
+            public const string ViewPlantsWaitAccept = ApiEndpoint + "/GetList/Plants/WaitToAccept"; 
+            public const string ViewPlantsUnAccept = ApiEndpoint + "/GetList/Plants/UnAccept";
         }
         // Do Huu Thuan
         public static class Categories

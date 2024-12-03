@@ -418,11 +418,65 @@ namespace BackendEPPO.Controllers
         /// </summary>
         /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
         [HttpGet(ApiEndPointConstant.Plants.ViewPlantsToAccept)]
-        public IActionResult ViewPlantsToAccept(int pageIndex, int pageSize)
+        public IActionResult ViewPlantsToAccept(int pageIndex, int pageSize, int typeEcommerceId)
         {
             var code = User.FindFirst("userId")?.Value;
       
-            var plants = _plantService.ViewPlantsToAccept(pageIndex, pageSize, code);
+            var plants = _plantService.ViewPlantsToAccept(pageIndex, pageSize, code, typeEcommerceId);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+        }
+
+        /// <summary>
+        /// Function for mobile: View All Plants Wait to accept for manager.
+        /// </summary>
+        /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.ViewPlantsWaitAccept)]
+        public IActionResult ViewPlantsWaitAccept(int pageIndex, int pageSize, int typeEcommerceId)
+        {
+            var code = User.FindFirst("userId")?.Value;
+
+            var plants = _plantService.ViewPlantsWaitAccept(pageIndex, pageSize, code, typeEcommerceId);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+        }
+
+        /// <summary>
+        /// Function for mobile: View All Plants Un to accept for manager.
+        /// </summary>
+        /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.ViewPlantsUnAccept)]
+        public IActionResult ViewPlantsUnAccept(int pageIndex, int pageSize, int typeEcommerceId)
+        {
+            var code = User.FindFirst("userId")?.Value;
+
+            var plants = _plantService.ViewPlantsUnAccept(pageIndex, pageSize, code, typeEcommerceId);
             if (plants == null || !plants.Any())
             {
                 return NotFound(new
