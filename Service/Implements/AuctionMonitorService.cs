@@ -34,6 +34,23 @@ namespace Service.Implements
                         r.EndDate <= DateTime.UtcNow.AddHours(7) && r.Status == 2);
                     foreach (var room in rooms)
                     {
+                        var historyBids = await _unitOfWork.HistoryBidRepository.GetAsync(hb => hb.RoomId == room.RoomId && hb.IsActive == true);
+
+                        if (!historyBids.Any())
+                        {
+                            // Không có ai đấu giá => Chuyển trạng thái phòng thành 4
+                            room.Status = 4; // Trạng thái không có ai đấu giá
+                            var plant = await _unitOfWork.PlantRepository.GetByIDAsync(room.PlantId);
+
+                            if (plant != null)
+                            {
+                                plant.IsActive = true; // Đặt lại trạng thái Plant là active
+                                _unitOfWork.PlantRepository.Update(plant);
+                            }
+                            _unitOfWork.RoomRepository.Update(room);
+                            await _unitOfWork.SaveAsync();
+                            continue; // Bỏ qua việc tạo Order
+                        }
                         // Tìm thông tin đấu giá cao nhất trong phòng
                         var highestBid = await _unitOfWork.HistoryBidRepository
                             .GetQueryable(hb => hb.RoomId == room.RoomId && hb.IsActive == true, hb => hb.OrderByDescending(b => b.BidAmount))
