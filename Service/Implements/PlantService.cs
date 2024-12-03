@@ -322,13 +322,14 @@ namespace Service
             _unitOfWork.Save();
         }
 
-        public async Task CreatePlantByOwner(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles, int userId)
+        public async Task CreatePlantByOwner(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles, int userId, string code)
         {
             Plant plant = _mapper.Map<Plant>(createPlant);
             plant.CreationDate = DateTime.UtcNow.AddHours(7);
             plant.Status = 1;
             plant.IsActive = false;
             plant.ModificationBy = userId;
+            plant.Code = code;
             if (mainImageFile != null)
             {
                 using var mainImageStream = mainImageFile.OpenReadStream();
