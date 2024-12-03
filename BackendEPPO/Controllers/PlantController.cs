@@ -304,6 +304,10 @@ namespace BackendEPPO.Controllers
                 Data = createPlant
             });
         }
+        /// <summary>
+        /// Function for mobile: Get All Plants To Register.
+        /// </summary>
+        /// <returns> Function for web: Update plant for manager by role manager.</returns>
         [HttpGet(ApiEndPointConstant.Plants.GetListPlantsRegister_Endpoint)]
         public IActionResult GetAllPlantsToResgister(int pageIndex, int pageSize)
         {
@@ -406,6 +410,33 @@ namespace BackendEPPO.Controllers
                 StatusCode = 200,
                 Message = "Đã cập nhật cây thành công.",
                 Data = updatePlant
+            });
+        }
+
+        /// <summary>
+        /// Function for mobile: View All Plants To accept for manager.
+        /// </summary>
+        /// <returns> Function for mobile: View All Plants To accept for manager.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.ViewPlantsToAccept)]
+        public IActionResult ViewPlantsToAccept(int pageIndex, int pageSize)
+        {
+            var code = User.FindFirst("userId")?.Value;
+      
+            var plants = _plantService.ViewPlantsToAccept(pageIndex, pageSize, code);
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào.",
+                    Data = (object)null
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
             });
         }
 
