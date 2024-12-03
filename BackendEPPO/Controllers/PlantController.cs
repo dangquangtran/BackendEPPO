@@ -296,7 +296,7 @@ namespace BackendEPPO.Controllers
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
-            await _plantService.CreatePlantByOwner(createPlant, createPlant.MainImageFile, createPlant.ImageFiles , userId);
+            await _plantService.CreatePlantByOwner(createPlant, createPlant.MainImageFile, createPlant.ImageFiles , userId, userIdClaim);
             return Ok(new
             {
                 StatusCode = 201,
