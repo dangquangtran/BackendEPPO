@@ -213,18 +213,28 @@ namespace Service
 
         public async Task<IEnumerable<PlantVM>> SearchPlantKeyType(int pageIndex, int pageSize, int typeEcommerceId, string keyword)
         {
+            // Loại bỏ dấu khỏi từ khóa
+            string normalizedKeyword = RemoveVietnameseDiacritics(keyword.ToLower());
+
+            // Lấy danh sách cơ bản từ cơ sở dữ liệu
             var plants = await _unitOfWork.PlantRepository.GetAsync(
-                filter: c => (c.PlantName.Contains(keyword) || c.Title.Contains(keyword) || c.Description.Contains(keyword))
-                              && c.TypeEcommerceId == typeEcommerceId
-                              && c.Status == 2
-                              && c.IsActive == true,
-                pageIndex: pageIndex,
+                filter: c => c.TypeEcommerceId == typeEcommerceId
+                             && c.Status == 2
+                             && c.IsActive == true,
                 orderBy: query => query.OrderByDescending(c => c.PlantId),
-                pageSize: pageSize,
                 includeProperties: "ImagePlants"
             );
-            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+
+            // Áp dụng lọc loại bỏ dấu ở phía client
+            var filteredPlants = plants
+                .Where(c => RemoveVietnameseDiacritics(c.PlantName.ToLower()).Contains(normalizedKeyword)
+                         || RemoveVietnameseDiacritics(c.Title.ToLower()).Contains(normalizedKeyword))
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
+
+            return _mapper.Map<IEnumerable<PlantVM>>(filteredPlants);
         }
+
 
         public async Task<IEnumerable<PlantVM>> CheckPlantInCart(List<int> plantId)
         {
@@ -495,5 +505,36 @@ namespace Service
                 includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
+        public static string RemoveVietnameseDiacritics(string input)
+        {
+            string[] vietnameseSigns = new string[]
+            {
+        "aAeEoOuUiIdDyY",
+        "áàạảãâấầậẩẫăắằặẳẵ",
+        "ÁÀẠẢÃÂẤẦẬẨẪĂẮẰẶẲẴ",
+        "éèẹẻẽêếềệểễ",
+        "ÉÈẸẺẼÊẾỀỆỂỄ",
+        "óòọỏõôốồộổỗơớờợởỡ",
+        "ÓÒỌỎÕÔỐỒỘỔỖƠỚỜỢỞỠ",
+        "úùụủũưứừựửữ",
+        "ÚÙỤỦŨƯỨỪỰỬỮ",
+        "íìịỉĩ",
+        "ÍÌỊỈĨ",
+        "đ",
+        "Đ",
+        "ýỳỵỷỹ",
+        "ÝỲỴỶỸ"
+            };
+
+            for (int i = 1; i < vietnameseSigns.Length; i++)
+            {
+                for (int j = 0; j < vietnameseSigns[i].Length; j++)
+                {
+                    input = input.Replace(vietnameseSigns[i][j], vietnameseSigns[0][i - 1]);
+                }
+            }
+            return input;
+        }
+
     }
 }
