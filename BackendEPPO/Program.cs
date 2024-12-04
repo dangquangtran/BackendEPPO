@@ -49,6 +49,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IImageFeedbackService, ImageFeedbackService>();
 builder.Services.AddScoped<IUserRoomService, UserRoomService>();
 builder.Services.AddScoped<IHistoryBidService, HistoryBidService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddHttpClient<DistanceController>();
 
 

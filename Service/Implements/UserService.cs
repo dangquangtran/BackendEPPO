@@ -543,7 +543,10 @@ namespace Service
             _unitOfWork.UserRepository.Update(userEntity);
             await _unitOfWork.SaveAsync();
         }
-
+        public User GetUserID(Guid id)
+        {
+            return _unitOfWork.UserRepository.GetByID(id);
+        }
 
         public User GetUserByID(int id)
         {

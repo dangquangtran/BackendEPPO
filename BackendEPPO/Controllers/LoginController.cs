@@ -27,11 +27,12 @@ namespace BackendEPPO.Controllers
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
-
-        public LoginController(IUserService userService, IConfiguration configuration)
+        private readonly ITokenService _tokenService;
+        public LoginController(IUserService userService, IConfiguration configuration, ITokenService tokenService)
         {
             _userService = userService;
             _configuration = configuration;
+            _tokenService = tokenService;
         }
 
         /// <summary>
@@ -91,30 +92,14 @@ namespace BackendEPPO.Controllers
                 audience: _configuration["Jwt:Audience"],
                 claims: new[]
                 {
-                    //new Claim("userId", userInfo.UserId.ToString()),
-                    //new Claim("roleId", userInfo.RoleId.ToString()),
-                    //new Claim("roleName", userInfo.Role.NameRole),
-                    //new Claim("fullName", userInfo.FullName.ToString()),
-                    //new Claim("email", userInfo.Email.ToString()),
-                    //new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),
-                    //new Claim("gender", userInfo.Gender.ToString()),
-                    //new Claim("rankId", userInfo.RankId.ToString()),
-                    //new Claim("walletId", userInfo.WalletId.ToString()),
-                    //new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
-                    //new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),
-                    //new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
-
                     new Claim("userId", userInfo.UserId.ToString()),
                     new Claim("roleId", userInfo.RoleId.ToString()),
-
                     new Claim("roleName", userInfo.Role.NameRole),
                     new Claim("fullName", userInfo.FullName.ToString()),
                     new Claim("email", userInfo.Email.ToString()),
                     new Claim("phoneNumber", userInfo.PhoneNumber.ToString()),
-                    //new Claim("gender", userInfo.Gender.ToString()),
                     new Claim("walletId", userInfo.WalletId.ToString()),
-                    //new Claim("identificationCard", userInfo.IdentificationCard.ToString()),
-                    //new Claim("dateOfBirth", userInfo.DateOfBirth.ToString()),
+                   
                     new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
 
                 }, 
@@ -167,5 +152,52 @@ namespace BackendEPPO.Controllers
             var tokenString = GenerateJSONWebToken(user);
             return Ok(new { token = tokenString });
         }
+
+        /// <summary>
+        /// Login with Face Id   
+        /// </summary>
+        /// <returns>Login with user name password or login with account email. </returns>
+        [AllowAnonymous]
+        [HttpPost(ApiEndPointConstant.User.Login_FaceID_Endpoint)]
+        public IActionResult LoginWithFaceId([FromForm] FaceIdLoginRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Token))
+            {
+                return BadRequest(new { message = "Missing Face ID token" });
+            }
+
+            // Validate token và lấy userId từ token
+            var userId = _tokenService.ValidateToken(request.Token);
+            if (!userId.HasValue)
+            {
+                return Unauthorized(new { message = "Invalid Face ID token" });
+            }
+
+            // Lấy thông tin người dùng từ DB
+            var user = _userService.GetUserByID(userId.Value); // Đảm bảo `GetUserByID` chấp nhận `int`
+            if (user == null)
+            {
+                return Unauthorized(new { message = "User not found" });
+            }
+
+            // Tạo JWT mới
+            var tokenString = GenerateJSONWebToken(user);
+
+            // Trả về thông tin đăng nhập thành công
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Đăng nhập bằng Face ID thành công",
+                Token = tokenString,
+                RoleName = user.Role.NameRole,
+                FullName = user.FullName,
+                IsSigned = user.IsSigned
+            });
+        }
+        public class FaceIdLoginRequest
+        {
+            public string Token { get; set; }
+        }
+
     }
 }
