@@ -33,5 +33,7 @@ namespace Service.Interfaces
         Task<int> CountAccountCustomer(int status);
 
         Task<IEnumerable<User>> GetTopCustomersByWalletBalance(int page, int size);
+
+        User GetUserID(Guid id);
     }
 }

@@ -52,6 +52,7 @@ namespace BackendEPPO.Extenstion
             public const string SearchAccountByKey_Endpoint = ApiEndpoint + "/GetList/SearchAccountByKey";
 
             public const string Login_Endpoint = ApiEndpoint + "/Users/Login";
+            public const string Login_FaceID_Endpoint = ApiEndpoint + "/Users/Login/FaceID";
             public const string GetUserByID = GetUserEndpoint + "/Id";
 
             public const string GetInformationByID = GetUserEndpoint + "/Information/UserID";
