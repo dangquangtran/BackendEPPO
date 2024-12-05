@@ -159,7 +159,7 @@ namespace BackendEPPO.Controllers
         /// <returns>Login with user name password or login with account email. </returns>
         [AllowAnonymous]
         [HttpPost(ApiEndPointConstant.User.Login_FaceID_Endpoint)]
-        public IActionResult LoginWithFaceId([FromForm] FaceIdLoginRequest request)
+        public IActionResult LoginWithFaceId([FromBody] FaceIdLoginRequest request)
         {
             if (string.IsNullOrEmpty(request.Token))
             {
@@ -168,22 +168,24 @@ namespace BackendEPPO.Controllers
 
             // Validate token và lấy userId từ token
             var userId = _tokenService.ValidateToken(request.Token);
-            if (!userId.HasValue)
+            if (string.IsNullOrEmpty(userId)) // Kiểm tra nếu token không hợp lệ
             {
                 return Unauthorized(new { message = "Invalid Face ID token" });
             }
 
-            // Lấy thông tin người dùng từ DB
-            var user = _userService.GetUserByID(userId.Value); // Đảm bảo `GetUserByID` chấp nhận `int`
+
+      
+            int user_Id = int.Parse(userId);
+
+            // Lấy thông tin người dùng từ DB bằng userId (có thể cần chuyển đổi userId thành Guid nếu cần)
+            var user = _userService.GetUserByID((user_Id));
             if (user == null)
             {
                 return Unauthorized(new { message = "User not found" });
             }
 
-            // Tạo JWT mới
+            // Tạo JWT mới cho người dùng
             var tokenString = GenerateJSONWebToken(user);
-
-            // Trả về thông tin đăng nhập thành công
             return Ok(new
             {
                 StatusCode = 200,
@@ -194,6 +196,7 @@ namespace BackendEPPO.Controllers
                 IsSigned = user.IsSigned
             });
         }
+
         public class FaceIdLoginRequest
         {
             public string Token { get; set; }
