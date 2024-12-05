@@ -8,6 +8,6 @@ namespace Service.Interfaces
 {
     public interface ITokenService
     {
-        int? ValidateToken(string faceIdToken);
+        string ValidateToken(string faceIdToken);
     }
 }

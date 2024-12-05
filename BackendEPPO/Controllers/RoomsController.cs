@@ -43,7 +43,7 @@ namespace BackendEPPO.Controllers
             });
         }
         /// <summary>
-        /// Get list all room in database with the page and the size.
+        /// Function for web: Get list all room in database with the page and the size.
         /// </summary>
         /// <returns>Get list all room in database.</returns>
         [HttpGet(ApiEndPointConstant.Room.GetListRoomManager_Endpoint)]
