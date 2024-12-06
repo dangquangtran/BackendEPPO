@@ -30,20 +30,23 @@ namespace Service.Implements
         {
             // Lấy danh sách phòng đã mở với trạng thái "active" và thời gian kết thúc >= hiện tại
             var rooms = await _unitOfWork.RoomRepository.GetAsync(
-                filter: c => c.Status == 2 && c.EndDate >= DateTime.Now,
+                filter: c => c.Status == 2 && c.EndDate >= DateTime.Now && c.UserRooms.Any(ur => ur.UserId == userId && ur.IsActive == true),
                 orderBy: query => query.OrderByDescending(c => c.RoomId),
                 pageIndex: page,
                 pageSize: size,
                 includeProperties: "Plant,Plant.ImagePlants,UserRooms"
             );
-
+            foreach (var room in rooms)
+            {
+                room.UserRooms = room.UserRooms
+                    .Where(ur => ur.UserId == userId)
+                    .ToList();
+            }
             // Lấy danh sách UserRoom mà người dùng đã tham gia và có trạng thái là "active"
             var userRooms = await _unitOfWork.UserRoomRepository.GetAsync(
                 filter: ur => ur.UserId == userId && ur.IsActive == true, // Kiểm tra phòng đã đăng ký và trạng thái hoạt động
                 includeProperties: "Room"
             );
-
-
             return rooms;
         }
 
