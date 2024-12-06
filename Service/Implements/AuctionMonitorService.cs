@@ -106,6 +106,13 @@ namespace Service.Implements
                                 PaymentStatus = "Đã thanh toán",
                                 Status = 2,
                                 CreationDate = DateTime.UtcNow.AddHours(7),
+                                OrderDetails = new List<OrderDetail>
+                                {
+                                    new OrderDetail
+                                    {
+                                        PlantId = plant.PlantId
+                                    }
+                                }
                             };
 
                             var user = _unitOfWork.UserRepository.GetByID(highestBid.UserId);
