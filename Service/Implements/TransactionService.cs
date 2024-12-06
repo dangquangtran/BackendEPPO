@@ -41,7 +41,7 @@ namespace Service.Implements
             transaction.Description = "Nạp tiền vào ví";
             transaction.RechargeDate = DateTime.UtcNow.AddHours(7);
             transaction.WithdrawNumber = null;
-
+            transaction.PaymentId = 2;
             _unitOfWork.TransactionRepository.Insert(transaction);
             var wallet = _unitOfWork.WalletRepository.GetByID(createTransaction.WalletId);
             if (wallet == null)

@@ -35,13 +35,12 @@ namespace Service.Implements
                     foreach (var room in rooms)
                     {
                         var historyBids = await _unitOfWork.HistoryBidRepository.GetAsync(hb => hb.RoomId == room.RoomId && hb.IsActive == true);
+                        var plant = await _unitOfWork.PlantRepository.GetByIDAsync(room.PlantId);
 
                         if (!historyBids.Any())
                         {
                             // Không có ai đấu giá => Chuyển trạng thái phòng thành 4
                             room.Status = 4; // Trạng thái không có ai đấu giá
-                            var plant = await _unitOfWork.PlantRepository.GetByIDAsync(room.PlantId);
-
                             if (plant != null)
                             {
                                 plant.IsActive = true; // Đặt lại trạng thái Plant là active
@@ -64,7 +63,22 @@ namespace Service.Implements
 
                             // Đánh dấu rằng người thắng chưa thanh toán
                             highestBid.IsPayment = true;
-                            double deliveryFee = 0;
+                            double length = plant.Length ?? 0;
+                            double width = plant.Width ?? 0;
+                            double height = plant.Height ?? 0;
+
+                            // Tính thể tích
+                            double volume = length + (width + height) + (width + height);
+
+
+                            // Giá cơ bản cho mỗi đơn vị thể tích (10.000 VNĐ/m³)
+                            const double baseRate = 1000;
+
+                            // Tính phí vận chuyển
+                            double shippingCost = (volume * baseRate) + (volume * 0.10) + 50000;
+
+                            // Trả về giá trị làm tròn
+                            var deliveryFee =(int)Math.Ceiling(shippingCost);
                             var userAddress = await _unitOfWork.AddressRepository
                         .GetFirstOrDefaultAsync(addr => addr.UserId == highestBid.UserId);
 
@@ -84,10 +98,10 @@ namespace Service.Implements
                             {
                                 UserId = highestBid.UserId,
                                 TotalPrice = highestBid.BidAmount,
-                                DeliveryFee = 0,
+                                DeliveryFee = deliveryFee,
                                 DeliveryAddress = deliveryAddress,
                                 FinalPrice = highestBid.BidAmount + deliveryFee,
-                                TypeEcommerceId = 3,
+                                TypeEcommerceId = 1,
                                 PaymentId = 2,
                                 PaymentStatus = "Đã thanh toán",
                                 Status = 2,
