@@ -26,7 +26,7 @@ namespace Service.Implements
         public async Task<IEnumerable<UserRoom>> GetListUserRoomWithUserToken(int page, int size, int userId)
         {
             return await _unitOfWork.UserRoomRepository.GetAsync(
-                filter: c => c.UserId == userId && c.Status == 2  && c.IsActive != false,
+                filter: c => c.UserId == userId && c.Status !=0  && c.IsActive != false && c.Room.Status == 2,
                 pageIndex: page, pageSize: size,
                 orderBy: query => query.OrderByDescending(c => c.UserRoomId),
                 includeProperties: "Room.Plant");
@@ -182,6 +182,7 @@ namespace Service.Implements
 
             return timeSpan.TotalSeconds > 0 ? (int)timeSpan.TotalSeconds : 0;
         }
+
 
     }
 }
