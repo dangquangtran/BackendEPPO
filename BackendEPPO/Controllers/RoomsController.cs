@@ -29,7 +29,10 @@ namespace BackendEPPO.Controllers
         [HttpGet(ApiEndPointConstant.Room.GetListRoom_Endpoint)]
         public async Task<IActionResult> GetListRooms(int page, int size)
         {
-            var room = await _roomService.GetListRooms(page, size);
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            var room = await _roomService.GetListRooms(page, size, userId);
 
             if (room == null || !room.Any())
             {
