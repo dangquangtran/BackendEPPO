@@ -110,6 +110,9 @@ namespace Service.Implements
                 WalletId = userWallet.WalletId,
                 WithdrawNumber = room.RegistrationFee,
                 WithdrawDate = DateTime.UtcNow.AddHours(7),
+                Status = 1,
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                IsActive = true,
                 Description = "Đăng ký phòng đấu giá"
             };
             _unitOfWork.TransactionRepository.Insert(transaction);
