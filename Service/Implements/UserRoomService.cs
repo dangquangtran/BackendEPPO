@@ -177,7 +177,7 @@ namespace Service.Implements
             {
                 throw new ArgumentNullException("Room or registration dates are invalid.");
             }
-            var timeSpan = room.EndDate.Value - room.ActiveDate.Value;
+            var timeSpan = room.EndDate.Value - DateTime.UtcNow.AddHours(7);
 
 
             return timeSpan.TotalSeconds > 0 ? (int)timeSpan.TotalSeconds : 0;
