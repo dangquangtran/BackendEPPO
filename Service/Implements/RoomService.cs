@@ -258,8 +258,7 @@ namespace Service.Implements
         {
             // Lấy danh sách phòng đã kết thúc đấu giá và có trạng thái thành công
             var rooms = await _unitOfWork.RoomRepository.GetAsync(
-                filter: r => r.Status == 3 && // Giả sử Status = 3 là phòng đấu giá thành công
-                            r.EndDate.HasValue && r.EndDate.Value <= DateTime.UtcNow, // Đảm bảo phòng đã kết thúc
+                filter: r => r.Status == 3 ,
                 orderBy: query => query.OrderByDescending(r => r.EndDate), // Sắp xếp theo ngày kết thúc
                 pageIndex: page,
                 pageSize: size,
