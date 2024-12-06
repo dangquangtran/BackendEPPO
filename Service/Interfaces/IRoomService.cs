@@ -9,7 +9,7 @@ namespace Service.Interfaces
 {
     public interface IRoomService
     {
-        Task<IEnumerable<Room>> GetListRooms(int page, int size);
+        Task<IEnumerable<Room>> GetListRooms(int page, int size, int userId);
         Task<IEnumerable<Room>> GetListRoomsManager(int page, int size);
         Task<IEnumerable<Room>> GetListRoomsByDateNow(int page, int size);
         Task<Room> GetRoomByID(int Id);

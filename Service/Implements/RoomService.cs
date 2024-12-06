@@ -24,8 +24,29 @@ namespace Service.Implements
         {
             return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status == 2
                 && c.EndDate >= DateTime.Now,
-                orderBy: query => query.OrderByDescending(c => c.RoomId), pageIndex: page, pageSize: size, includeProperties: "Plant,Plant.ImagePlants");
+                orderBy: query => query.OrderByDescending(c => c.RoomId), pageIndex: page, pageSize: size, includeProperties: "Plant,Plant.ImagePlants,UserRooms");
         }
+        public async Task<IEnumerable<Room>> GetListRooms(int page, int size, int userId)
+        {
+            // Lấy danh sách phòng đã mở với trạng thái "active" và thời gian kết thúc >= hiện tại
+            var rooms = await _unitOfWork.RoomRepository.GetAsync(
+                filter: c => c.Status == 2 && c.EndDate >= DateTime.Now,
+                orderBy: query => query.OrderByDescending(c => c.RoomId),
+                pageIndex: page,
+                pageSize: size,
+                includeProperties: "Plant,Plant.ImagePlants,UserRooms"
+            );
+
+            // Lấy danh sách UserRoom mà người dùng đã tham gia và có trạng thái là "active"
+            var userRooms = await _unitOfWork.UserRoomRepository.GetAsync(
+                filter: ur => ur.UserId == userId && ur.IsActive == true, // Kiểm tra phòng đã đăng ký và trạng thái hoạt động
+                includeProperties: "Room"
+            );
+
+
+            return rooms;
+        }
+
         public async Task<IEnumerable<Room>> GetListRoomsManager(int page, int size)
         {
             return await _unitOfWork.RoomRepository.GetAsync(filter: c => c.Status != 0,
