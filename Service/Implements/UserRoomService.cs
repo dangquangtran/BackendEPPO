@@ -65,6 +65,22 @@ namespace Service.Implements
         }
         public async Task CreateUserRoom(CreateUserRoomDTO userRoom, int userID)
         {
+            // Lấy thông tin phòng đấu giá từ database
+            var room = await _unitOfWork.RoomRepository.GetFirstOrDefaultAsync(
+                filter: r => r.RoomId == userRoom.RoomId && r.Status == 2
+            );
+
+            if (room == null)
+            {
+                throw new Exception("Phòng đấu giá không tồn tại hoặc đã bị hủy.");
+            }    
+            // Kiểm tra thời gian đăng ký
+            //if (DateTime.UtcNow < room.RegistrationOpenDate || DateTime.UtcNow > room.RegistrationEndDate)
+            //{
+            //    throw new Exception("Thời gian đăng ký đã hết hạn.");
+            //}
+
+
             // Kiểm tra xem người dùng đã đăng ký phòng này chưa
             var existingRegistration = await _unitOfWork.UserRoomRepository.GetFirstOrDefaultAsync(
                 filter: ur => ur.RoomId == userRoom.RoomId && ur.UserId == userID && ur.Status == 1
@@ -74,6 +90,30 @@ namespace Service.Implements
                 throw new Exception("Người chơi đã đăng kí tham gia phòng này rồi! .");
             }
 
+
+            // Kiểm tra phí đăng ký
+            var userWallet = await _unitOfWork.WalletRepository.GetFirstOrDefaultAsync(
+                filter: w => w.Users.Any(u => u.UserId == userID)
+            );
+
+            if (userWallet == null || userWallet.NumberBalance < room.RegistrationFee)
+            {
+                throw new Exception("Số dư ví không đủ để đăng ký phòng.");
+            }
+
+            // Trừ phí đăng ký từ ví người dùng
+            userWallet.NumberBalance -= room.RegistrationFee;
+
+            // Lưu giao dịch giảm số dư ví
+            var transaction = new Transaction
+            {
+                WalletId = userWallet.WalletId,
+                WithdrawNumber = room.RegistrationFee,
+                WithdrawDate = DateTime.UtcNow.AddHours(7),
+                Description = "Đăng ký phòng đấu giá"
+            };
+            _unitOfWork.TransactionRepository.Insert(transaction);
+
             var entity = new UserRoom
             {
                 RoomId = userRoom.RoomId,
@@ -82,6 +122,7 @@ namespace Service.Implements
                 IsActive = true,
                 Status = 1,
             };
+
             _unitOfWork.UserRoomRepository.Insert(entity);
             await _unitOfWork.SaveAsync();
         }

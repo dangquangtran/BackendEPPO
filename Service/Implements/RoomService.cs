@@ -122,7 +122,7 @@ namespace Service.Implements
             {
                 throw new Exception("Type Ecommerce not is Auction.");
             }
-
+            plant.IsActive = false;
 
             var entity = new Room
             {
@@ -237,15 +237,15 @@ namespace Service.Implements
         {
             // Lấy danh sách phòng đã kết thúc đấu giá và có trạng thái thành công
             var rooms = await _unitOfWork.RoomRepository.GetAsync(
-                filter: r => r.Status == 3 && // Giả sử Status = 1 là phòng đấu giá thành công
-                             r.EndDate.HasValue && r.EndDate.Value <= DateTime.UtcNow, // Đảm bảo phòng đã kết thúc
+                filter: r => r.Status == 3 && // Giả sử Status = 3 là phòng đấu giá thành công
+                            r.EndDate.HasValue && r.EndDate.Value <= DateTime.UtcNow, // Đảm bảo phòng đã kết thúc
                 orderBy: query => query.OrderByDescending(r => r.EndDate), // Sắp xếp theo ngày kết thúc
                 pageIndex: page,
                 pageSize: size,
                 includeProperties: "UserRooms,HistoryBids,Plant,Plant.ImagePlants" // Bao gồm các thông tin cần thiết
             );
 
-            // Duyệt qua danh sách phòng để kiểm tra người dùng có thắng hay không
+            // Duyệt qua danh sách phòng để kiểm tra người dùng có tham gia phòng và có thắng hay không
             var historyRooms = rooms.Select(room => new
             {
                 RoomId = room.RoomId,
@@ -255,18 +255,23 @@ namespace Service.Implements
                 PriceStep = room.PriceStep,
                 EndDate = room.EndDate,
                 UserBidAmount = room.HistoryBids
-                .Where(bid => bid.UserId == userId) // Lọc giá trị mà người dùng đã nhập
-                .OrderByDescending(bid => bid.BidTime) // Sắp xếp theo thời gian nhập gần nhất
-                .FirstOrDefault()?.BidAmount, // Lấy giá trị đấu giá gần nhất của người dùng
+                    .Where(bid => bid.UserId == userId) // Lọc giá trị mà người dùng đã nhập
+                    .OrderByDescending(bid => bid.BidTime) // Sắp xếp theo thời gian nhập gần nhất
+                    .FirstOrDefault()?.BidAmount, // Lấy giá trị đấu giá gần nhất của người dùng
                 UserIsWinner = room.HistoryBids.Any(bid => bid.IsWinner == true && bid.UserId == userId), // Kiểm tra nếu người dùng thắng
                 WinningBid = room.HistoryBids
                     .Where(bid => bid.IsWinner == true)
                     .OrderByDescending(bid => bid.BidTime)
-                    .FirstOrDefault()?.BidAmount // Lấy giá trị đấu giá thắng cuộc
+                    .FirstOrDefault()?.BidAmount, // Lấy giá trị đấu giá thắng cuộc
+                UserHasRegistered = room.UserRooms.Any(ur => ur.UserId == userId && ur.Status == 1) // Kiểm tra nếu người dùng đã đăng ký tham gia phòng này
             });
 
-            return historyRooms;
+            // Lọc ra chỉ những phòng đấu giá mà người dùng đã đăng ký tham gia
+            var filteredHistoryRooms = historyRooms.Where(room => room.UserHasRegistered);
+
+            return filteredHistoryRooms;
         }
+
 
     }
 }
