@@ -32,6 +32,11 @@ namespace DTOs.Plant
         public int? Status { get; set; }
 
     }
+    public class CancelPlant
+    {
+        //public int? Status { get; set; }
+
+    }
     public class UpdatePlantIdDTO
     {
         public string? PlantName { get; set; }

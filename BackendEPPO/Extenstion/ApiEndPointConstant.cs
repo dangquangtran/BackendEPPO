@@ -255,7 +255,8 @@ namespace BackendEPPO.Extenstion
             public const string GetListPlantsOwnerByTypeEcommerceId = GetListPlants_Endpoint + "/PlantOwner/ByTypeEcommerceId";
 
 
-            public const string UpdateStatusPlant = ApiEndpoint + "/GetList/Plants/Update/ByStatus";
+            public const string UpdateStatusPlant = ApiEndpoint + "/GetList/Plants/Update/ByStatus"; 
+            public const string CancelContractPlant = ApiEndpoint + "/GetList/Plants/CancelContractPlant"; 
 
             public const string UpdatePlantIdByManager = ApiEndpoint + "/GetList/Plants/Update/PlantId";
 
