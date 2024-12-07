@@ -497,5 +497,29 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Function for mobile: Cancel contract plant.
+        /// </summary>
+        /// <returns> Cancel contract plant.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPut(ApiEndPointConstant.Plants.CancelContractPlant)]
+        public async Task<IActionResult> CancelContractPlant([FromBody] CancelPlant plant, int plantId)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _plantService.CancelContractPlant(plant, plantId);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = plant
+            });
+        }
+
     }
 }

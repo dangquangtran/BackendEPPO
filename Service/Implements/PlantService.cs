@@ -379,6 +379,26 @@ namespace Service
             _unitOfWork.PlantRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
+        public async Task CancelContractPlant(CancelPlant updatePlant, int plantId)
+        {
+            var entity = await Task.FromResult(_unitOfWork.PlantRepository.GetByID(plantId));
+
+
+            if (entity == null)
+            {
+                throw new Exception($"Plant with ID {plantId} not found.");
+            }
+            if (entity.IsActive == false)
+            {
+                throw new Exception($"Plant with ID {plantId} is already inactive and cannot be cancel.");
+            }
+            entity.ModificationDate = DateTime.Now;
+            entity.Status = 0;
+            //entity.IsActive = false;
+
+            _unitOfWork.PlantRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+        }
 
         public async Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant, int plantId, IFormFile mainImageFile)
         {
@@ -558,4 +578,5 @@ namespace Service
         }
 
     }
+
 }
