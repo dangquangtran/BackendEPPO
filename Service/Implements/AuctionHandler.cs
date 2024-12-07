@@ -123,7 +123,21 @@ using Microsoft.EntityFrameworkCore;
                             await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                             continue;
                         }
+                        if (DateTime.UtcNow.AddHours(7) < room.ActiveDate)
+                        {
+                            var response = "Chưa đến thời gian đấu giá, không được đặt cược.";
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
+                            await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                            continue;
+                        }
 
+                        if (DateTime.UtcNow.AddHours(7) > room.EndDate)
+                        {
+                            var response = "Đã hết thời gian đấu giá, không được đặt cược.";
+                            var responseBytes = Encoding.UTF8.GetBytes(response);
+                            await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                            continue;
+                        }
                         // Lấy giá cây của phòng đấu giá từ đối tượng Plant
                         double plantPrice = 0;
                         if (room.Plant != null)
