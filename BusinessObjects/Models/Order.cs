@@ -15,7 +15,6 @@ namespace BusinessObjects.Models
         public int OrderId { get; set; }
         public int? UserId { get; set; }
         public double? TotalPrice { get; set; }
-        public double? Deposit { get; set; }
         public double? DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }
         public string DeliveryDescription { get; set; }
