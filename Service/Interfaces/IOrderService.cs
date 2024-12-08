@@ -39,5 +39,6 @@ namespace Service.Interfaces
         Task<double> CountOrderPrice(int status);
         Task<double> CountOrderPriceDateNow(int status);
         IEnumerable<OrderVM> GetOrdersAuctionByUserId(int userId, int pageIndex, int pageSize, int status);
+        void UpdateOrderDetailDeposit(int orderDetailId, string depositDescription, double? depositReturnCustomer, double? depositReturnOwner);
     }
 }
