@@ -379,26 +379,35 @@ namespace Service
             _unitOfWork.PlantRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
-        public async Task CancelContractPlant(int plantId)
+        public async Task<bool> CancelContractPlant(int plantId)
         {
-            var entity = await Task.FromResult(_unitOfWork.PlantRepository.GetByID(plantId));
+            // Fetch the plant entity
+            var entity = await _unitOfWork.PlantRepository.GetByIDAsync(plantId);
 
-
+            // Handle case where plant does not exist
             if (entity == null)
             {
-                throw new Exception($"Plant with ID {plantId} not found.");
+                throw new KeyNotFoundException($"Plant with ID {plantId} not found.");
             }
+
+            // Check if the plant is already inactive
             if (entity.IsActive == false)
             {
-                throw new Exception($"Plant with ID {plantId} is already inactive and cannot be cancel.");
+                return false; // Indicate that no action was performed
             }
+
+            // Update plant status
             entity.ModificationDate = DateTime.Now;
             entity.Status = 0;
-            //entity.IsActive = false;
+            entity.IsActive = false;
 
+            // Persist changes
             _unitOfWork.PlantRepository.Update(entity);
             await _unitOfWork.SaveAsync();
+
+            return true; // Indicate success
         }
+
 
         public async Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant, int plantId, IFormFile mainImageFile)
         {
