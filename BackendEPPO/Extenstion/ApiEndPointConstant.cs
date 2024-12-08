@@ -95,6 +95,8 @@ namespace BackendEPPO.Extenstion
             public const string GetListRoomManager_Endpoint = ApiEndpoint + "/GetList/AllRoom";
 
             public const string GetListHistoryRoom_Endpoint = ApiEndpoint + "/GetList/History/AllRoom";
+
+            public const string GetRoomIDByCustomer = GetListRoom_Endpoint + "/Check/Id";
         }
         // Do Huu Thuan
         public static class UserRoom
