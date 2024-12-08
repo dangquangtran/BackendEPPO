@@ -12,7 +12,8 @@ namespace Service.Interfaces
         Task<IEnumerable<Room>> GetListRooms(int page, int size, int userId);
         Task<IEnumerable<Room>> GetListRoomsManager(int page, int size);
         Task<IEnumerable<Room>> GetListRoomsByDateNow(int page, int size);
-        Task<Room> GetRoomByID(int Id);
+        Task<Room> GetRoomByID(int Id); 
+        Task<Room> GetRoomIDByCustomer(int roomId, int userId); 
         Task UpdateRoom(UpdateRoomDTO room);
         Task CreateRoom(CreateRoomDTO room);
         Task DeleteRoom(DeleteRoomDTO room , int roomId);

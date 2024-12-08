@@ -136,7 +136,30 @@ namespace Service.Implements
             );
         }
 
+        public async Task<Room> GetRoomIDByCustomer(int roomId , int userId)
+        {
+            var room = await Task.FromResult(_unitOfWork.RoomRepository.GetByID(roomId, includeProperties: "Plant,Plant.ImagePlants,UserRooms"));
 
+            // Kiểm tra nếu phòng không tồn tại
+            if (room == null)
+            {
+                return null; // Trả về null nếu phòng không tồn tại
+            }
+
+            // Kiểm tra xem phòng có danh sách UserRooms hay không
+            if (room.UserRooms == null || !room.UserRooms.Any(ur => ur.UserId == userId))
+            {
+                // Nếu người dùng chưa tham gia phòng, gán UserRooms là danh sách chứa một phần tử null
+                room.UserRooms = new List<UserRoom> { null };
+            }
+            else
+            {
+                // Nếu người dùng đã tham gia, chỉ lấy danh sách UserRoom của người dùng này
+                room.UserRooms = room.UserRooms.Where(ur => ur.UserId == userId).ToList();
+            }
+
+            return room;
+        }
 
 
         public async Task<Room> GetRoomByID(int Id)
