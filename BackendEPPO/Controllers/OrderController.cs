@@ -625,5 +625,33 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+        [Authorize]
+        [HttpPut("UpdateOrderDetailDeposit")]
+        public IActionResult UpdateOrderDetailDeposit(int orderDetailId, string depositDescription, double? depositReturnCustomer, double? depositReturnOwner)
+        {
+            try
+            {
+
+                // Gọi service để cập nhật thông tin tiền cọc
+                _orderService.UpdateOrderDetailDeposit(orderDetailId, depositDescription, depositReturnCustomer, depositReturnOwner);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Cập nhật cọc đơn hàng thuê thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
     }
 }

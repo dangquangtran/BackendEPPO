@@ -732,7 +732,37 @@ namespace Service.Implements
 
             return totalRevenue;
         }
+        public void UpdateOrderDetailDeposit(int orderDetailId, string depositDescription, double? depositReturnCustomer, double? depositReturnOwner)
+        {
+            // Lấy OrderDetail từ cơ sở dữ liệu
+            var orderDetail = _unitOfWork.OrderDetailRepository.GetByID(orderDetailId);
 
+            if (orderDetail == null)
+            {
+                throw new Exception($"Không tìm thấy OrderDetail với ID {orderDetailId}.");
+            }
+
+            // Cập nhật các trường nếu có giá trị
+            if (!string.IsNullOrWhiteSpace(depositDescription))
+            {
+                orderDetail.DepositDescription = depositDescription;
+            }
+
+            if (depositReturnCustomer.HasValue)
+            {
+                orderDetail.DepositReturnCustomer = depositReturnCustomer.Value;
+            }
+
+            if (depositReturnOwner.HasValue)
+            {
+                orderDetail.DepositReturnOwner = depositReturnOwner.Value;
+            }
+
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            _unitOfWork.OrderDetailRepository.Update(orderDetail);
+            _unitOfWork.Save();
+        }
     }
 
 }

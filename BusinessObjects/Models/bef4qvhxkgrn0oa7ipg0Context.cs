@@ -460,6 +460,8 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
 
+                entity.Property(e => e.DepositDescription).HasMaxLength(255);
+
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
                 entity.Property(e => e.PlantId).HasColumnName("PlantID");
