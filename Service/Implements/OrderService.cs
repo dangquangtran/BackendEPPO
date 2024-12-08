@@ -670,7 +670,7 @@ namespace Service.Implements
             // Lấy danh sách đơn hàng liên quan đến các Plant có Code trùng với userId
             var orders = _unitOfWork.OrderRepository.Get(
                 filter: o => o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
-                orderBy: o => o.OrderBy(order => order.Status),
+                orderBy: o => o.OrderBy(order => order.Status).ThenByDescending(order => order.CreationDate),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
                 includeProperties: "OrderDetails,OrderDetails.Plant"
