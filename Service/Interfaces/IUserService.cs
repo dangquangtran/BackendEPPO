@@ -35,5 +35,7 @@ namespace Service.Interfaces
         Task<IEnumerable<User>> GetTopCustomersByWalletBalance(int page, int size);
 
         User GetUserID(Guid id);
+
+        Task ForgotPassword(string email);
     }
 }

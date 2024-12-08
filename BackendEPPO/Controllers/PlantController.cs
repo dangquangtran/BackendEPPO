@@ -503,7 +503,7 @@ namespace BackendEPPO.Controllers
         /// <returns> Cancel contract plant.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.Plants.CancelContractPlant)]
-        public async Task<IActionResult> CancelContractPlant([FromBody] CancelPlant plant, int plantId)
+        public async Task<IActionResult> CancelContractPlant(int plantId)
         {
 
             if (!ModelState.IsValid)
@@ -511,13 +511,12 @@ namespace BackendEPPO.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _plantService.CancelContractPlant(plant, plantId);
+            await _plantService.CancelContractPlant(plantId);
 
             return Ok(new
             {
                 StatusCode = 201,
                 Message = Error.REQUESR_SUCCESFULL,
-                Data = plant
             });
         }
 

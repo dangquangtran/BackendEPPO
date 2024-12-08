@@ -156,4 +156,9 @@ namespace DTOs.User
         public int UserId { get; set; }
         public string? RankLevel { get; set; }
     }
+
+    public class ForgerPassword
+    {
+        public string Password { get; set; }
+    }
 }

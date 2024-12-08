@@ -379,7 +379,7 @@ namespace Service
             _unitOfWork.PlantRepository.Update(entity);
             await _unitOfWork.SaveAsync();
         }
-        public async Task CancelContractPlant(CancelPlant updatePlant, int plantId)
+        public async Task CancelContractPlant(int plantId)
         {
             var entity = await Task.FromResult(_unitOfWork.PlantRepository.GetByID(plantId));
 
