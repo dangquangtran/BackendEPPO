@@ -505,19 +505,49 @@ namespace BackendEPPO.Controllers
         [HttpPut(ApiEndPointConstant.Plants.CancelContractPlant)]
         public async Task<IActionResult> CancelContractPlant(int plantId)
         {
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState); // Return validation errors
             }
 
-            await _plantService.CancelContractPlant(plantId);
-
-            return Ok(new
+            try
             {
-                StatusCode = 201,
-                Message = Error.REQUESR_SUCCESFULL,
-            });
+                var result = await _plantService.CancelContractPlant(plantId);
+
+                if (!result)
+                {
+                    return Conflict(new
+                    {
+                        StatusCode = 409,
+                        Message = $"Plant with ID {plantId} is already inactive."
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Plant contract canceled successfully."
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (optional)
+                Console.WriteLine($"Error: {ex.Message}");
+
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Message = "An unexpected error occurred. Please try again later."
+                });
+            }
         }
 
     }

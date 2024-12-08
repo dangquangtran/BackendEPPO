@@ -49,6 +49,6 @@ namespace Service.Interfaces
         IEnumerable<PlantVM> ViewPlantsWaitAccept(int pageIndex, int pageSize, string code);
         IEnumerable<PlantVM> ViewPlantsUnAccept(int pageIndex, int pageSize, string code);
 
-        Task CancelContractPlant(int plantId);
+        Task<bool> CancelContractPlant(int plantId);
     }
 }
