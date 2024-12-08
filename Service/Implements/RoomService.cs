@@ -29,25 +29,35 @@ namespace Service.Implements
         public async Task<IEnumerable<Room>> GetListRooms(int page, int size, int userId)
         {
             // Lấy danh sách phòng đã mở với trạng thái "active" và thời gian kết thúc >= hiện tại
-            var rooms = await _unitOfWork.RoomRepository.GetAsync(
-                filter: c => c.Status == 2 && c.EndDate >= DateTime.Now && c.UserRooms.Any(ur => ur.UserId == userId && ur.IsActive == true),
-                orderBy: query => query.OrderByDescending(c => c.RoomId),
-                pageIndex: page,
-                pageSize: size,
-                includeProperties: "Plant,Plant.ImagePlants,UserRooms"
-            );
-            foreach (var room in rooms)
-            {
-                room.UserRooms = room.UserRooms
-                    .Where(ur => ur.UserId == userId)
-                    .ToList();
-            }
-            // Lấy danh sách UserRoom mà người dùng đã tham gia và có trạng thái là "active"
+            var allRooms = await _unitOfWork.RoomRepository.GetAsync(
+           filter: r => r.Status == 2 && r.EndDate >= DateTime.Now,
+           orderBy: query => query.OrderByDescending(r => r.RoomId),
+           pageIndex: page,
+           pageSize: size,
+           includeProperties: "Plant,Plant.ImagePlants,UserRooms"
+         );
+
             var userRooms = await _unitOfWork.UserRoomRepository.GetAsync(
-                filter: ur => ur.UserId == userId && ur.IsActive == true, // Kiểm tra phòng đã đăng ký và trạng thái hoạt động
+                filter: ur => ur.UserId == userId && ur.IsActive == true, // Kiểm tra phòng đã đăng ký
                 includeProperties: "Room"
             );
-            return rooms;
+            foreach (var room in allRooms)
+            {
+                // Nếu phòng này người dùng đã đăng ký
+                var userRoom = room.UserRooms.FirstOrDefault(ur => ur.UserId == userId);
+                if (userRoom != null)
+                {
+                    // Giữ lại thông tin `UserRoom` của người dùng hiện tại
+                    room.UserRooms = room.UserRooms.Where(ur => ur.UserId == userId).ToList();
+                }
+                else
+                {
+                    // Nếu người dùng chưa đăng ký, xóa thông tin `UserRooms` để tránh nhầm lẫn
+                    room.UserRooms = new List<UserRoom>();
+                }
+            }
+            // Lấy danh sách UserRoom mà người dùng đã tham gia và có trạng thái là "active"
+            return allRooms;
         }
 
         public async Task<IEnumerable<Room>> GetListRoomsManager(int page, int size)
