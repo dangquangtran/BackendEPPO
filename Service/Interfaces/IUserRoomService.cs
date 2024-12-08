@@ -22,5 +22,8 @@ namespace Service.Interfaces
         Task<int> CountUserRegister(int roomId);
         Task<int> CountTimeActive(int roomId);
         Task<int> CountTimeClose(int roomId);
+
+        //Task<bool> ForgotPassword(string email);
+       
     }
 }

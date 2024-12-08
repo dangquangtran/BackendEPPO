@@ -403,6 +403,25 @@ namespace BackendEPPO.Controllers
                 return StatusCode(500, new { Message = Error.ERROR_500, error = ex.Message });
             }
         }
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        {
+            try
+            {
+                await _userService.ForgotPassword(email);
+                return Ok("A new password has been sent to your email.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
     }
 }

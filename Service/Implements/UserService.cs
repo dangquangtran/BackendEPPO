@@ -4,6 +4,7 @@ using DTOs.Contracts;
 using DTOs.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using Mysqlx.Crud;
 using Repository.Interfaces;
 using Service.Implements;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Service
 {
@@ -597,6 +599,67 @@ namespace Service
                 includeProperties: "Wallet" // Bao gồm ví trong truy vấn
             );
         }
+        public async Task ForgotPassword(string email)
+        {
+            // Lấy thông tin người dùng từ cơ sở dữ liệu
+            var userEntity = await _unitOfWork.UserRepository.GetFirstOrDefaultAsync(u => u.Email == email);
+            if (userEntity == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
 
+            // Tạo mật khẩu mới
+            var newPassword = GenerateRandomPassword(); // Generate new plain text password
+
+            // Cập nhật mật khẩu mới cho người dùng
+            userEntity.Password = newPassword;
+            _unitOfWork.UserRepository.Update(userEntity); // Cập nhật thông tin người dùng vào cơ sở dữ liệu
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _unitOfWork.SaveAsync();
+
+            // Gửi email thông báo với mật khẩu mới
+            await SendEmailAsync(userEntity.Email, "New Password", $"Your new password is: {newPassword}");
+        }
+
+        private string GenerateRandomPassword()
+        {
+            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(validChars, 8)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        public async Task SendEmailAsync(string email, string subject, string message, List<IFormFile> attachments = null)
+        {
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("REALITY", "inreality0102@gmail.com")); // Thay "REALITY" và "inreality0102@gmail.com" bằng thông tin người gửi thực tế
+            emailMessage.To.Add(new MailboxAddress("", email));
+            emailMessage.Subject = subject;
+
+            var builder = new BodyBuilder();
+            builder.HtmlBody = message;
+
+            if (attachments != null && attachments.Count > 0)
+            {
+                foreach (var attachment in attachments)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await attachment.CopyToAsync(memoryStream);
+                        builder.Attachments.Add(attachment.FileName, memoryStream.ToArray(), ContentType.Parse(attachment.ContentType));
+                    }
+                }
+            }
+
+            emailMessage.Body = builder.ToMessageBody();
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                await client.ConnectAsync("smtp.gmail.com", 587, false); // SMTP server của Gmail
+                await client.AuthenticateAsync("inreality0102@gmail.com", "piyb xaeo jats mmip"); // Địa chỉ email và mật khẩu của bạn
+                await client.SendAsync(emailMessage);
+                await client.DisconnectAsync(true);
+            }
+        }
     }
 }
