@@ -53,7 +53,7 @@ namespace Service.Implements
                 else
                 {
                     // Nếu người dùng chưa đăng ký, xóa thông tin `UserRooms` để tránh nhầm lẫn
-                    room.UserRooms = new List<UserRoom>();
+                    room.UserRooms = null;
                 }
             }
             // Lấy danh sách UserRoom mà người dùng đã tham gia và có trạng thái là "active"
