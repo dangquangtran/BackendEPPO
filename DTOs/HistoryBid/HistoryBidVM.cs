@@ -1,4 +1,5 @@
-﻿using DTOs.User;
+﻿using DTOs.Room;
+using DTOs.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,6 @@ namespace DTOs.HistoryBid
         public bool? IsPayment { get; set; }
         public int? Status { get; set; }
         public virtual ResponseUserDTO User { get; set; }
+        public virtual RoomDTO Room { get; set; }
     }
 }
