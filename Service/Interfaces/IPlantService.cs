@@ -52,5 +52,8 @@ namespace Service.Interfaces
         Task<bool> CancelContractPlant(int plantId);
 
         Task<IEnumerable<PlantVM>> SearchPlantIDKey(int pageIndex, int pageSize, int typeEcommerceId, string keyword);
+
+        Task<int> CalculateDeposit(int plantId);
+
     }
 }
