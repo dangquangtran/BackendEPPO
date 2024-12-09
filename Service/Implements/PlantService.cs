@@ -227,8 +227,7 @@ namespace Service
 
             // Áp dụng lọc loại bỏ dấu ở phía client
             var filteredPlants = plants
-                .Where(c => RemoveVietnameseDiacritics(c.PlantName.ToLower()).Contains(normalizedKeyword)
-                         || RemoveVietnameseDiacritics(c.Title.ToLower()).Contains(normalizedKeyword))
+                .Where(c => RemoveVietnameseDiacritics(c.PlantName.ToLower()).Contains(normalizedKeyword))
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize);
 
