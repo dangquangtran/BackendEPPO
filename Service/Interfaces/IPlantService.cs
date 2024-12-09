@@ -44,5 +44,7 @@ namespace Service.Interfaces
         Task<int> CountShipByPlant(int plantId);
 
         IEnumerable<PlantVM> GetListPlantsByTypeEcommerceIdManage(int pageIndex, int pageSize, int typeEcommerceId);
+
+        Task<int> CalculateDeposit(int plantId);
     }
 }

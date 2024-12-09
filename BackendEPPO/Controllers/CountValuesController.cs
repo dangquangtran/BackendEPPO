@@ -520,6 +520,41 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet("CalculateDeposit")]
+        public IActionResult CalculateDeposit(int plantId)
+        {
+            try
+            {
+                int result = _plantService.CalculateDeposit(plantId).Result;
+
+                if (result == 0)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.BAD_REQUEST,
+                        Data = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = Error.NO_DATA_FOUND + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
 
     }
 }

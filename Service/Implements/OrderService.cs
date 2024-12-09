@@ -118,7 +118,7 @@ namespace Service.Implements
         public IEnumerable<OrderVM> GetOrdersBuyByUserId(int userId, int pageIndex, int pageSize, int status)
         {
             var orders = _unitOfWork.OrderRepository.Get(
-                filter: o => o.UserId == userId && o.Status == status && o.TypeEcommerceId == 1,
+                filter: o => o.UserId == userId && o.Status == status && (o.TypeEcommerceId == 1 || o.TypeEcommerceId == 3),
                 orderBy: q => q.OrderByDescending(o => o.CreationDate),
                 pageIndex: pageIndex,
                 pageSize: pageSize,
@@ -310,7 +310,7 @@ namespace Service.Implements
             order.TypeEcommerceId = 2;
             order.Status = 1;
             order.UserId = userId;
-
+            double totalDeposit = 0;
             foreach (var orderDetail in order.OrderDetails)
             {
                 if (orderDetail.RentalStartDate.HasValue && orderDetail.NumberMonth.HasValue)
@@ -319,13 +319,7 @@ namespace Service.Implements
                     var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId);
                     if (plant != null)
                     {
-                        //// Tính giá cho OrderDetail = giá cây * số tháng
-                        //double priceForOrderDetail = plant.Price * orderDetail.NumberMonth.Value;
-
-                        //// Cộng dồn giá này vào tổng giá của Order
-                        //order.TotalPrice += priceForOrderDetail;
-
-                        // Tính RentalEndDate
+                        totalDeposit += orderDetail.Deposit ?? 0;
                         orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value).AddDays(3);
                     }
                     else
@@ -335,7 +329,7 @@ namespace Service.Implements
                 }
             }
 
-            order.FinalPrice = order.TotalPrice + order.DeliveryFee;
+            order.FinalPrice = order.TotalPrice + order.DeliveryFee+totalDeposit;
             order.PaymentStatus = "Chưa thanh toán";
 
             // Cập nhật trạng thái của cây và lưu đơn hàng
@@ -512,7 +506,8 @@ namespace Service.Implements
             order.DeliveryDescription = "Chuẩn bị hàng thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
-           
+            order.Status = 3;
+
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
@@ -604,7 +599,7 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
-        public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId)
+        public async Task UpdateReturnOrder(int orderId,string deliveryDescription, List<IFormFile> imageFiles, int userId , string depositDescription)
         {
             // Lấy thông tin đơn hàng
             var order = _unitOfWork.OrderRepository.GetByID(orderId);
@@ -614,10 +609,13 @@ namespace Service.Implements
             }
 
             // Cập nhật mô tả giao hàng
-            order.DeliveryDescription = "Thu hồi thành công";
+            order.DeliveryDescription = deliveryDescription;
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
-
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                orderDetail.DepositDescription = depositDescription;
+            }
             // Kiểm tra danh sách file
             if (imageFiles != null && imageFiles.Count > 0)
             {
@@ -641,7 +639,7 @@ namespace Service.Implements
                     order.ImageReturnOrders.Add(imageReturnOrder);
                 }
             }
-
+           
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
