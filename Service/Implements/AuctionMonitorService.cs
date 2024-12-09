@@ -101,7 +101,7 @@ namespace Service.Implements
                                 DeliveryFee = deliveryFee,
                                 DeliveryAddress = deliveryAddress,
                                 FinalPrice = highestBid.BidAmount + deliveryFee,
-                                TypeEcommerceId = 1,
+                                TypeEcommerceId = 3,
                                 PaymentId = 2,
                                 PaymentStatus = "Đã thanh toán",
                                 Status = 2,

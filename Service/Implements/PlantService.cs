@@ -586,6 +586,22 @@ namespace Service
             return input;
         }
 
+        public async Task<int> CalculateDeposit(int plantId)
+        {
+            // Lấy thông tin của cây dựa trên PlantId
+            var plant = await _unitOfWork.PlantRepository.GetFirstOrDefaultAsync(
+                filter: p => p.PlantId == plantId
+            );
+
+            if (plant == null)
+            {
+                throw new Exception("Plant not found.");
+            }
+            
+
+            // Trả về giá trị làm tròn
+            return (int)Math.Ceiling(plant.FinalPrice * 20/100);
+        }
     }
 
 }

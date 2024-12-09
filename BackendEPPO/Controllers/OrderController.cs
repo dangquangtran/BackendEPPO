@@ -425,8 +425,8 @@ namespace BackendEPPO.Controllers
         }
 
         [Authorize]
-        [HttpPut("UpdateReturnOrderSuccess/{orderId}")]
-        public async Task<IActionResult> UpdateReturnOrderSuccess(int orderId, [FromForm] List<IFormFile> imageFiles)
+        [HttpPut("UpdateReturnOrder")]
+        public async Task<IActionResult> UpdateReturnOrder([FromQuery]int orderId, string deliveryDescription, string depositDescription, [FromForm] List<IFormFile> imageFiles)
         {
             try
             {
@@ -445,7 +445,7 @@ namespace BackendEPPO.Controllers
                 int userId = int.Parse(userIdClaim);
 
                 // Gọi hàm dịch vụ để cập nhật đơn hàng
-                await _orderService.UpdateReturnOrderSuccess(orderId, imageFiles, userId);
+                await _orderService.UpdateReturnOrder(orderId, deliveryDescription, imageFiles, userId, depositDescription);
 
                 return Ok(new
                 {
