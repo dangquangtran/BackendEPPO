@@ -422,6 +422,31 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        /// <summary>
+        /// Search list account by account ID  with the page and the size.
+        /// </summary>
+        /// <returns>Search list Plant by key word and Type Ecommerce with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.User.SearchAccountID)]
+        public async Task<IActionResult> SearchAccountIDKey(int pageIndex, int pageSize, string keyWord)
+        {
+            var plants = await _userService.SearchAccountIDKey(pageIndex, pageSize, keyWord);
+
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy account nào theo từ khóa."
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+
+        }
 
     }
 }

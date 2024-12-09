@@ -554,6 +554,21 @@ namespace Service
                 includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
+        public async Task<IEnumerable<PlantVM>> SearchPlantIDKey(int pageIndex, int pageSize, int typeEcommerceId, string keyword)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(
+             filter: c => (c.PlantName.Contains(keyword) || c.PlantId.ToString().Contains(keyword))
+                           && c.TypeEcommerceId == typeEcommerceId
+                           && c.IsActive == true,
+             pageIndex: pageIndex,
+             pageSize: pageSize,
+             orderBy: query => query.OrderByDescending(c => c.PlantId),
+             includeProperties: "ImagePlants"
+                );
+
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+
         public static string RemoveVietnameseDiacritics(string input)
         {
             string[] vietnameseSigns = new string[]

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Contracts;
+using DTOs.Plant;
 using DTOs.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -660,6 +661,21 @@ namespace Service
                 await client.SendAsync(emailMessage);
                 await client.DisconnectAsync(true);
             }
+        }
+
+        public async Task<IEnumerable<User>> SearchAccountIDKey(int pageIndex, int pageSize, string keyword)
+        {
+            var plants = _unitOfWork.UserRepository.Get(
+             filter: c => (c.UserName.Contains(keyword) || c.UserId.ToString().Contains(keyword))
+                     
+                           && c.IsActive == true,
+             pageIndex: pageIndex,
+             pageSize: pageSize,
+             orderBy: query => query.OrderByDescending(c => c.UserId),
+             includeProperties: "Addresses,Contracts,Wallet,Role,FeedbackUsers,Plants"
+                );
+
+            return _mapper.Map<IEnumerable<User>>(plants);
         }
     }
 }
