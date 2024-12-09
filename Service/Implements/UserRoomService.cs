@@ -34,14 +34,14 @@ namespace Service.Implements
 
         public async Task<UserRoom> GetUserRoomByID(int Id)
         {
-            return await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(Id, includeProperties: "Room.Plant"));
+            return await Task.FromResult(_unitOfWork.UserRoomRepository.GetByID(Id, includeProperties: "Room.Plant.ImagePlants"));
         }
 
         public async Task<UserRoom> GetUserRoomByRoomID(int roomId)
         {
        
             var userRoom =  _unitOfWork.UserRoomRepository
-                .Get(filter: ur => ur.RoomId == roomId, includeProperties: "Room.Plant");
+                .Get(filter: ur => ur.RoomId == roomId, includeProperties: "Room.Plant.ImagePlants");
 
             return userRoom.FirstOrDefault();
         }
