@@ -550,5 +550,31 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        /// <summary>
+        /// Search list Plant by plantID and Type Ecommerce with the page and the size.
+        /// </summary>
+        /// <returns>Search list Plant by key word and Type Ecommerce with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.SearchPlantID)]
+        public async Task<IActionResult> SearchPlantIDKey(int pageIndex, int pageSize, int typeEcommerceId, string keyWord)
+        {
+            var plants = await _plantService.SearchPlantIDKey(pageIndex, pageSize, typeEcommerceId, keyWord);
+
+            if (plants == null || !plants.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy cây nào theo từ khóa."
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = plants
+            });
+
+        }
+
     }
 }

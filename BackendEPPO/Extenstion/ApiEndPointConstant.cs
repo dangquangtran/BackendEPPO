@@ -74,6 +74,7 @@ namespace BackendEPPO.Extenstion
             public const string ChangeStatus = GetUserEndpoint + "/UpdateAccount/ChangeStatus/Id";
 
             public const string GetListTopCustomers = GetUserEndpoint + "/TopCustomers";
+            public const string SearchAccountID = GetUserEndpoint + "/Search/AccountID";
 
         }
         // Do Huu Thuan
@@ -268,6 +269,7 @@ namespace BackendEPPO.Extenstion
             public const string ViewPlantsToAccept = ApiEndpoint + "/GetList/Plants/Accept";
             public const string ViewPlantsWaitAccept = ApiEndpoint + "/GetList/Plants/WaitToAccept"; 
             public const string ViewPlantsUnAccept = ApiEndpoint + "/GetList/Plants/UnAccept";
+            public const string SearchPlantID = GetListPlants_Endpoint + "/Search/PlantID";
         }
         // Do Huu Thuan
         public static class Categories

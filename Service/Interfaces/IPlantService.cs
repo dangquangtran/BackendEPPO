@@ -50,6 +50,10 @@ namespace Service.Interfaces
         IEnumerable<PlantVM> ViewPlantsUnAccept(int pageIndex, int pageSize, string code);
 
         Task<bool> CancelContractPlant(int plantId);
+
+        Task<IEnumerable<PlantVM>> SearchPlantIDKey(int pageIndex, int pageSize, int typeEcommerceId, string keyword);
+
         Task<int> CalculateDeposit(int plantId);
+
     }
 }

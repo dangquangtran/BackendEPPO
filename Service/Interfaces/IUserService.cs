@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.Contracts;
+using DTOs.Plant;
 using DTOs.User;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
@@ -37,5 +38,7 @@ namespace Service.Interfaces
         User GetUserID(Guid id);
 
         Task ForgotPassword(string email);
+
+        Task<IEnumerable<User>> SearchAccountIDKey(int pageIndex, int pageSize, string keyword);
     }
 }
