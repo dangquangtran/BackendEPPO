@@ -426,7 +426,7 @@ namespace BackendEPPO.Controllers
 
         [Authorize]
         [HttpPut("UpdateReturnOrder")]
-        public async Task<IActionResult> UpdateReturnOrder([FromQuery]int orderId, string deliveryDescription, string depositDescription, [FromForm] List<IFormFile> imageFiles)
+        public async Task<IActionResult> UpdateReturnOrderSuccess([FromQuery]int orderId, string depositDescription, int? percent, [FromForm] List<IFormFile> imageFiles)
         {
             try
             {
@@ -445,7 +445,48 @@ namespace BackendEPPO.Controllers
                 int userId = int.Parse(userIdClaim);
 
                 // Gọi hàm dịch vụ để cập nhật đơn hàng
-                await _orderService.UpdateReturnOrder(orderId, deliveryDescription, imageFiles, userId, depositDescription);
+                await _orderService.UpdateReturnOrderSuccess(orderId, imageFiles, userId, depositDescription, percent);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã cập nhật trạng thái giao hàng thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpPut("UpdateReturnOrderFail")]
+        public async Task<IActionResult> UpdateReturnOrderFail([FromQuery] int orderId, [FromForm] List<IFormFile> imageFiles)
+        {
+            try
+            {
+                // Lấy userId từ JWT claims
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new
+                    {
+                        StatusCode = 401,
+                        Message = "Không có quyền truy cập.",
+                        Data = (object)null
+                    });
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                // Gọi hàm dịch vụ để cập nhật đơn hàng
+                await _orderService.UpdateReturnOrderFail(orderId, imageFiles, userId);
 
                 return Ok(new
                 {
