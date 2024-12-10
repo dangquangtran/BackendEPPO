@@ -425,7 +425,7 @@ namespace BackendEPPO.Controllers
         }
 
         [Authorize]
-        [HttpPut("UpdateReturnOrder")]
+        [HttpPut("UpdateReturnOrderSuccess")]
         public async Task<IActionResult> UpdateReturnOrderSuccess([FromQuery]int orderId, string depositDescription, double depositReturnOwner, [FromForm] List<IFormFile> imageFiles)
         {
             try
