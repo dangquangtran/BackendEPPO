@@ -164,17 +164,17 @@ builder.Services.AddHostedService<AuctionMonitorService>();
 builder.Services.AddHostedService<OrderCancellationService>();
 
 //Add cors for website
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins",
-        builder =>
-        {
-            builder.WithOrigins("https://localhost:7152", "https://localhost:7026", "https://localhost:3000")
-                   .AllowAnyMethod()
-                   .AllowAnyHeader()
-                   .AllowCredentials();
-        });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAllOrigins",
+//        builder =>
+//        {
+//            builder.WithOrigins("https://localhost:7152", "https://localhost:7026", "https://localhost:3000")
+//                   .AllowAnyMethod()
+//                   .AllowAnyHeader()
+//                   .AllowCredentials();
+//        });
+//});
 
 var app = builder.Build();
 
@@ -241,10 +241,10 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-//app.UseCors();
+app.UseCors();
 
-app.UseCors("AllowAllOrigins");
-//app.UseSession();
+//app.UseCors("AllowAllOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
