@@ -30,8 +30,8 @@ namespace Service.Interfaces
         Task<List<double>> CountOrderPriceByTypeEcom(int status, int year, int typeEcommerceId);
 
         Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId);
-        Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId, string depositDescription, int? percent);
-        Task UpdateReturnOrderFail(int orderId, List<IFormFile> imageFiles, int userId);
+        Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId, string depositDescription, double depositReturnOwner);
+        Task UpdateReturnOrderFail(int orderId, int userId);
         void UpdateOrderStatus(int orderId, int newStatus, int userId);
         IEnumerable<OrderVM> GetOrdersByOwner(int userId, int pageIndex, int pageSize);
         IEnumerable<OrderVM> GetOrdersByTypeEcommerceId(int typeEcommerceId, DateTime? startDate, DateTime? endDate, int pageIndex, int pageSize);

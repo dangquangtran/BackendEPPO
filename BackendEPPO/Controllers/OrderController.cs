@@ -426,7 +426,7 @@ namespace BackendEPPO.Controllers
 
         [Authorize]
         [HttpPut("UpdateReturnOrder")]
-        public async Task<IActionResult> UpdateReturnOrderSuccess([FromQuery]int orderId, string depositDescription, int? percent, [FromForm] List<IFormFile> imageFiles)
+        public async Task<IActionResult> UpdateReturnOrderSuccess([FromQuery]int orderId, string depositDescription, double depositReturnOwner, [FromForm] List<IFormFile> imageFiles)
         {
             try
             {
@@ -445,7 +445,7 @@ namespace BackendEPPO.Controllers
                 int userId = int.Parse(userIdClaim);
 
                 // Gọi hàm dịch vụ để cập nhật đơn hàng
-                await _orderService.UpdateReturnOrderSuccess(orderId, imageFiles, userId, depositDescription, percent);
+                await _orderService.UpdateReturnOrderSuccess(orderId, imageFiles, userId, depositDescription, depositReturnOwner);
 
                 return Ok(new
                 {
@@ -467,7 +467,7 @@ namespace BackendEPPO.Controllers
 
         [Authorize]
         [HttpPut("UpdateReturnOrderFail")]
-        public async Task<IActionResult> UpdateReturnOrderFail([FromQuery] int orderId, [FromForm] List<IFormFile> imageFiles)
+        public async Task<IActionResult> UpdateReturnOrderFail([FromQuery] int orderId)
         {
             try
             {
@@ -486,7 +486,7 @@ namespace BackendEPPO.Controllers
                 int userId = int.Parse(userIdClaim);
 
                 // Gọi hàm dịch vụ để cập nhật đơn hàng
-                await _orderService.UpdateReturnOrderFail(orderId, imageFiles, userId);
+                await _orderService.UpdateReturnOrderFail(orderId, userId);
 
                 return Ok(new
                 {
