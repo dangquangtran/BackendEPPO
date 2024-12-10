@@ -18,6 +18,7 @@ namespace BusinessObjects.Models
         public double? DeliveryFee { get; set; }
         public string DeliveryAddress { get; set; }
         public string DeliveryDescription { get; set; }
+        public int? NumberOfDeliveries { get; set; }
         public double? FinalPrice { get; set; }
         public int? TypeEcommerceId { get; set; }
         public int? PaymentId { get; set; }

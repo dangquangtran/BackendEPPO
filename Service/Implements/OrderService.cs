@@ -569,7 +569,7 @@ namespace Service.Implements
             order.DeliveryDescription = "Giao hàng thất bại";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
-
+            order.NumberOfDeliveries += 1;
             // Kiểm tra danh sách file
             if (imageFiles != null && imageFiles.Count > 0)
             {
@@ -593,7 +593,11 @@ namespace Service.Implements
                     order.ImageDeliveryOrders.Add(imageDeliveryOrder);
                 }
             }
-
+            if (order.NumberOfDeliveries == 3)
+            {
+                CancelOrder(orderId, userId);
+                return;
+            }
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
@@ -611,6 +615,7 @@ namespace Service.Implements
             order.DeliveryDescription = "Thu hồi thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
+            order.Status = 6;
             foreach (var orderDetail in order.OrderDetails)
             {
                 orderDetail.DepositDescription = depositDescription;
