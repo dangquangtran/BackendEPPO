@@ -173,7 +173,7 @@ namespace Service.Implements
         {
             // Lấy các OrderDetails có liên quan từ các đơn hàng đã giao hàng thành công
             var orderDetails = await _unitOfWork.OrderDetailRepository.GetAsync(
-                filter: od => od.Order.Status == 3 // Đã giao hàng thành công
+                filter: od => od.Order.Status == 4 // Đã giao hàng thành công
                               && od.Order.UserId == userId
                               && (od.Plant.Feedbacks.All(f => f.IsFeedback != true)),// Lọc theo người dùng
                 orderBy: query => query.OrderByDescending(od => od.Order.CreationDate), // Sắp xếp mới nhất
