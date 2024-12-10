@@ -599,7 +599,7 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
-        public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId , string depositDescription, int? percent)
+        public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId , string depositDescription, double depositReturnOwner)
         {
             // Lấy thông tin đơn hàng
             var order = _unitOfWork.OrderRepository.GetByID(orderId);
@@ -607,14 +607,14 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
-            int percentDeposit = percent ?? 0;
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Thu hồi thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
             foreach (var orderDetail in order.OrderDetails)
             {
-                orderDetail.DepositDescription = depositDescription +" " + percentDeposit +"%";
+                orderDetail.DepositDescription = depositDescription;
+                orderDetail.DepositReturnOwner = depositReturnOwner;
             }
             // Kiểm tra danh sách file
             if (imageFiles != null && imageFiles.Count > 0)
@@ -645,7 +645,7 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
-        public async Task UpdateReturnOrderFail(int orderId, List<IFormFile> imageFiles, int userId)
+        public async Task UpdateReturnOrderFail(int orderId, int userId)
         {
             // Lấy thông tin đơn hàng
             var order = _unitOfWork.OrderRepository.GetByID(orderId);
@@ -657,30 +657,7 @@ namespace Service.Implements
             order.DeliveryDescription = "Thu hồi thất bại";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
-            // Kiểm tra danh sách file
-            if (imageFiles != null && imageFiles.Count > 0)
-            {
-                foreach (var imageFile in imageFiles)
-                {
-                    // Mở stream từ file
-                    using var stream = imageFile.OpenReadStream();
-                    string fileName = imageFile.FileName;
-
-                    // Upload file lên Firebase và lấy URL
-                    string imageUrl = await _firebaseStorageService.UploadOrderReturnImageAsync(stream, fileName);
-
-                    // Tạo đối tượng ImageDeliveryOrder và thêm vào cơ sở dữ liệu
-                    var imageReturnOrder = new ImageReturnOrder
-                    {
-                        OrderId = orderId,
-                        ImageUrl = imageUrl,
-                        UploadDate = DateTime.UtcNow.AddHours(7)
-                    };
-
-                    order.ImageReturnOrders.Add(imageReturnOrder);
-                }
-            }
-
+            
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
