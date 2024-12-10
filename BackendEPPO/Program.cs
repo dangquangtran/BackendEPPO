@@ -176,6 +176,7 @@ builder.Services.AddCors(options =>
         });
 });
 
+
 var app = builder.Build();
 
 var webSocketOptions = new WebSocketOptions
@@ -241,10 +242,10 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-//app.UseCors();
+app.UseCors();
 
-app.UseCors("AllowAllOrigins");
-//app.UseSession();
+//app.UseCors("AllowAllOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
