@@ -126,6 +126,12 @@ namespace DTOs.User
         public int UserId { get; set; }
         public string Password { get; set; }
     }
+    public class ChangePasswordByToken
+    {
+       
+        public string oldPassword { get; set; }
+        public string newPassword { get; set; }
+    }
     public class ChangeStatus
     {
         public int? Status { get; set; }

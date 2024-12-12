@@ -40,5 +40,7 @@ namespace Service.Interfaces
         Task ForgotPassword(string email);
 
         Task<IEnumerable<User>> SearchAccountIDKey(int pageIndex, int pageSize, string keyword);
+
+        Task ChangePasswordAccount(ChangePasswordByToken account , int userId);
     }
 }

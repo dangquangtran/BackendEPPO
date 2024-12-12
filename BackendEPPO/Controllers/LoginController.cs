@@ -28,11 +28,13 @@ namespace BackendEPPO.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
-        public LoginController(IUserService userService, IConfiguration configuration, ITokenService tokenService)
+        private readonly ILogger<UserController> _logger;
+        public LoginController(IUserService userService, IConfiguration configuration, ITokenService tokenService, ILogger<UserController> logger)
         {
             _userService = userService;
             _configuration = configuration;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -152,7 +154,10 @@ namespace BackendEPPO.Controllers
             var tokenString = GenerateJSONWebToken(user);
             return Ok(new { token = tokenString });
         }
-
+        public class FaceIdLoginRequest
+        {
+            public string Token { get; set; }
+        }
         /// <summary>
         /// Login with Face Id   
         /// </summary>
@@ -168,17 +173,20 @@ namespace BackendEPPO.Controllers
 
             // Validate token và lấy userId từ token
             var userId = _tokenService.ValidateToken(request.Token);
-            if (string.IsNullOrEmpty(userId)) // Kiểm tra nếu token không hợp lệ
+
+            if (string.IsNullOrEmpty(userId)) // Token không hợp lệ
             {
                 return Unauthorized(new { message = "Invalid Face ID token" });
             }
 
+            // Parse userId từ token (nếu cần)
+            if (!int.TryParse(userId, out int user_Id))
+            {
+                return Unauthorized(new { message = "Invalid user ID in token" });
+            }
 
-      
-            int user_Id = int.Parse(userId);
-
-            // Lấy thông tin người dùng từ DB bằng userId (có thể cần chuyển đổi userId thành Guid nếu cần)
-            var user = _userService.GetUserByID((user_Id));
+            // Lấy thông tin người dùng từ database bằng userId
+            var user = _userService.GetUserByID(user_Id);
             if (user == null)
             {
                 return Unauthorized(new { message = "User not found" });
@@ -186,21 +194,14 @@ namespace BackendEPPO.Controllers
 
             // Tạo JWT mới cho người dùng
             var tokenString = GenerateJSONWebToken(user);
+
             return Ok(new
             {
                 StatusCode = 200,
-                Message = "Đăng nhập bằng Face ID thành công",
+                Message = "Login with Face ID successful",
                 Token = tokenString,
                 RoleName = user.Role.NameRole,
-                FullName = user.FullName,
-                IsSigned = user.IsSigned
             });
         }
-
-        public class FaceIdLoginRequest
-        {
-            public string Token { get; set; }
-        }
-
     }
 }

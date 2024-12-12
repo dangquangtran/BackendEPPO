@@ -677,5 +677,31 @@ namespace Service
 
             return _mapper.Map<IEnumerable<User>>(plants);
         }
+        public async Task ChangePasswordAccount(ChangePasswordByToken account, int userId)
+        {
+            // Lấy thông tin người dùng từ repository
+            var userEntity = await Task.FromResult(_unitOfWork.UserRepository.GetByID(userId));
+            if (userEntity == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            // Kiểm tra mật khẩu cũ
+            if (userEntity.Password != account.oldPassword)
+            {
+                throw new KeyNotFoundException("Không đúng mật khẩu cũ.");
+            }
+
+            // Cập nhật mật khẩu và ngày sửa đổi
+            userEntity.Password = account.newPassword;
+            userEntity.ModificationDate = DateTime.UtcNow.AddHours(7);
+
+            // Cập nhật thông tin người dùng
+            _unitOfWork.UserRepository.Update(userEntity);
+
+            // Lưu thay đổi
+            await _unitOfWork.SaveAsync();
+        }
+
     }
 }

@@ -373,7 +373,7 @@ namespace BackendEPPO.Controllers
         /// <returns>Change password of account by all role.</returns>
         [Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpPut(ApiEndPointConstant.User.ChangePasswordByToken)]
-        public async Task<IActionResult> ChangePasswordByToken(ChangePassword accountDTO)
+        public async Task<IActionResult> ChangePasswordByToken(ChangePasswordByToken accountDTO)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             int userId = int.Parse(userIdClaim);
@@ -381,10 +381,10 @@ namespace BackendEPPO.Controllers
             {
                 return NotFound(new { Message = Error.NO_DATA_FOUND });
             }
-            accountDTO.UserId = userId;
+       
             try
             {
-                await _userService.ChangePasswordAccount(accountDTO);
+                await _userService.ChangePasswordAccount(accountDTO, userId);
                 var updatedUser = await _userService.GetUsersByID(userId);
 
                 return Ok(new
