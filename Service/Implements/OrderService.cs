@@ -606,7 +606,7 @@ namespace Service.Implements
         public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId , string depositDescription, double depositReturnOwner)
         {
             // Lấy thông tin đơn hàng
-            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            var order = _unitOfWork.OrderRepository.GetByID(orderId, includeProperties: "OrderDetails");
             if (order == null)
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
