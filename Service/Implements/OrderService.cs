@@ -620,6 +620,7 @@ namespace Service.Implements
             {
                 orderDetail.DepositDescription = depositDescription;
                 orderDetail.DepositReturnOwner = depositReturnOwner;
+                orderDetail.DepositReturnCustomer = orderDetail.Deposit - depositReturnOwner;
             }
             // Kiểm tra danh sách file
             if (imageFiles != null && imageFiles.Count > 0)
