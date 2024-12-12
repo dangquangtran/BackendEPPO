@@ -620,7 +620,7 @@ namespace Service
             await _unitOfWork.SaveAsync();
 
             // Gửi email thông báo với mật khẩu mới
-            await SendEmailAsync(userEntity.Email, "New Password", $"Your new password is: {newPassword}");
+            await SendEmailAsync(userEntity.Email, "Cấp lại mật khẩu", $"Vui lòng đăng nhập với tài khoản {userEntity.Email} , Mật khẩu mới của bạn là: {newPassword}");
         }
 
         private string GenerateRandomPassword()
@@ -633,7 +633,7 @@ namespace Service
         public async Task SendEmailAsync(string email, string subject, string message, List<IFormFile> attachments = null)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("REALITY", "inreality0102@gmail.com")); // Thay "REALITY" và "inreality0102@gmail.com" bằng thông tin người gửi thực tế
+            emailMessage.From.Add(new MailboxAddress("EPPO", "inreality0102@gmail.com")); // Thay "REALITY" và "inreality0102@gmail.com" bằng thông tin người gửi thực tế
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
 

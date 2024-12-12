@@ -103,7 +103,7 @@ namespace BackendEPPO.Controllers
                     new Claim(ClaimTypes.Role, userInfo.Role.NameRole),
 
                 }, 
-                expires: DateTime.UtcNow.AddHours(7).AddMinutes(120),
+                expires: DateTime.UtcNow.AddHours(7).AddMinutes(600),
                 signingCredentials: credentials
             );
 
