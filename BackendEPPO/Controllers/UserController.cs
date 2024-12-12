@@ -405,7 +405,7 @@ namespace BackendEPPO.Controllers
         }
         [HttpPost]
         [Route("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        public async Task<IActionResult> ForgotPassword(string email)
         {
             try
             {
