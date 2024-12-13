@@ -34,7 +34,7 @@ namespace Service.Implements
 
         public OrderVM GetOrderById(int id)
         {
-            var order =_unitOfWork.OrderRepository.GetByID(id, includeProperties: "OrderDetails");
+            var order =_unitOfWork.OrderRepository.GetByID(id, includeProperties: "OrderDetails,ImageDeliveryOrders,ImageReturnOrders");
             return _mapper.Map<OrderVM>(order);
         }
 
