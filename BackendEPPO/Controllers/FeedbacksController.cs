@@ -25,7 +25,7 @@ namespace BackendEPPO.Controllers
         /// Get list all Feedbacks in database with the page and the size.
         /// </summary>
         /// <returns>Get list all Feedbacks in database with the page and the size.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Feedback.GetListFeedback_Endpoint)]
         public async Task<IActionResult> GetListFeedback(int page, int size)
         {
