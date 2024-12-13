@@ -28,7 +28,7 @@ namespace Service.Implements
 
         public IEnumerable<OrderVM> GetAllOrders(int pageIndex, int pageSize)
         {
-            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.OrderId), pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails");
+            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.OrderId), pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails,ImageDeliveryOrders,ImageReturnOrders");
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
