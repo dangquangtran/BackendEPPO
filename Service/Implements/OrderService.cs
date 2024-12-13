@@ -522,6 +522,12 @@ namespace Service.Implements
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
 
+            // Kiểm tra nếu đơn hàng đã giao hàng thành công
+            if (order.Status == 3 && order.DeliveryDescription == "Giao hàng thành công")
+            {
+                throw new InvalidOperationException("Không thể cập nhật đơn hàng đã giao hàng thành công.");
+            }
+
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Giao hàng thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
@@ -555,7 +561,6 @@ namespace Service.Implements
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
         }
-
         public async Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId)
         {
             // Lấy thông tin đơn hàng
