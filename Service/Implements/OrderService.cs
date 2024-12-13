@@ -610,6 +610,7 @@ namespace Service.Implements
 
         public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId , string depositDescription, double depositReturnOwner)
         {
+            double depositReturnCustomer = 0;
             // Lấy thông tin đơn hàng
             var order = _unitOfWork.OrderRepository.GetByID(orderId, includeProperties: "OrderDetails");
             if (order == null)
@@ -626,6 +627,7 @@ namespace Service.Implements
                 orderDetail.DepositDescription = depositDescription;
                 orderDetail.DepositReturnOwner = depositReturnOwner;
                 orderDetail.DepositReturnCustomer = orderDetail.Deposit - depositReturnOwner;
+                depositReturnCustomer = orderDetail.Deposit - depositReturnOwner ?? 0;
             }
             // Kiểm tra danh sách file
             if (imageFiles != null && imageFiles.Count > 0)
@@ -650,7 +652,70 @@ namespace Service.Implements
                     order.ImageReturnOrders.Add(imageReturnOrder);
                 }
             }
-           
+
+            var owner = await _unitOfWork.UserRepository.GetByIDAsync(userId); // Giả sử userId là của owner
+            if (owner == null)
+            {
+                throw new Exception("Không tìm thấy thông tin người dùng chủ cây.");
+            }
+
+            var ownerWallet = await _unitOfWork.WalletRepository.GetByIDAsync(owner.WalletId);
+            if (ownerWallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng chủ cây.");
+            }
+
+            // Cộng tiền vào ví của chủ cây
+            ownerWallet.NumberBalance += depositReturnOwner;
+            _unitOfWork.WalletRepository.Update(ownerWallet);
+
+            // Tạo giao dịch cộng tiền cho chủ cây (owner)
+            Transaction ownerTransaction = new Transaction
+            {
+                WalletId = ownerWallet.WalletId,
+                Description = "Trả tiền cọc từ đơn hàng " + order.OrderId,
+                RechargeNumber = depositReturnOwner,
+                WithdrawNumber = null,
+                RechargeDate = DateTime.UtcNow.AddHours(7),
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                PaymentId = 2,  // Giả sử đây là ID của phương thức thanh toán (có thể thay đổi tùy vào hệ thống của bạn)
+                Status = 1,
+                IsActive = true
+            };
+            _unitOfWork.TransactionRepository.Insert(ownerTransaction);
+
+            // Trả tiền cọc cho người dùng (user)
+            var customer = await _unitOfWork.UserRepository.GetByIDAsync(order.UserId); // Giả sử order.UserId là của khách hàng
+            if (customer == null)
+            {
+                throw new Exception("Không tìm thấy thông tin người dùng.");
+            }
+
+            var customerWallet = await _unitOfWork.WalletRepository.GetByIDAsync(customer.WalletId);
+            if (customerWallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng.");
+            }
+
+            // Cộng tiền vào ví của người dùng (customer)
+            customerWallet.NumberBalance += depositReturnCustomer;
+            _unitOfWork.WalletRepository.Update(customerWallet);
+
+            // Tạo giao dịch cộng tiền cho người dùng (customer)
+            Transaction customerTransaction = new Transaction
+            {
+                WalletId = customerWallet.WalletId,
+                Description = "Trả tiền cọc từ đơn hàng " + order.OrderId,
+                RechargeNumber = depositReturnCustomer,
+                WithdrawNumber = null,
+                RechargeDate = DateTime.UtcNow.AddHours(7),
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                PaymentId = 2,  // Giả sử đây là ID của phương thức thanh toán (có thể thay đổi tùy vào hệ thống của bạn)
+                Status = 1,
+                IsActive = true
+            };
+            _unitOfWork.TransactionRepository.Insert(customerTransaction);
+
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
@@ -686,6 +751,63 @@ namespace Service.Implements
             order.Status = newStatus;
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
+
+            if (newStatus == 4 && order.PaymentStatus == "Đã thanh toán")
+            {
+                // Tính tổng số tiền từ tất cả các OrderDetail
+                double totalAmount = order.TotalPrice + order.DeliveryFee ?? 0;
+
+                // Kiểm tra thông tin ví của người dùng chủ cây
+                User owner = null;
+                Wallet wallet = null;
+
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    if (orderDetail.PlantId.HasValue)
+                    {
+                        var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
+                        if (plant != null)
+                        {
+                            owner = _unitOfWork.UserRepository.GetByID(plant.Code);
+                            if (owner != null)
+                            {
+                                wallet = _unitOfWork.WalletRepository.GetByID(owner.WalletId);
+                                break; 
+                            }
+                        }
+                    }
+                }
+
+                if (owner == null)
+                {
+                    throw new Exception("Không tìm thấy thông tin người dùng chủ cây.");
+                }
+
+                if (wallet == null)
+                {
+                    throw new Exception("Không tìm thấy ví của người dùng chủ cây.");
+                }
+
+                // Cộng tiền vào ví
+                wallet.NumberBalance += totalAmount;
+                _unitOfWork.WalletRepository.Update(wallet);
+
+                // Tạo giao dịch cộng tiền
+                Transaction transaction = new Transaction
+                {
+                    WalletId = wallet.WalletId,
+                    Description = "Nhận tiền từ đơn hàng " +order.OrderId,
+                    RechargeNumber = totalAmount,
+                    WithdrawNumber = null,
+                    RechargeDate = DateTime.UtcNow.AddHours(7),
+                    CreationDate = DateTime.UtcNow.AddHours(7),
+                    PaymentId = 2,
+                    Status = 1,
+                    IsActive = true
+                };
+                _unitOfWork.TransactionRepository.Insert(transaction);
+            }
+
 
             _unitOfWork.OrderRepository.Update(order);
 
@@ -784,9 +906,11 @@ namespace Service.Implements
             {
                 orderDetail.DepositReturnOwner = depositReturnOwner.Value;
             }
-
-
+            var order = _unitOfWork.OrderRepository.GetByID(orderDetail.OrderId);
+            order.Status = 6;
+            order.DeliveryDescription = "Thu hồi thành công";
             // Lưu thay đổi vào cơ sở dữ liệu
+            _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.OrderDetailRepository.Update(orderDetail);
             _unitOfWork.Save();
         }
