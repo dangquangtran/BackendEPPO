@@ -392,7 +392,7 @@ namespace Service
             // Check if the plant is already inactive
             if (entity.IsActive == false)
             {
-                return false; // Indicate that no action was performed
+                throw new KeyNotFoundException($"Cây đang cho thuê hoặc đang đấu giá");
             }
 
             // Update plant status
