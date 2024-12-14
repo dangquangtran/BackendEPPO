@@ -569,6 +569,10 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
+            if (order.DeliveryDescription == "Giao hàng thành công")
+            {
+                throw new Exception("Đơn hàng đã được giao thành công, không thể cập nhật giao hàng thất bại.");
+            }
 
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Giao hàng thất bại";
