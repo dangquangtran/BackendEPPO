@@ -559,6 +559,8 @@ namespace Service.Implements
 
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
+
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được giao thành công");
             _unitOfWork.Save();
         }
         public async Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId)
@@ -693,7 +695,7 @@ namespace Service.Implements
                 WithdrawNumber = null,
                 RechargeDate = DateTime.UtcNow.AddHours(7),
                 CreationDate = DateTime.UtcNow.AddHours(7),
-                PaymentId = 2,  // Giả sử đây là ID của phương thức thanh toán (có thể thay đổi tùy vào hệ thống của bạn)
+                PaymentId = 2,  
                 Status = 1,
                 IsActive = true
             };
@@ -712,11 +714,9 @@ namespace Service.Implements
                 throw new Exception("Không tìm thấy ví của người dùng.");
             }
 
-            // Cộng tiền vào ví của người dùng (customer)
             customerWallet.NumberBalance += depositReturnCustomer;
             _unitOfWork.WalletRepository.Update(customerWallet);
 
-            // Tạo giao dịch cộng tiền cho người dùng (customer)
             Transaction customerTransaction = new Transaction
             {
                 WalletId = customerWallet.WalletId,
@@ -725,12 +725,12 @@ namespace Service.Implements
                 WithdrawNumber = null,
                 RechargeDate = DateTime.UtcNow.AddHours(7),
                 CreationDate = DateTime.UtcNow.AddHours(7),
-                PaymentId = 2,  // Giả sử đây là ID của phương thức thanh toán (có thể thay đổi tùy vào hệ thống của bạn)
+                PaymentId = 2, 
                 Status = 1,
                 IsActive = true
             };
             _unitOfWork.TransactionRepository.Insert(customerTransaction);
-
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được thu hồi thành công");
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
@@ -823,7 +823,7 @@ namespace Service.Implements
                 _unitOfWork.TransactionRepository.Insert(transaction);
             }
 
-
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được cập nhật");
             _unitOfWork.OrderRepository.Update(order);
 
             _unitOfWork.Save();
@@ -927,6 +927,26 @@ namespace Service.Implements
             // Lưu thay đổi vào cơ sở dữ liệu
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.OrderDetailRepository.Update(orderDetail);
+            _unitOfWork.Save();
+        }
+
+        public void CreateNotification(int userId, string title, string description)
+        {
+            // Tạo đối tượng thông báo mới
+            var notification = new Notification
+            {
+                UserId = userId,
+                Title = title,
+                Description = description,
+                CreatedDate = DateTime.UtcNow.AddHours(7),
+                UpdatedDate = DateTime.UtcNow.AddHours(7),
+                IsRead = false,
+                IsNotifications = false,
+                Status = 1
+            };
+
+            // Thêm vào cơ sở dữ liệu
+            _unitOfWork.NotificationRepository.Insert(notification);
             _unitOfWork.Save();
         }
     }
