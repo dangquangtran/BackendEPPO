@@ -569,6 +569,10 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
+            if (order.DeliveryDescription == "Giao hàng thành công")
+            {
+                throw new Exception("Đơn hàng đã được giao thành công, không thể cập nhật giao hàng thất bại.");
+            }
 
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Giao hàng thất bại";
@@ -617,6 +621,13 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
+            bool isExpired = order.OrderDetails.Any(orderDetail =>
+                             orderDetail.RentalEndDate == null || orderDetail.RentalEndDate > DateTime.UtcNow.AddHours(7));
+
+            if (isExpired)
+            {
+                throw new Exception("Đơn hàng chưa hết hạn thuê, không thể thu hồi.");
+            }
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Thu hồi thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
@@ -624,6 +635,10 @@ namespace Service.Implements
             order.Status = 6;
             foreach (var orderDetail in order.OrderDetails)
             {
+                if (depositReturnOwner > orderDetail.Deposit)
+                {
+                    throw new Exception($"Số tiền trả lại cho chủ cây không được lớn hơn tiền cọc ({orderDetail.Deposit}).");
+                }
                 orderDetail.DepositDescription = depositDescription;
                 orderDetail.DepositReturnOwner = depositReturnOwner;
                 orderDetail.DepositReturnCustomer = orderDetail.Deposit - depositReturnOwner;
@@ -741,7 +756,7 @@ namespace Service.Implements
         public void UpdateOrderStatus(int orderId, int newStatus, int userId)
         {
             // Lấy thông tin đơn hàng từ cơ sở dữ liệu
-            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            var order = _unitOfWork.OrderRepository.GetByID(orderId, includeProperties: "OrderDetails");
             if (order == null)
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
@@ -789,7 +804,7 @@ namespace Service.Implements
                 }
 
                 // Cộng tiền vào ví
-                wallet.NumberBalance += totalAmount;
+                wallet.NumberBalance += totalAmount *80/100;
                 _unitOfWork.WalletRepository.Update(wallet);
 
                 // Tạo giao dịch cộng tiền
@@ -797,7 +812,7 @@ namespace Service.Implements
                 {
                     WalletId = wallet.WalletId,
                     Description = "Nhận tiền từ đơn hàng " +order.OrderId,
-                    RechargeNumber = totalAmount,
+                    RechargeNumber = totalAmount * 80 / 100,
                     WithdrawNumber = null,
                     RechargeDate = DateTime.UtcNow.AddHours(7),
                     CreationDate = DateTime.UtcNow.AddHours(7),
