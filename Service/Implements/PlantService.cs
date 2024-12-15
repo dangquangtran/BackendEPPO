@@ -284,6 +284,7 @@ namespace Service
             Plant plant = _mapper.Map<Plant>(createPlant);
             plant.CreationDate = DateTime.UtcNow.AddHours(7);
             plant.ModificationDate = DateTime.UtcNow.AddHours(7);
+            plant.CategoryId = 1;
             plant.Status = 1;
             plant.IsActive = false;
             plant.ModificationBy = userId;
@@ -325,6 +326,8 @@ namespace Service
         {
             Plant plant = _mapper.Map<Plant>(createPlant);
             plant.CreationDate = DateTime.UtcNow.AddHours(7);
+            plant.ModificationDate = DateTime.UtcNow.AddHours(7);
+            plant.CategoryId = 1;
             plant.Status = 1;
             plant.IsActive = false;
             plant.ModificationBy = userId;
