@@ -501,7 +501,7 @@ namespace BackendEPPO.Controllers
         /// Function for mobile: Cancel contract plant.
         /// </summary>
         /// <returns> Cancel contract plant.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [Authorize(Roles = "admin, manager, staff, owner")]
         [HttpPut(ApiEndPointConstant.Plants.CancelContractPlant)]
         public async Task<IActionResult> CancelContractPlant(int plantId)
         {

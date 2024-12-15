@@ -35,7 +35,8 @@ namespace Service.Implements
             // Nhóm theo ngày
             var groupedNotifications = notifications
                 .Where(n => n.CreatedDate.HasValue)
-                .GroupBy(n => n.CreatedDate.Value.Date) // Lấy theo ngày
+                .OrderByDescending(n => n.CreatedDate)
+                .GroupBy(n => n.CreatedDate.Value.Date) 
                 .ToDictionary(g => g.Key, g => g.ToList());
 
             return groupedNotifications;
