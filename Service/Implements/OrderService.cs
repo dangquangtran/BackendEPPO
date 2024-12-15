@@ -575,13 +575,6 @@ namespace Service.Implements
             {
                 throw new Exception("Đơn hàng đã được giao thành công, không thể cập nhật giao hàng thất bại.");
             }
-            bool isExpired = order.OrderDetails.Any(orderDetail =>
-                            orderDetail.RentalEndDate == null || orderDetail.RentalEndDate > DateTime.UtcNow.AddHours(7));
-
-            if (isExpired)
-            {
-                throw new Exception("Đơn hàng chưa hết hạn thuê, không thể thu hồi.");
-            }
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Giao hàng thất bại";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
@@ -749,7 +742,14 @@ namespace Service.Implements
             if (order == null)
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
-            }   
+            }
+            bool isExpired = order.OrderDetails.Any(orderDetail =>
+                 orderDetail.RentalEndDate == null || orderDetail.RentalEndDate > DateTime.UtcNow.AddHours(7));
+
+            if (isExpired)
+            {
+                throw new Exception("Đơn hàng chưa hết hạn thuê, không thể thu hồi.");
+            }
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Thu hồi thất bại";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
