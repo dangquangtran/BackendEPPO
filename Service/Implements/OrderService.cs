@@ -810,7 +810,7 @@ namespace Service.Implements
                 }
 
                 // Cộng tiền vào ví
-                wallet.NumberBalance += totalAmount *80/100;
+                wallet.NumberBalance += (int)(totalAmount * 80 / 100);
                 _unitOfWork.WalletRepository.Update(wallet);
 
                 // Tạo giao dịch cộng tiền
@@ -818,7 +818,7 @@ namespace Service.Implements
                 {
                     WalletId = wallet.WalletId,
                     Description = "Nhận tiền từ đơn hàng " +order.OrderId,
-                    RechargeNumber = totalAmount * 80 / 100,
+                    RechargeNumber = (int)(totalAmount * 80 / 100),
                     WithdrawNumber = null,
                     RechargeDate = DateTime.UtcNow.AddHours(7),
                     CreationDate = DateTime.UtcNow.AddHours(7),
@@ -827,7 +827,32 @@ namespace Service.Implements
                     IsActive = true
                 };
                 _unitOfWork.TransactionRepository.Insert(transaction);
-            }
+                // Cộng 20% vào ví manager có WalletId = 5
+                Wallet managerWallet = _unitOfWork.WalletRepository.GetByID(5);
+                if (managerWallet == null)
+                {
+                    throw new Exception("Không tìm thấy ví của manager.");
+                }
+
+                int managerAmount = (int)(totalAmount * 20 / 100);
+                managerWallet.NumberBalance += managerAmount;
+                _unitOfWork.WalletRepository.Update(managerWallet);
+
+                // Tạo giao dịch cộng tiền cho manager
+                _unitOfWork.TransactionRepository.Insert(new Transaction
+                {
+                    WalletId = managerWallet.WalletId,
+                    Description = "Nhận tiền hoa hồng từ đơn hàng " + order.OrderId,
+                    RechargeNumber = managerAmount,
+                    WithdrawNumber = null,
+                    RechargeDate = DateTime.UtcNow.AddHours(7),
+                    CreationDate = DateTime.UtcNow.AddHours(7),
+                    PaymentId = 2,
+                    Status = 1,
+                    IsActive = true
+                });
+            
+        }
 
             CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được cập nhật");
             _unitOfWork.OrderRepository.Update(order);
@@ -953,6 +978,31 @@ namespace Service.Implements
 
             // Thêm vào cơ sở dữ liệu
             _unitOfWork.NotificationRepository.Insert(notification);
+            _unitOfWork.Save();
+        }
+        public void CustomerNotReceivedOrder(int orderId, int userId)
+        {
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            if (order.UserId != userId)
+            {
+                throw new Exception("Người dùng không có quyền thao tác trên đơn hàng này.");
+            }
+
+            if (order.Status != 3) // Giả định trạng thái 3 là "Đang giao hàng"
+            {
+                throw new Exception("Đơn hàng không ở trạng thái có thể xác nhận chưa nhận hàng.");
+            }
+            order.DeliveryDescription = "Khách hàng chưa nhận được đơn hàng";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            _unitOfWork.OrderRepository.Update(order);
+
             _unitOfWork.Save();
         }
     }
