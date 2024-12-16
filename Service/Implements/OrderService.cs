@@ -320,7 +320,7 @@ namespace Service.Implements
                     if (plant != null)
                     {
                         totalDeposit += orderDetail.Deposit ?? 0;
-                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value).AddDays(3);
+                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
                     }
                     else
                     {
