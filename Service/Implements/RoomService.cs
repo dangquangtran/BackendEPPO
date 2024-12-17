@@ -1,4 +1,6 @@
-﻿using BusinessObjects.Models;
+﻿using AutoMapper;
+using BusinessObjects.Models;
+using DTOs.Plant;
 using DTOs.Room;
 using DTOs.Wallet;
 using PdfSharp.Pdf.Filters;
@@ -15,10 +17,11 @@ namespace Service.Implements
     public class RoomService : IRoomService
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public RoomService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public RoomService(IUnitOfWork unitOfWork , IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
         public async Task<IEnumerable<Room>> GetListRooms(int page, int size)
         {
@@ -343,6 +346,16 @@ namespace Service.Implements
             return filteredHistoryRooms;
         }
 
+        public async Task<IEnumerable<Room>> SearchRoom(int pageIndex, int pageSize, string keyword)
+        {
+            var plants = _unitOfWork.RoomRepository.Get(
+             filter: c => ( c.RoomId.ToString().Contains(keyword)),
+             pageIndex: pageIndex,
+             pageSize: pageSize,
+             orderBy: query => query.OrderByDescending(c => c.RoomId)
+                );
 
+            return _mapper.Map<IEnumerable<Room>>(plants);
+        }
     }
 }

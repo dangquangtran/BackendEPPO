@@ -355,7 +355,31 @@ namespace BackendEPPO.Controllers
             });
         }
 
+        /// <summary>
+        /// Search list room by roomId with the page and the size.
+        /// </summary>
+        /// <returns>Search list Plant by key word and Type Ecommerce with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.Contract.SearchContract)]
+        public async Task<IActionResult> SearchContract(int pageIndex, int pageSize, string keyWord)
+        {
+            var room = await _contractService.SearchContract(pageIndex, pageSize, keyWord);
 
+            if (room == null || !room.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy theo từ khóa."
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = room
+            });
+
+        }
 
     }
 }

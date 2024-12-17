@@ -19,7 +19,7 @@ namespace Service.Interfaces
         Task CreateUserAccount(ResponseUserDTO user);
         Task CreateAccountByCustomer(CreateAccountByCustomerDTO customer);
         Task CreateAccountByOwner(CreateAccountByOwnerDTO owner);
-        Task CreateAccountByAdmin(CreateAccountByAdminDTO admin);
+        Task CreateAccountByAdmin(CreateAccountByOwnerDTO admin);
         User GetUserByID(int id);
 
         Task UpdateUserAccount(UpdateAccount account, IFormFile imageFile);
