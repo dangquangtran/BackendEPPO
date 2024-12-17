@@ -176,7 +176,7 @@ namespace Service
 
         }
 
-        public async Task CreateAccountByAdmin(CreateAccountByAdminDTO admin)
+        public async Task CreateAccountByAdmin(CreateAccountByOwnerDTO admin)
         {
             var walletEntity = new Wallet
             {

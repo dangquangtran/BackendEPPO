@@ -22,5 +22,6 @@ namespace Service.Interfaces
         Task IsSignedPartnershipContract(IsSignedPartnershipContract contract, int contractId);
         Task<Contract?> GetActiveContractByUserId(int userId);
         Task<int> CreateContractAddendum(CreateContractDTO contract, int userId);
+        Task<IEnumerable<Contract>> SearchContract(int pageIndex, int pageSize, string keyword);
     }
 }

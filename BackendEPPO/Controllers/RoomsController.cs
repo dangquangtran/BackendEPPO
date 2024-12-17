@@ -6,6 +6,7 @@ using DTOs.Room;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 using Service.Interfaces;
 using static BackendEPPO.Extenstion.ApiEndPointConstant;
 
@@ -501,6 +502,32 @@ namespace BackendEPPO.Controllers
                 });
             }
 
+
+        }
+
+        /// <summary>
+        /// Search list room by roomId with the page and the size.
+        /// </summary>
+        /// <returns>Search list Plant by key word and Type Ecommerce with the page and the size.</returns>
+        [HttpGet(ApiEndPointConstant.Room.SearchRoomByID)]
+        public async Task<IActionResult> SearchRoom(int pageIndex, int pageSize, string keyWord)
+        {
+            var room = await _roomService.SearchRoom(pageIndex, pageSize, keyWord);
+
+            if (room == null || !room.Any())
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = "Không tìm thấy theo từ khóa."
+                });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Yêu cầu thành công.",
+                Data = room
+            });
 
         }
     }

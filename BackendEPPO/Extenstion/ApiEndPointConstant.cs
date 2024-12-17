@@ -98,6 +98,8 @@ namespace BackendEPPO.Extenstion
             public const string GetListHistoryRoom_Endpoint = ApiEndpoint + "/GetList/History/AllRoom";
 
             public const string GetRoomIDByCustomer = GetListRoom_Endpoint + "/Check/Id";
+
+            public const string SearchRoomByID = GetListRoom_Endpoint + "/Search/Id";
         }
         // Do Huu Thuan
         public static class UserRoom
@@ -131,6 +133,7 @@ namespace BackendEPPO.Extenstion
 
             public const string ConfirmContractID = GetListContract_Endpoint + "/IsSigned/Contract/Id"; 
             public const string CreateContractAddendum = GetListContract_Endpoint + "/Create/Contract/Addendum";
+            public const string SearchContract = ApiEndpoint + "/Search/Contract";
         }
         // Do Huu Thuan
         public static class RoomParticipant

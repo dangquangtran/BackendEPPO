@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOs.Room;
+using DTOs.Plant;
 namespace Service.Interfaces
 {
     public interface IRoomService
@@ -28,5 +29,7 @@ namespace Service.Interfaces
         Task<IEnumerable<Room>> GetListRoomActive(int page, int size);
 
         Task<IEnumerable<object>> GetListHistoryRooms(int userId, int page, int size);
+
+        Task<IEnumerable<Room>> SearchRoom(int pageIndex, int pageSize, string keyword);
     }
 }

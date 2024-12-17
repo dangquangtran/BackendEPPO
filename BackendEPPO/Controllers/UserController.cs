@@ -205,7 +205,7 @@ namespace BackendEPPO.Controllers
         /// </summary>
         /// <returns>Create account user for staff by role admin.</returns>
         [HttpPost(ApiEndPointConstant.User.CreateAccountByAdmin)]
-        public async Task<IActionResult> CreateAccountByAdmin([FromBody] CreateAccountByAdminDTO admin)
+        public async Task<IActionResult> CreateAccountByAdmin([FromBody] CreateAccountByOwnerDTO admin)
         {
 
             if (!ModelState.IsValid)

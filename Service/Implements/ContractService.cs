@@ -228,7 +228,17 @@ namespace Service
             return  _unitOfWork.ContractRepository.GetFirstOrDefaultAsync(c => c.UserId == userId  && c.Status == 1); // Kiểm tra hợp đồng đang hoạt động và chưa bị hủy
         }
 
+        public async Task<IEnumerable<Contract>> SearchContract(int pageIndex, int pageSize, string keyword)
+        {
+            var plants = _unitOfWork.ContractRepository.Get(
+             filter: c => (c.ContractId.ToString().Contains(keyword)),
+             pageIndex: pageIndex,
+             pageSize: pageSize,
+             orderBy: query => query.OrderByDescending(c => c.ContractId)
+                );
 
+            return _mapper.Map<IEnumerable<Contract>>(plants);
+        }
         public async Task<int> CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID)
         {
 
