@@ -103,7 +103,7 @@ namespace Service.Implements
                     }
                 }
             }
-
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
         }
@@ -349,7 +349,7 @@ namespace Service.Implements
                     }
                 }
             }
-
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
             return _mapper.Map<OrderVM>(order);
