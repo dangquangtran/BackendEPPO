@@ -162,25 +162,25 @@ namespace Service.Implements
         }
 
 
-        //public async Task<Room> GetRoomByID(int Id)
-        //{
-        //    return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant,Plant.ImagePlants"));
-        //}
         public async Task<Room> GetRoomByID(int Id)
         {
-            var room = _unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant,Plant.ImagePlants");
-
-            if (room != null)
-            {
-                // Chuyển đổi các trường thời gian về múi giờ UTC
-                room.RegistrationOpenDate = room.RegistrationOpenDate?.ToUniversalTime();
-                room.RegistrationEndDate = room.RegistrationEndDate?.ToUniversalTime();
-                room.ActiveDate = room.ActiveDate?.ToUniversalTime();
-                room.EndDate = room.EndDate?.ToUniversalTime();
-            }
-
-            return await Task.FromResult(room);
+            return await Task.FromResult(_unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant,Plant.ImagePlants"));
         }
+        //public async Task<Room> GetRoomByID(int Id)
+        //{
+        //    var room = _unitOfWork.RoomRepository.GetByID(Id, includeProperties: "Plant,Plant.ImagePlants");
+
+        //    if (room != null)
+        //    {
+        //        // Chuyển đổi các trường thời gian về múi giờ UTC
+        //        room.RegistrationOpenDate = room.RegistrationOpenDate?.ToUniversalTime();
+        //        room.RegistrationEndDate = room.RegistrationEndDate?.ToUniversalTime();
+        //        room.ActiveDate = room.ActiveDate?.ToUniversalTime();
+        //        room.EndDate = room.EndDate?.ToUniversalTime();
+        //    }
+
+        //    return await Task.FromResult(room);
+        //}
         public async Task CreateRoom(CreateRoomDTO room)
         {
             var plant =  _unitOfWork.PlantRepository.GetByID(room.PlantId.Value);
