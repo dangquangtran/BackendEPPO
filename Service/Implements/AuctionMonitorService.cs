@@ -140,6 +140,20 @@ namespace Service.Implements
                             // Cập nhật trạng thái và lưu thay đổi vào cơ sở dữ liệu
                             _unitOfWork.HistoryBidRepository.Update(highestBid);
                             _unitOfWork.RoomRepository.Update(room);
+                            var notification = new Notification
+                            {
+                                UserId = highestBid.UserId,
+                                Title = "Thông báo",
+                                Description = "Đơn hàng " + newOrder.OrderId + " đã được tạo thành công",
+                                CreatedDate = DateTime.UtcNow.AddHours(7),
+                                UpdatedDate = DateTime.UtcNow.AddHours(7),
+                                IsRead = false,
+                                IsNotifications = false,
+                                Status = 1
+                            };
+
+                            // Thêm vào cơ sở dữ liệu
+                            _unitOfWork.NotificationRepository.Insert(notification);
                             await _unitOfWork.SaveAsync();
                         }
                     }
