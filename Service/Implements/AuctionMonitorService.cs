@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Mysqlx.Crud;
+using Org.BouncyCastle.Utilities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -142,7 +143,7 @@ namespace Service.Implements
                             _unitOfWork.RoomRepository.Update(room);
                             var notification = new Notification
                             {
-                                UserId = highestBid.UserId,
+                                UserId = int.Parse(plant.Code),
                                 Title = "Thông báo",
                                 Description = "Đơn hàng " + newOrder.OrderId + " đã được tạo thành công",
                                 CreatedDate = DateTime.UtcNow.AddHours(7),
