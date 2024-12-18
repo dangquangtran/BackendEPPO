@@ -160,7 +160,10 @@ namespace Service.Implements
             var monthlyRevenue = new List<double>(new double[12]); // Khởi tạo 12 tháng với giá trị mặc định là 0
 
             var query = _unitOfWork.OrderRepository.Get(
-                filter: o => o.FinalPrice.HasValue && o.Status == status && o.CreationDate.HasValue && o.CreationDate.Value.Year == year
+                filter: o => o.FinalPrice.HasValue 
+                && o.CreationDate.HasValue 
+                && o.CreationDate.Value.Year == year
+                && (o.Status == 4  || o.Status == 6)
             );
 
             // Nhóm doanh thu theo tháng
