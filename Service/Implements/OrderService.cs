@@ -100,10 +100,14 @@ namespace Service.Implements
                         // Cập nhật trạng thái của cây
                         plant.IsActive = false;
                         _unitOfWork.PlantRepository.Update(plant);
+                        var owner = _unitOfWork.UserRepository.GetByID(plant.Code);
+                        if (owner != null)
+                        {
+                            CreateNotification(owner.UserId, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
+                        }
                     }
                 }
             }
-            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
         }
@@ -349,10 +353,14 @@ namespace Service.Implements
                         }
                         plant.IsActive = false;
                         _unitOfWork.PlantRepository.Update(plant);
+                        var owner = _unitOfWork.UserRepository.GetByID(plant.Code);
+                        if (owner != null)
+                        {
+                            CreateNotification(owner.UserId, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
+                        }
                     }
                 }
             }
-            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
             return _mapper.Map<OrderVM>(order);
