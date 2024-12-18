@@ -158,7 +158,7 @@ namespace Service.Implements
                         }
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken); // Chạy kiểm tra sau mỗi giây
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken); // Chạy kiểm tra sau mỗi giây
                 }
             }
             Console.WriteLine("AuctionMonitorService is stopping.");
