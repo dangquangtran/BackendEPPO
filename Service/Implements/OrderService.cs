@@ -2,6 +2,7 @@
 using BusinessObjects.Models;
 using DTOs.Order;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Repository.Implements;
 using Repository.Interfaces;
 using Service.Interfaces;
@@ -18,12 +19,14 @@ namespace Service.Implements
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly FirebaseStorageService _firebaseStorageService;
+        private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService, ILogger<OrderService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
+            _logger = logger;  // Injecting the logger
         }
 
         public IEnumerable<OrderVM> GetAllOrders(int pageIndex, int pageSize)
@@ -972,6 +975,124 @@ namespace Service.Implements
             _unitOfWork.Save();
         }
 
+
+
+        //thuandh - Create Order Buy 
+
+        public async Task CreateOrderBuyAsync(CreateOrderDTO createOrderDTO, int userId)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.GetByIDAsync(userId);
+                if (user == null)
+                {
+                    throw new Exception("Người dùng không tồn tại.");
+                }
+
+                var walletId = user.WalletId;
+                var wallet = await _unitOfWork.WalletRepository.GetByIDAsync(walletId);
+                if (wallet == null)
+                {
+                    throw new Exception("Không tìm thấy ví của người dùng.");
+                }
+
+                double totalFinalPrice = createOrderDTO.TotalPrice + createOrderDTO.DeliveryFee;
+
+                // Handle payment logic
+                if (createOrderDTO.PaymentId == 2)
+                {
+                    if (wallet.NumberBalance < totalFinalPrice)
+                    {
+                        throw new Exception("Số dư trong ví không đủ để thanh toán.");
+                    }
+
+                    wallet.NumberBalance -= totalFinalPrice;
+                    _unitOfWork.WalletRepository.Update(wallet);
+
+                    Transaction transaction = new Transaction
+                    {
+                        WalletId = walletId,
+                        Description = "Thanh toán đơn hàng",
+                        WithdrawNumber = totalFinalPrice,
+                        RechargeNumber = null,
+                        WithdrawDate = DateTime.UtcNow.AddHours(7),
+                        CreationDate = DateTime.UtcNow.AddHours(7),
+                        PaymentId = 2,
+                        Status = 1,
+                        IsActive = true
+                    };
+                    _unitOfWork.TransactionRepository.Insert(transaction);
+                }
+
+                // Group plants by Code
+                var groupedByCode = createOrderDTO.OrderDetails
+                    .Where(od => od.PlantId.HasValue)
+                    .GroupBy(od =>
+                    {
+                        var plant = _unitOfWork.PlantRepository.GetByIDAsync(od.PlantId.Value).Result;
+                        return plant?.Code;
+                    })
+                    .ToList();
+
+                foreach (var group in groupedByCode)
+                {
+                    var code = group.Key;
+
+                    // Create new Order for each group
+                    Order order = new Order
+                    {
+                        UserId = userId,
+                        CreationDate = DateTime.UtcNow.AddHours(7),
+                        Status = createOrderDTO.PaymentId == 2 ? 2 : 1,
+                        PaymentStatus = createOrderDTO.PaymentId == 2 ? "Đã thanh toán" : "Chưa thanh toán",
+                        TypeEcommerceId = 1,
+                        DeliveryFee = createOrderDTO.DeliveryFee,
+                        Code = code,
+                        FinalPrice = 0
+                    };
+
+                    _unitOfWork.OrderRepository.Insert(order);
+                    await _unitOfWork.SaveAsync();
+
+                    foreach (var orderDetailDTO in group)
+                    {
+                        var plant = await _unitOfWork.PlantRepository.GetByIDAsync(orderDetailDTO.PlantId.Value);
+                        if (plant != null)
+                        {
+                            if (plant.IsActive.HasValue && !plant.IsActive.Value)
+                            {
+                                throw new Exception($"Cây với ID {plant.PlantId} không thể được đặt vì đã ngừng hoạt động.");
+                            }
+
+                            plant.IsActive = false;
+                            _unitOfWork.PlantRepository.Update(plant);
+
+                            OrderDetail orderDetail = new OrderDetail
+                            {
+                                OrderId = order.OrderId,
+                                PlantId = plant.PlantId,
+                            };
+
+                            _unitOfWork.OrderDetailRepository.Insert(orderDetail);
+                            order.FinalPrice += plant.Price;
+                        }
+                    }
+                }
+
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while saving entity changes: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw;
+            }
+        }
+
+
         public void CreateNotification(int userId, string title, string description)
         {
             // Tạo đối tượng thông báo mới
@@ -1016,6 +1137,7 @@ namespace Service.Implements
 
             _unitOfWork.Save();
         }
+
     }
 
 }

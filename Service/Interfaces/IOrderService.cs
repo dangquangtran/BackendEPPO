@@ -41,6 +41,12 @@ namespace Service.Interfaces
         Task<double> CountOrderPriceDateNow(int status);
         IEnumerable<OrderVM> GetOrdersAuctionByUserId(int userId, int pageIndex, int pageSize, int status);
         void UpdateOrderDetailDeposit(int orderDetailId, string depositDescription, double? depositReturnCustomer, double? depositReturnOwner);
+
+
+        //thuandh - Create Order Buy 
+        Task CreateOrderBuyAsync(CreateOrderDTO createOrderDTO, int userId);
+
         void CustomerNotReceivedOrder(int orderId, int userId);
+
     }
 }
