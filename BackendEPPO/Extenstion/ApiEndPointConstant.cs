@@ -273,6 +273,8 @@ namespace BackendEPPO.Extenstion
             public const string ViewPlantsWaitAccept = ApiEndpoint + "/GetList/Plants/WaitToAccept"; 
             public const string ViewPlantsUnAccept = ApiEndpoint + "/GetList/Plants/UnAccept";
             public const string SearchPlantID = GetListPlants_Endpoint + "/Search/PlantID";
+
+            public const string GetAllPlantsOfOwner = ApiEndpoint + "/GetList/Plants/OfOwner/ByCode";
         }
         // Do Huu Thuan
         public static class Categories
@@ -320,6 +322,11 @@ namespace BackendEPPO.Extenstion
         {
             public const string PaymentRecharge_Endpoint = ApiEndpoint + "/Payment/ZaloPay/Recharge";
         }
+        public static class OrderBy
+        {
+            public const string CreateOrderBy = ApiEndpoint + "/GetList/Plants/Create/OrderBuy";
+        }
+
 
     }
    
