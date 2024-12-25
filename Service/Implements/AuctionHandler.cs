@@ -8,8 +8,9 @@ using Microsoft.EntityFrameworkCore;
     using Repository.Interfaces;
     using System;
     using System.Collections.Generic;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Linq;
+using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
     using System.Net.WebSockets;
     using System.Text;
     using System.Text.Json;
@@ -166,7 +167,8 @@ using Microsoft.EntityFrameworkCore;
                             // Kiểm tra nếu BidAmount của lần đấu giá mới nhỏ hơn PriceAuctionNext của lần đấu giá trước đó
                             if (bidRequest.BidAmount < lastBid.PriceAuctionNext)
                             {
-                                var response = $"Bạn phải ra giá cao hơn giá cao nhât + bước giá: {lastBid.PriceAuctionNext}";
+                                var formattedPrice = Convert.ToDouble(lastBid.PriceAuctionNext).ToString("N0", new CultureInfo("vi-VN"));
+                                var response = $"Bạn phải ra giá cao hơn giá cao nhất + bước giá: {formattedPrice}";
                                 var responseBytes = Encoding.UTF8.GetBytes(response);
                                 await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                                 continue;
@@ -177,7 +179,8 @@ using Microsoft.EntityFrameworkCore;
                             // Nếu chưa có lượt đấu giá nào, kiểm tra nếu BidAmount lớn hơn giá cây trong phòng cộng với PriceStep
                             if (bidRequest.BidAmount < plantPrice + priceStep)
                             {
-                                var response = $"Bạn phải ra giá cao hơn giá khởi điểm + bước giá: {plantPrice + priceStep}";
+                                var formattedPrice = Convert.ToDouble(plantPrice + priceStep).ToString("N0", new CultureInfo("vi-VN"));
+                                var response = $"Bạn phải ra giá cao hơn giá khởi điểm + bước giá: {formattedPrice}";
                                 var responseBytes = Encoding.UTF8.GetBytes(response);
                                 await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                                 continue;

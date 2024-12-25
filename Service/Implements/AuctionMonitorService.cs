@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Mysqlx.Crud;
+using Org.BouncyCastle.Utilities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -140,11 +141,25 @@ namespace Service.Implements
                             // Cập nhật trạng thái và lưu thay đổi vào cơ sở dữ liệu
                             _unitOfWork.HistoryBidRepository.Update(highestBid);
                             _unitOfWork.RoomRepository.Update(room);
+                            var notification = new Notification
+                            {
+                                UserId = int.Parse(plant.Code),
+                                Title = "Thông báo",
+                                Description = "Đơn hàng " + newOrder.OrderId + " đã được tạo thành công",
+                                CreatedDate = DateTime.UtcNow.AddHours(7),
+                                UpdatedDate = DateTime.UtcNow.AddHours(7),
+                                IsRead = false,
+                                IsNotifications = false,
+                                Status = 1
+                            };
+
+                            // Thêm vào cơ sở dữ liệu
+                            _unitOfWork.NotificationRepository.Insert(notification);
                             await _unitOfWork.SaveAsync();
                         }
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken); // Chạy kiểm tra sau mỗi giây
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken); // Chạy kiểm tra sau mỗi giây
                 }
             }
             Console.WriteLine("AuctionMonitorService is stopping.");

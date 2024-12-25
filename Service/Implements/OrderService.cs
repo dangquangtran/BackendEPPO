@@ -31,13 +31,13 @@ namespace Service.Implements
 
         public IEnumerable<OrderVM> GetAllOrders(int pageIndex, int pageSize)
         {
-            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.OrderId), pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails");
+            var orders = _unitOfWork.OrderRepository.Get(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.OrderId), pageIndex: pageIndex, pageSize: pageSize, includeProperties: "OrderDetails,ImageDeliveryOrders,ImageReturnOrders");
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
         public OrderVM GetOrderById(int id)
         {
-            var order =_unitOfWork.OrderRepository.GetByID(id, includeProperties: "OrderDetails");
+            var order =_unitOfWork.OrderRepository.GetByID(id, includeProperties: "OrderDetails,ImageDeliveryOrders,ImageReturnOrders");
             return _mapper.Map<OrderVM>(order);
         }
 
@@ -103,10 +103,14 @@ namespace Service.Implements
                         // Cập nhật trạng thái của cây
                         plant.IsActive = false;
                         _unitOfWork.PlantRepository.Update(plant);
+                        var owner = _unitOfWork.UserRepository.GetByID(plant.Code);
+                        if (owner != null)
+                        {
+                            CreateNotification(owner.UserId, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
+                        }
                     }
                 }
             }
-
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
         }
@@ -326,7 +330,7 @@ namespace Service.Implements
                     if (plant != null)
                     {
                         totalDeposit += orderDetail.Deposit ?? 0;
-                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value).AddDays(3);
+                        orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
                     }
                     else
                     {
@@ -352,10 +356,14 @@ namespace Service.Implements
                         }
                         plant.IsActive = false;
                         _unitOfWork.PlantRepository.Update(plant);
+                        var owner = _unitOfWork.UserRepository.GetByID(plant.Code);
+                        if (owner != null)
+                        {
+                            CreateNotification(owner.UserId, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
+                        }
                     }
                 }
             }
-
             _unitOfWork.OrderRepository.Insert(order);
             _unitOfWork.Save();
             return _mapper.Map<OrderVM>(order);
@@ -528,6 +536,12 @@ namespace Service.Implements
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
 
+            // Kiểm tra nếu đơn hàng đã giao hàng thành công
+            if (order.Status == 3 && order.DeliveryDescription == "Giao hàng thành công")
+            {
+                throw new InvalidOperationException("Không thể cập nhật đơn hàng đã giao hàng thành công.");
+            }
+
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Giao hàng thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
@@ -559,9 +573,10 @@ namespace Service.Implements
 
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
+
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được giao thành công");
             _unitOfWork.Save();
         }
-
         public async Task UpdateDeliverOrderFail(int orderId, List<IFormFile> imageFiles, int userId)
         {
             // Lấy thông tin đơn hàng
@@ -570,12 +585,15 @@ namespace Service.Implements
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
             }
-
+            if (order.DeliveryDescription == "Giao hàng thành công")
+            {
+                throw new Exception("Đơn hàng đã được giao thành công, không thể cập nhật giao hàng thất bại.");
+            }
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Giao hàng thất bại";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
-
+            order.NumberOfDeliveries += 1;
             // Kiểm tra danh sách file
             if (imageFiles != null && imageFiles.Count > 0)
             {
@@ -599,7 +617,11 @@ namespace Service.Implements
                     order.ImageDeliveryOrders.Add(imageDeliveryOrder);
                 }
             }
-
+            if (order.NumberOfDeliveries == 3)
+            {
+                CancelOrder(orderId, userId);
+                return;
+            }
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
@@ -607,20 +629,35 @@ namespace Service.Implements
 
         public async Task UpdateReturnOrderSuccess(int orderId, List<IFormFile> imageFiles, int userId , string depositDescription, double depositReturnOwner)
         {
+            double depositReturnCustomer = 0;
             // Lấy thông tin đơn hàng
-            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            var order = _unitOfWork.OrderRepository.GetByID(orderId, includeProperties: "OrderDetails");
             if (order == null)
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
+            }
+            bool isExpired = order.OrderDetails.Any(orderDetail =>
+                             orderDetail.RentalEndDate == null || orderDetail.RentalEndDate > DateTime.UtcNow.AddHours(7));
+
+            if (isExpired)
+            {
+                throw new Exception("Đơn hàng chưa hết hạn thuê, không thể thu hồi.");
             }
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Thu hồi thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
+            order.Status = 6;
             foreach (var orderDetail in order.OrderDetails)
             {
+                if (depositReturnOwner > orderDetail.Deposit)
+                {
+                    throw new Exception($"Số tiền trả lại cho chủ cây không được lớn hơn tiền cọc ({orderDetail.Deposit}).");
+                }
                 orderDetail.DepositDescription = depositDescription;
                 orderDetail.DepositReturnOwner = depositReturnOwner;
+                orderDetail.DepositReturnCustomer = orderDetail.Deposit - depositReturnOwner;
+                depositReturnCustomer = orderDetail.Deposit - depositReturnOwner ?? 0;
             }
             // Kiểm tra danh sách file
             if (imageFiles != null && imageFiles.Count > 0)
@@ -645,7 +682,68 @@ namespace Service.Implements
                     order.ImageReturnOrders.Add(imageReturnOrder);
                 }
             }
-           
+
+            var owner = await _unitOfWork.UserRepository.GetByIDAsync(userId); // Giả sử userId là của owner
+            if (owner == null)
+            {
+                throw new Exception("Không tìm thấy thông tin người dùng chủ cây.");
+            }
+
+            var ownerWallet = await _unitOfWork.WalletRepository.GetByIDAsync(owner.WalletId);
+            if (ownerWallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng chủ cây.");
+            }
+
+            // Cộng tiền vào ví của chủ cây
+            ownerWallet.NumberBalance += depositReturnOwner;
+            _unitOfWork.WalletRepository.Update(ownerWallet);
+
+            // Tạo giao dịch cộng tiền cho chủ cây (owner)
+            Transaction ownerTransaction = new Transaction
+            {
+                WalletId = ownerWallet.WalletId,
+                Description = "Trả tiền cọc từ đơn hàng " + order.OrderId,
+                RechargeNumber = depositReturnOwner,
+                WithdrawNumber = null,
+                RechargeDate = DateTime.UtcNow.AddHours(7),
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                PaymentId = 2,  
+                Status = 1,
+                IsActive = true
+            };
+            _unitOfWork.TransactionRepository.Insert(ownerTransaction);
+
+            // Trả tiền cọc cho người dùng (user)
+            var customer = await _unitOfWork.UserRepository.GetByIDAsync(order.UserId); // Giả sử order.UserId là của khách hàng
+            if (customer == null)
+            {
+                throw new Exception("Không tìm thấy thông tin người dùng.");
+            }
+
+            var customerWallet = await _unitOfWork.WalletRepository.GetByIDAsync(customer.WalletId);
+            if (customerWallet == null)
+            {
+                throw new Exception("Không tìm thấy ví của người dùng.");
+            }
+
+            customerWallet.NumberBalance += depositReturnCustomer;
+            _unitOfWork.WalletRepository.Update(customerWallet);
+
+            Transaction customerTransaction = new Transaction
+            {
+                WalletId = customerWallet.WalletId,
+                Description = "Trả tiền cọc từ đơn hàng " + order.OrderId,
+                RechargeNumber = depositReturnCustomer,
+                WithdrawNumber = null,
+                RechargeDate = DateTime.UtcNow.AddHours(7),
+                CreationDate = DateTime.UtcNow.AddHours(7),
+                PaymentId = 2, 
+                Status = 1,
+                IsActive = true
+            };
+            _unitOfWork.TransactionRepository.Insert(customerTransaction);
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được thu hồi thành công");
             // Cập nhật thông tin đơn hàng và lưu thay đổi
             _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.Save();
@@ -658,7 +756,14 @@ namespace Service.Implements
             if (order == null)
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
-            }   
+            }
+            bool isExpired = order.OrderDetails.Any(orderDetail =>
+                 orderDetail.RentalEndDate == null || orderDetail.RentalEndDate > DateTime.UtcNow.AddHours(7));
+
+            if (isExpired)
+            {
+                throw new Exception("Đơn hàng chưa hết hạn thuê, không thể thu hồi.");
+            }
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Thu hồi thất bại";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
@@ -671,7 +776,7 @@ namespace Service.Implements
         public void UpdateOrderStatus(int orderId, int newStatus, int userId)
         {
             // Lấy thông tin đơn hàng từ cơ sở dữ liệu
-            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            var order = _unitOfWork.OrderRepository.GetByID(orderId, includeProperties: "OrderDetails");
             if (order == null)
             {
                 throw new Exception("Không tìm thấy đơn hàng.");
@@ -682,6 +787,88 @@ namespace Service.Implements
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
 
+            if (newStatus == 4 && order.PaymentStatus == "Đã thanh toán")
+            {
+                // Tính tổng số tiền từ tất cả các OrderDetail
+                double totalAmount = order.TotalPrice + order.DeliveryFee ?? 0;
+
+                // Kiểm tra thông tin ví của người dùng chủ cây
+                User owner = null;
+                Wallet wallet = null;
+
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    if (orderDetail.PlantId.HasValue)
+                    {
+                        var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId.Value);
+                        if (plant != null)
+                        {
+                            owner = _unitOfWork.UserRepository.GetByID(plant.Code);
+                            if (owner != null)
+                            {
+                                wallet = _unitOfWork.WalletRepository.GetByID(owner.WalletId);
+                                break; 
+                            }
+                        }
+                    }
+                }
+
+                if (owner == null)
+                {
+                    throw new Exception("Không tìm thấy thông tin người dùng chủ cây.");
+                }
+
+                if (wallet == null)
+                {
+                    throw new Exception("Không tìm thấy ví của người dùng chủ cây.");
+                }
+
+                // Cộng tiền vào ví
+                wallet.NumberBalance += (int)(totalAmount * 80 / 100);
+                _unitOfWork.WalletRepository.Update(wallet);
+
+                // Tạo giao dịch cộng tiền
+                Transaction transaction = new Transaction
+                {
+                    WalletId = wallet.WalletId,
+                    Description = "Nhận tiền từ đơn hàng " +order.OrderId,
+                    RechargeNumber = (int)(totalAmount * 80 / 100),
+                    WithdrawNumber = null,
+                    RechargeDate = DateTime.UtcNow.AddHours(7),
+                    CreationDate = DateTime.UtcNow.AddHours(7),
+                    PaymentId = 2,
+                    Status = 1,
+                    IsActive = true
+                };
+                _unitOfWork.TransactionRepository.Insert(transaction);
+                // Cộng 20% vào ví manager có WalletId = 5
+                Wallet managerWallet = _unitOfWork.WalletRepository.GetByID(5);
+                if (managerWallet == null)
+                {
+                    throw new Exception("Không tìm thấy ví của manager.");
+                }
+
+                int managerAmount = (int)(totalAmount * 20 / 100);
+                managerWallet.NumberBalance += managerAmount;
+                _unitOfWork.WalletRepository.Update(managerWallet);
+
+                // Tạo giao dịch cộng tiền cho manager
+                _unitOfWork.TransactionRepository.Insert(new Transaction
+                {
+                    WalletId = managerWallet.WalletId,
+                    Description = "Nhận tiền hoa hồng từ đơn hàng " + order.OrderId,
+                    RechargeNumber = managerAmount,
+                    WithdrawNumber = null,
+                    RechargeDate = DateTime.UtcNow.AddHours(7),
+                    CreationDate = DateTime.UtcNow.AddHours(7),
+                    PaymentId = 2,
+                    Status = 1,
+                    IsActive = true
+                });
+            
+        }
+
+            CreateNotification(order.UserId ?? 0, "Thông báo", "Đơn hàng " + order.OrderId + " đã được cập nhật");
             _unitOfWork.OrderRepository.Update(order);
 
             _unitOfWork.Save();
@@ -779,12 +966,15 @@ namespace Service.Implements
             {
                 orderDetail.DepositReturnOwner = depositReturnOwner.Value;
             }
-
-
+            var order = _unitOfWork.OrderRepository.GetByID(orderDetail.OrderId);
+            order.Status = 6;
+            order.DeliveryDescription = "Thu hồi thành công";
             // Lưu thay đổi vào cơ sở dữ liệu
+            _unitOfWork.OrderRepository.Update(order);
             _unitOfWork.OrderDetailRepository.Update(orderDetail);
             _unitOfWork.Save();
         }
+
 
 
         //thuandh - Create Order Buy 
@@ -902,6 +1092,51 @@ namespace Service.Implements
             }
         }
 
+
+        public void CreateNotification(int userId, string title, string description)
+        {
+            // Tạo đối tượng thông báo mới
+            var notification = new Notification
+            {
+                UserId = userId,
+                Title = title,
+                Description = description,
+                CreatedDate = DateTime.UtcNow.AddHours(7),
+                UpdatedDate = DateTime.UtcNow.AddHours(7),
+                IsRead = false,
+                IsNotifications = false,
+                Status = 1
+            };
+
+            // Thêm vào cơ sở dữ liệu
+            _unitOfWork.NotificationRepository.Insert(notification);
+            _unitOfWork.Save();
+        }
+        public void CustomerNotReceivedOrder(int orderId, int userId)
+        {
+            var order = _unitOfWork.OrderRepository.GetByID(orderId);
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            if (order.UserId != userId)
+            {
+                throw new Exception("Người dùng không có quyền thao tác trên đơn hàng này.");
+            }
+
+            if (order.Status != 3) // Giả định trạng thái 3 là "Đang giao hàng"
+            {
+                throw new Exception("Đơn hàng không ở trạng thái có thể xác nhận chưa nhận hàng.");
+            }
+            order.DeliveryDescription = "Khách hàng chưa nhận được đơn hàng";
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            _unitOfWork.Save();
+        }
 
     }
 

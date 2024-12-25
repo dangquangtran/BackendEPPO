@@ -425,7 +425,7 @@ namespace BackendEPPO.Controllers
         }
 
         [Authorize]
-        [HttpPut("UpdateReturnOrder")]
+        [HttpPut("UpdateReturnOrderSuccess")]
         public async Task<IActionResult> UpdateReturnOrderSuccess([FromQuery]int orderId, string depositDescription, double depositReturnOwner, [FromForm] List<IFormFile> imageFiles)
         {
             try
@@ -680,6 +680,33 @@ namespace BackendEPPO.Controllers
                 {
                     StatusCode = 200,
                     Message = "Cập nhật cọc đơn hàng thuê thành công.",
+                    Data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpPut("CustomerNotReceivedOrder")]
+        public IActionResult CustomerNotReceivedOrder(int orderId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                int userId = int.Parse(userIdClaim);
+                _orderService.CustomerNotReceivedOrder(orderId, userId);
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã cập nhật trạng thái chưa nhận hàng thành công.",
                     Data = (object)null
                 });
             }
