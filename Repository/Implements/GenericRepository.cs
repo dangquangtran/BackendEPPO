@@ -163,7 +163,20 @@ namespace Repository.Implements
         //    }
         //    dbSet.Remove(entityToDelete);
         //}
+        public async Task<IEnumerable<TEntity>> GetByConditionAsync(Expression<Func<TEntity, bool>> predicate, string includeProperties = "")
+        {
+            var query = context.Set<TEntity>().Where(predicate);
 
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            return await query.ToListAsync();
+        }
         public virtual void Update(TEntity entityToUpdate)
         {
             dbSet.Attach(entityToUpdate);
@@ -196,4 +209,6 @@ namespace Repository.Implements
         }
 
         }
+
+
 }

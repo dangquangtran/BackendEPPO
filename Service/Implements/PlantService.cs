@@ -626,6 +626,26 @@ namespace Service
             // Trả về giá trị làm tròn
             return (int)Math.Ceiling(plant.FinalPrice * 20/100);
         }
+
+        public async Task<double> CalculateDepositRental(int plantId)
+        {
+            // Fetch the plant details using PlantId
+            var plant = await _unitOfWork.PlantRepository.GetFirstOrDefaultAsync(
+                filter: p => p.PlantId == plantId
+            );
+
+            if (plant == null)
+            {
+                throw new Exception("Plant not found.");
+            }
+
+            // Calculate the deposit using the formula: Price + (FinalPrice * Discounts)
+            double deposit = plant.Price + (plant.FinalPrice * 50/100);
+
+            // Return the rounded-up deposit value
+            return Math.Ceiling(deposit);
+        }
+
     }
 
 }

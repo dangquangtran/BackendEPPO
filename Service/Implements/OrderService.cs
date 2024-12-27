@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using DTOs.Order;
+using DTOs.OrderDetail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Repository.Implements;
@@ -978,7 +979,6 @@ namespace Service.Implements
 
 
         //thuandh - Create Order Buy 
-
         public async Task CreateOrderBuyAsync(CreateOrderDTO createOrderDTO, int userId)
         {
             try
@@ -1090,6 +1090,112 @@ namespace Service.Implements
                 }
                 throw;
             }
+        }
+        
+        //thuandh - Create Order Rental 
+        public async Task CreateOrderRentalAsync(CreateOrderRentalDTO createOrderDTO, int userId)
+        {
+            try
+            {
+                var unpaidOrdersCount = _unitOfWork.OrderRepository
+                    .Get(o => o.UserId == userId && o.PaymentStatus == "Chưa thanh toán" && o.PaymentId == 2 && o.Status == 1)
+                    .Count();
+
+                if (unpaidOrdersCount > 3)
+                {
+                    throw new Exception("Người dùng có hơn 3 đơn hàng thuê chưa thanh toán. Không thể tạo đơn hàng mới.");
+                }
+                // Validate plants for rental
+                var rentedPlantIds = _unitOfWork.OrderRepository
+                    .Get(o => o.UserId == userId && o.Status == 1, includeProperties: "OrderDetails")
+                    .SelectMany(o => o.OrderDetails)
+                    .Select(od => od.PlantId)
+                    .ToHashSet();
+
+                // Kiểm tra từng PlantId trong đơn hàng mới
+                foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+                {
+                    if (orderDetailDTO.PlantId.HasValue && rentedPlantIds.Contains(orderDetailDTO.PlantId.Value))
+                        throw new Exception($"Cây với ID {orderDetailDTO.PlantId.Value} đã được thuê trong một đơn hàng khác.");
+                }
+
+                // Create new Order
+                var order = _mapper.Map<Order>(createOrderDTO);
+                order.CreationDate = DateTime.UtcNow.AddHours(7);
+                order.TypeEcommerceId = 2;
+                order.Status = 1;
+                order.UserId = userId;
+                double totalDeposit = 0;
+
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    if (orderDetail.RentalStartDate.HasValue && orderDetail.NumberMonth.HasValue)
+                    {
+                        // Lấy giá cây từ cơ sở dữ liệu
+                        var plant = _unitOfWork.PlantRepository.GetByID(orderDetail.PlantId);
+                        if (plant != null)
+                        {
+                            totalDeposit += orderDetail.Deposit ?? 0;
+                            orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+                        }
+                        else
+                        {
+                            throw new Exception($"Không tìm thấy cây với ID {orderDetail.PlantId}.");
+                        }
+                    }
+                }
+
+                order.FinalPrice = order.TotalPrice + order.DeliveryFee + totalDeposit;
+                order.PaymentStatus = "Chưa thanh toán";
+
+                // Cập nhật trạng thái của cây và lưu đơn hàng
+                foreach (var orderDetailDTO in createOrderDTO.OrderDetails)
+                {
+                    if (orderDetailDTO.PlantId.HasValue)
+                    {
+                        var plant = _unitOfWork.PlantRepository.GetByID(orderDetailDTO.PlantId.Value);
+                        if (plant != null)
+                        {
+                            if ((bool)!plant.IsActive)
+                            {
+                                throw new Exception($"Cây với ID {plant.PlantId} không thể được thuê vì đã ngừng hoạt động.");
+                            }
+                            plant.IsActive = false;
+                            _unitOfWork.PlantRepository.Update(plant);
+                            var owner = _unitOfWork.UserRepository.GetByID(plant.Code);
+                            if (owner != null)
+                            {
+                                CreateNotification(owner.UserId, "Thông báo", "Đơn hàng " + order.OrderId + " đã được tạo thành công");
+                            }
+                        }
+                    }
+                }
+                _unitOfWork.OrderRepository.Insert(order);
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while creating rental order: {ex.Message}");
+                if (ex.InnerException != null)
+                    _logger.LogError($"Inner exception: {ex.InnerException.Message}");
+                throw;
+            }
+        }
+        //thuandh - Get Order By Id
+        // thuandh - Get Order By Id
+        public async Task<Order> GetOrderByID(int id)
+        {
+            // Fetch the order including related properties
+            var order = await _unitOfWork.OrderRepository.
+                GetByIDAsync(id,includeProperties: "ModificationByNavigation,Payment,TypeEcommerce,ImageDeliveryOrders,ImageReturnOrders,OrderDetails.Plant"
+            );
+
+            if (order == null)
+            {
+                throw new Exception($"Order with ID {id} not found.");
+            }
+
+            return order;
         }
 
 

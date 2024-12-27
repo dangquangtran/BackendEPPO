@@ -56,6 +56,6 @@ namespace Service.Interfaces
 
         Task<int> CalculateDeposit(int plantId);
 
-
+        Task<double> CalculateDepositRental(int plantId);
     }
 }
