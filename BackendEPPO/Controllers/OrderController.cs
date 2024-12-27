@@ -1,4 +1,5 @@
-﻿using DTOs.Order;
+﻿using BackendEPPO.Extenstion;
+using DTOs.Order;
 using GoogleApi.Entities.Search.Video.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -426,7 +427,7 @@ namespace BackendEPPO.Controllers
 
         [Authorize]
         [HttpPut("UpdateReturnOrderSuccess")]
-        public async Task<IActionResult> UpdateReturnOrderSuccess([FromQuery]int orderId, string depositDescription, double depositReturnOwner, [FromForm] List<IFormFile> imageFiles)
+        public async Task<IActionResult> UpdateReturnOrderSuccess([FromQuery] int orderId, string depositDescription, double depositReturnOwner, [FromForm] List<IFormFile> imageFiles)
         {
             try
             {
@@ -721,5 +722,45 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        /// <summary>
+        /// Get order by Id
+        /// </summary>
+        /// <returns> The create order with by more plant and more the owner in the Eppo</returns>
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.OrderBy.GetOrderByID)]
+        public async Task<IActionResult> GetOrderByID(int OrderId)
+        {
+            try
+            {
+                // Fetch the order using the service
+                var order = await _orderService.GetOrderByID(OrderId);
+
+                if (order == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Order with ID {OrderId} not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Order retrieved successfully.",
+                    Data = order
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "An error occurred: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+
+        }
     }
 }

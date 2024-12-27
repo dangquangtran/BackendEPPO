@@ -645,7 +645,45 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Function for mobile: Get Deposit Rental by plant Id.
+        /// </summary>
+        /// <returns>Function for mobile: Get All Plants of the owner for customer buy or rental.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.CalculateDepositRental)]
+        [Authorize(Roles = "admin, manager, customer")]
+        public IActionResult CalculateDepositRental(int plantId)
+        {
+            try
+            {
+                double result = _plantService.CalculateDepositRental(plantId).Result;
 
+                if (result == 0)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = Error.BAD_REQUEST,
+                        Data = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = Error.REQUESR_SUCCESFULL,
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = Error.NO_DATA_FOUND + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
 
     }
 }
