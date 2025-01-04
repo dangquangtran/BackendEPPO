@@ -45,6 +45,8 @@ namespace BackendEPPO.Controllers
         [HttpGet("{id}")]
         public IActionResult GetPlantById(int id)
         {
+            
+
             var plant = _plantService.GetPlantById(id);
             if (plant == null)
             {
