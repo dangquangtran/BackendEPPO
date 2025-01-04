@@ -579,11 +579,11 @@ namespace BackendEPPO.Controllers
         }
 
         /// <summary>
-        /// Function for mobile: Get All Plants of the owner for customer buy or rental.
+        /// Function for mobile: Get All Plants sale of the owner for customer buy or rental.
         /// </summary>
         /// <returns>Function for mobile: Get All Plants of the owner for customer buy or rental.</returns>
-        [HttpGet(ApiEndPointConstant.Plants.GetAllPlantsOfOwner)]
-        public IActionResult GetAllPlantsOfOwner(int pageIndex, int pageSize, string code)
+        [HttpGet(ApiEndPointConstant.Plants.GetAllPlantsSaleOfOwner)]
+        public IActionResult GetAllPlantsSaleOfOwner(int pageIndex, int pageSize, string code)
         {
             try
             {
@@ -606,7 +606,7 @@ namespace BackendEPPO.Controllers
                         Data = (object)null
                     });
                 }
-                var plants = _plantService.GetAllPlantsOfOwner(pageIndex, pageSize, code);
+                var plants = _plantService.GetAllPlantsSaleOfOwner(pageIndex, pageSize, code);
                 if (plants == null || !plants.Any())
                 {
                     return NotFound(new
@@ -645,6 +645,76 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+
+
+        /// <summary>
+        /// Function for mobile: Get All Plants Rental of the owner for customer buy or rental.
+        /// </summary>
+        /// <returns>Function for mobile: Get All Plants of the owner for customer buy or rental.</returns>
+        [HttpGet(ApiEndPointConstant.Plants.GetAllPlantsRentalOfOwner)]
+        public IActionResult GetAllPlantsRentalOfOwner(int pageIndex, int pageSize, string code)
+        {
+            try
+            {
+                if (!int.TryParse(code, out int userId))
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Message = $"Mã code không hợp lệ: {code}",
+                        Data = (object)null
+                    });
+                }
+                var owner = _userService.GetUsersByID(userId);
+                if (owner == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Không tìm thấy người dùng với UserId: {userId}",
+                        Data = (object)null
+                    });
+                }
+                var plants = _plantService.GetAllPlantsRentalOfOwner(pageIndex, pageSize, code);
+                if (plants == null || !plants.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = "Không tìm thấy cây nào.",
+                        Owner = new
+                        {
+                            FullName = owner.Result.FullName,
+                            PhoneNumber = owner.Result.PhoneNumber,
+                            ImageUrl = owner.Result.ImageUrl
+                        },
+                        Data = (object)null
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Owner = new
+                    {
+                        FullName = owner.Result.FullName,
+                        PhoneNumber = owner.Result.PhoneNumber,
+                        ImageUrl = owner.Result.ImageUrl
+                    },
+                    Data = plants
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Message = "Đã xảy ra lỗi khi xử lý yêu cầu.",
+                    Details = ex.Message
+                });
+            }
+        }
+
         /// <summary>
         /// Function for mobile: Get Deposit Rental by plant Id.
         /// </summary>

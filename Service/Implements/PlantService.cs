@@ -57,10 +57,16 @@ namespace Service
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
         
-        //Get all plant of owner for customer choose buy or rental
-        public IEnumerable<PlantVM> GetAllPlantsOfOwner(int pageIndex, int pageSize, string code)
+        //Get all plant of owner for customer choose buy 
+        public IEnumerable<PlantVM> GetAllPlantsSaleOfOwner(int pageIndex, int pageSize, string code)
         {
-            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status == 2 && c.IsActive != false && c.Code == code, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
+            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status == 2 && c.IsActive != false && c.Code == code && c.TypeEcommerceId == 1, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
+            return _mapper.Map<IEnumerable<PlantVM>>(plants);
+        }
+        //Get all plant of owner for customer choose  rental
+        public IEnumerable<PlantVM> GetAllPlantsRentalOfOwner(int pageIndex, int pageSize, string code)
+        {
+            var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status == 2 && c.IsActive != false && c.Code == code && c.TypeEcommerceId == 2, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
 

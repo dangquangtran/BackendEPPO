@@ -17,7 +17,8 @@ namespace Service.Interfaces
         Task<IEnumerable<Plant>> GetListPlantByCategory(int Id);
         IEnumerable<PlantVM> GetAllPlants(int pageIndex, int pageSize);
         IEnumerable<PlantVM> GetAllPlantsToResgister(int pageIndex, int pageSize, string code);
-        IEnumerable<PlantVM> GetAllPlantsOfOwner(int pageIndex, int pageSize, string code);
+        IEnumerable<PlantVM> GetAllPlantsSaleOfOwner(int pageIndex, int pageSize, string code);
+        IEnumerable<PlantVM> GetAllPlantsRentalOfOwner(int pageIndex, int pageSize, string code);
         PlantVM GetPlantById(int id);
         Task CreatePlantByOwner(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles, int userId, string code);
      
