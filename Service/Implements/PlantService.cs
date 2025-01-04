@@ -94,12 +94,15 @@ namespace Service
             {
                 plantVM.PlantUser = new UserVM2
                 {
-                    FullName = user.FullName,
-                    ImageUrl = user.ImageUrl,
-                    PhoneNumber = user.PhoneNumber,
-                    Email = user.Email,
-
+                    FullName = user.FullName ?? "",         // Replace null with an empty string
+                    ImageUrl = user.ImageUrl ?? "",         // Replace null with an empty string
+                    PhoneNumber = user.PhoneNumber ?? "",   // Replace null with an empty string
+                    Email = user.Email ?? ""                // Replace null with an empty string
                 };
+            }
+            else
+            {
+                plantVM.PlantUser = new UserVM2(); // Return an empty object if the user is null
             }
             return plantVM;
         }
