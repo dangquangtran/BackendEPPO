@@ -72,9 +72,36 @@ namespace Service
 
         public PlantVM GetPlantById(int id)
         {
-            var plant = _unitOfWork.PlantRepository.GetByID(id, includeProperties: "ImagePlants");
 
-            return _mapper.Map<PlantVM>(plant); ;
+            var plant = _unitOfWork.PlantRepository.GetByID(id, includeProperties: "ImagePlants");
+            if (plant == null)
+            {
+                return null;
+            }
+
+            if (!int.TryParse(plant.Code, out int userId))
+            {
+                throw new Exception("Mã Code của cây không hợp lệ.");
+            }
+
+        
+            var user = _unitOfWork.UserRepository.GetByID(userId);
+
+            var plantVM = _mapper.Map<PlantVM>(plant);
+
+
+            if (user != null)
+            {
+                plantVM.PlantUser = new UserVM2
+                {
+                    FullName = user.FullName,
+                    ImageUrl = user.ImageUrl,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+
+                };
+            }
+            return plantVM;
         }
 
       

@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DTOs.ImagePlant;
+using DTOs.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace DTOs.Plant
         public DateTime? RentalStartDate { get; set; }
         public DateTime? RentalEndDate { get; set; }
         public string? Code { get; set; }
+        public UserVM2 PlantUser { get; set; }
     }
 
     public class CheckCart
