@@ -274,7 +274,9 @@ namespace BackendEPPO.Extenstion
             public const string ViewPlantsUnAccept = ApiEndpoint + "/GetList/Plants/UnAccept";
             public const string SearchPlantID = GetListPlants_Endpoint + "/Search/PlantID";
 
-            public const string GetAllPlantsOfOwner = ApiEndpoint + "/GetList/Plants/OfOwner/ByCode"; 
+            public const string GetAllPlantsSaleOfOwner = ApiEndpoint + "/GetList/Plants/Sale/OfOwner/ByCode";
+
+            public const string GetAllPlantsRentalOfOwner = ApiEndpoint + "/GetList/Plants/Rental/OfOwner/ByCode";
             public const string CalculateDepositRental = ApiEndpoint + "/GetList/Plants/DepositRental"; 
         }
         // Do Huu Thuan
