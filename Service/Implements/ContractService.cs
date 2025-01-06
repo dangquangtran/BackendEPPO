@@ -682,6 +682,231 @@ namespace Service
             }
         }
 
+        public async Task<string> GenerateContractPdfAsyncv2(CreateContractDTO contract, int userId)
+        {
+            var user = await Task.FromResult(_unitOfWork.UserRepository.GetByID(userId));
+            if (user == null)
+            {
+                throw new Exception("No data user.");
+            }
+
+
+
+            fileName = $"Contract_{contract.ContractNumber}_{DateTime.UtcNow.AddHours(7).Ticks}.pdf";
+
+            string pdfPath = Path.Combine("wwwroot", "contracts", fileName);
+
+            // Tạo thư mục nếu chưa có
+            Directory.CreateDirectory(Path.GetDirectoryName(pdfPath));
+
+            using (PdfDocument pdfDoc = new PdfDocument())
+            {
+                pdfDoc.Info.Title = $"Contract {contract.ContractNumber}";
+
+                // Tạo trang PDF
+                PdfPage page = pdfDoc.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                XFont font = new XFont("Arial", 10);
+                XFont titleFont = new XFont("Arial", 14, XFontStyleEx.Bold);
+
+                double margin = 50;
+                int lineHeight = 20;
+                double yPoint = margin;
+                double pageHeightLimit = page.Height - margin;
+
+                double pageWidth = page.Width;
+                double textWidth = gfx.MeasureString("HỢP ĐỒNG THUÊ CÂY", titleFont).Width;
+                double centerX = (pageWidth - textWidth) / 2;
+
+                void CreateNewPage()
+                {
+                    page = pdfDoc.AddPage();
+                    gfx = XGraphics.FromPdfPage(page);
+                    yPoint = margin;
+                }
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+
+                // Tiêu đề hợp đồng
+                gfx.DrawString($"HỢP ĐỒNG THUÊ CÂY", titleFont, XBrushes.Black, new XPoint(centerX, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"Số: {contract.ContractNumber}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"Ngày ký: {contract.CreationContractDate?.ToString("dd/MM/yyyy")}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Căn cứ vào các quy định pháp luật
+                gfx.DrawString($"Căn cứ vào:", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Bộ luật Dân sự nước Cộng hòa Xã hội Chủ nghĩa Việt Nam năm 2015.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString("• Các quy định pháp luật hiện hành liên quan đến hợp đồng thuê tài sản.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Thông tin bên A và bên B
+                gfx.DrawString($"Hôm nay, ngày {contract.CreationContractDate?.ToString("dd")} tháng {contract.CreationContractDate?.ToString("MM")} năm {contract.CreationContractDate?.ToString("yyyy")}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Viết nội dung vào PDF
+                gfx.DrawString("BÊN CHO THUÊ (Bên A):", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Họ và tên: Ông Đỗ Hữu Thuận", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Địa chỉ: Quận 9, Thành phố Hồ Chí Minh", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Số điện thoại: 0333888257", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Chứng minh nhân dân/Căn cước công dân: 074202112390", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Email: EPPO.HCM@gmail.com", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Thông tin Bên B
+                gfx.DrawString("BÊN THUÊ (Bên B):", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Họ và tên: {user.FullName}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Giới tính: {user.Gender}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Ngày sinh: {user.DateOfBirth}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Số điện thoại: {user.PhoneNumber}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Chứng minh nhân dân/Căn cước công dân: {user.IdentificationCard}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Email: {user.Email}", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+
+
+                // Điều khoản hợp đồng
+                gfx.DrawString("Cùng nhau thỏa thuận ký kết hợp đồng thuê cây với các điều khoản như sau:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Điều 1: Đối tượng hợp đồng
+                gfx.DrawString("Điều 1: Đối Tượng Hợp Đồng", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (contract.ContractDetails != null && contract.ContractDetails.Any())
+                {
+                    foreach (var contractDetail in contract.ContractDetails)
+                    {
+
+
+                        var plant = _unitOfWork.PlantRepository.GetByID(contractDetail.PlantId);
+
+
+                        gfx.DrawString($"1. Mô tả cây {plant.PlantName} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"•  Mô tả cây {plant.Title} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"•  Mô tả cây {plant.Description} cho thuê:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+                        gfx.DrawString($"   • Số lượng: 1 ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+
+                        gfx.DrawString($"   • Giá trị của cây (ước tính): {plant.Price} VNĐ", font, XBrushes.Black, new XPoint(margin, yPoint));
+                        yPoint += lineHeight;
+
+                        if (yPoint >= pageHeightLimit) CreateNewPage();
+                    }
+                }
+
+                // Điều 2: Thời gian thuê
+                gfx.DrawString("Điều 2: Thời gian thuê", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Thời gian thuê cây mai bắt đầu từ ngày {contract.CreationContractDate:yyyy-MM-dd} đến ngày {contract.EndContractDate:yyyy-MM-dd}.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Bên B có quyền gia hạn hợp đồng thuê nếu có thỏa thuận và sự đồng ý của Bên A.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Điều 3: Giá thuê và phương thức thanh toán
+                gfx.DrawString("Điều 3: Giá thuê và phương thức thanh toán", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"1. Giá thuê: {contract.TotalAmount} VND/tháng", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Tổng giá trị hợp đồng thuê trong {contract.TotalAmount} tháng là  {contract.CreationContractDate:MM-dd}.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"2. Phương thức thanh toán:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Bên B thanh toán qua chuyển khoản vào tài khoản của Bên A:", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"  - Số tài khoản: 040704070013100", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"  - Ngân hàng: HDBank", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"  - Chủ tài khoản: ĐỖ HỮU THUẬN", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"• Thanh toán sẽ được thực hiện vào ngày  {contract.CreationContractDate:dd} hàng tháng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                // Điều 4: Quyền và nghĩa vụ của Bên A
+                gfx.DrawString("Điều 4: Quyền và nghĩa vụ của Bên A", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"1. Bên A có trách nhiệm cung cấp cây mai đúng mô tả như trong hợp đồng.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"2. Bên A bảo đảm cây mai không bị nhiễm bệnh, hư hỏng nghiêm trọng trong suốt thời gian thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"3. Bên A có quyền kiểm tra cây mai định kỳ để đảm bảo cây được chăm sóc đúng cách.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"4. Bên A có trách nhiệm chăm sóc, bảo quản cây mai trong suốt thời gian thuê.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Điều 5: Quyền và nghĩa vụ của Bên B
+                gfx.DrawString("Điều 5: Quyền và nghĩa vụ của Bên B", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"1. Bên B không được phép chuyển nhượng quyền thuê cây cho bên thứ ba mà không có sự đồng ý của Bên A.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"2. Nếu cây mai bị hư hỏng hoặc chết do lỗi của Bên B, Bên B có trách nhiệm bồi thường hoặc thay thế cây.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"3. Nếu bên B trả cây trước thời hạn thì sẽ được hoàn tiền những ngày chưa thuê và mất phí bằng với 10% giá trị cây.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"3. Nếu bên B trả cây trễ thời hạn thì mất phí bằng với 10% giá trị cây.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+                // Điều 6: Vi phạm hợp đồng
+                gfx.DrawString("Điều 6: Vi phạm hợp đồng", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"1. Nếu một bên vi phạm các điều khoản của hợp đồng, bên còn lại có quyền yêu cầu chấm dứt hợp đồng và yêu", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"cầu bồi thường thiệt hại.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"2. Trường hợp không thanh toán tiền thuê đúng hạn, Bên A có quyền yêu cầu Bên B thanh toán lãi suất theo", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"quy định của pháp luật.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                if (yPoint >= pageHeightLimit) CreateNewPage();
+                // Điều 7: Điều khoản chung
+                gfx.DrawString("Điều 7: Điều khoản chung", titleFont, XBrushes.Red, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"1. Hợp đồng có hiệu lực kể từ ngày ký.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"2. Hai bên cam kết thực hiện đầy đủ các điều khoản trong hợp đồng. Mọi thay đổi, bổ sung hợp đồng phải có sự", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"đồng ý bằng văn bản của cả hai bên.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"3. Mọi tranh chấp phát sinh trong quá trình thực hiện hợp đồng sẽ được giải quyết thông qua thương lượng,", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"nếu không giải quyết được, sẽ đưa ra tòa án có thẩm quyền.", font, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+
+
+                // Phần ký tên
+                gfx.DrawString("ĐẠI DIỆN BÊN A                                          ĐẠI DIỆN BÊN B", titleFont, XBrushes.Black, new XPoint(margin, yPoint));
+                yPoint += lineHeight;
+                gfx.DrawString($"Đỗ Hữu Thuận                                                                               {user.FullName}", font, XBrushes.Red, new XPoint(margin, yPoint));
+
+                // Lưu tài liệu PDF
+                pdfDoc.Save(pdfPath);
+            }
+            using (var pdfStream = new FileStream(pdfPath, FileMode.Open))
+            {
+                string fileUrl = await _firebaseStorageService.UploadContractPdfAsync(pdfStream, fileName);
+                return fileUrl;
+            }
+
+            //return $"/contracts/{fileName}";
+        }
+
     }
 
 }

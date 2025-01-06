@@ -326,7 +326,30 @@ namespace BackendEPPO.Controllers
         }
 
 
-        
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpPost(ApiEndPointConstant.Contract.CreateContractv2)]
+        public async Task<IActionResult> CreateContractv2([FromBody] CreateContractDTO contract)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            int contractId = await _contractService.CreateContract(contract, userId);
+            string contractPdfUrl = await _contractService.GenerateContractPdfAsyncv2(contract, userId);
+
+            return Ok(new
+            {
+                StatusCode = 201,
+                Message = Error.REQUESR_SUCCESFULL,
+                PdfUrl = contractPdfUrl,
+                ContractId = contractId,
+                Data = contract,
+            });
+        }
 
 
 

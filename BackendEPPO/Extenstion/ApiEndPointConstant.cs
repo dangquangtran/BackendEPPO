@@ -112,6 +112,7 @@ namespace BackendEPPO.Extenstion
             public const string GetListContract_Endpoint = ApiEndpoint + "/GetList/Contracts";
             public const string GetContractByID = GetListContract_Endpoint + "/Id";
             public const string CreateContract = GetListContract_Endpoint + "/Create/Contract";
+            public const string CreateContractv2 = GetListContract_Endpoint + "/Create/CreateContract";
             public const string UpdateContractID = GetListContract_Endpoint + "/Update/Contract/Id";
 
             public const string UpdateStatusContractID = GetListContract_Endpoint + "/Update/Status/Contract/ContractId";

@@ -21,5 +21,6 @@ namespace Service.Interfaces
         Task<IEnumerable<Contract>> GetListContractStatus(int page, int size,int status);
         Task IsSignedPartnershipContract(IsSignedPartnershipContract contract, int contractId);
         Task<Contract?> GetActiveContractByUserId(int userId);
+        Task<string> GenerateContractPdfAsyncv2(CreateContractDTO contract, int userId);
     }
 }
