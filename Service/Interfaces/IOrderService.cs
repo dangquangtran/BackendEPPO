@@ -49,6 +49,8 @@ namespace Service.Interfaces
         Task CreateOrderRentalAsync(CreateOrderRentalDTO createOrderDTO, int userId);
         //thuandh - Get Order By Id
         Task<Order> GetOrderByID(int id);
+        //Thuandh - Get order Rental to check return 
+        Task<Order> GetOrderRentalByID(int id);
 
         void CustomerNotReceivedOrder(int orderId, int userId);
 

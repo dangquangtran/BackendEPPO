@@ -65,6 +65,47 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Get Order Rental by Id
+        /// </summary>
+        /// <returns> The create order with by more plant and more the owner in the Eppo</returns>
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.OrderRental.ViewReturnOrderRental)]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        public async Task<IActionResult> GetOrderByID(int OrderId)
+        {
+            try
+            {
+                // Fetch the order using the service
+                var order = await _orderService.GetOrderRentalByID(OrderId);
+
+                if (order == null)
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Order with ID {OrderId} not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Order retrieved successfully.",
+                    Data = order
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "An error occurred: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+
+        }
 
     }
 }

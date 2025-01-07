@@ -1198,6 +1198,59 @@ namespace Service.Implements
             return order;
         }
 
+        // thuandh - Get Order By Id
+        public async Task<Order> GetOrderRentalByID(int id)
+        {
+            // Fetch the order including related properties
+            var order = await _unitOfWork.OrderRepository
+                .GetByIDAsync(id, includeProperties: "ModificationByNavigation,Payment,TypeEcommerce,ImageDeliveryOrders,ImageReturnOrders,OrderDetails.Plant");
+
+            if (order == null)
+            {
+                throw new Exception($"Order with ID {id} not found.");
+            }
+
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                if (orderDetail.RentalEndDate.HasValue)
+                {
+                    string tempMessage = string.Empty;
+
+                    if (DateTime.UtcNow < orderDetail.RentalEndDate.Value)
+                    {
+                        var dataTime = DateTime.UtcNow.Date.AddDays(3);
+
+                        // Ngày hiện tại nhỏ hơn ngày kết thúc thuê tính từ 3 ngày sau ngày hiện tại
+                        var daysRemaining = (orderDetail.RentalEndDate.Value.Date - dataTime).TotalDays;
+
+                        // Tính giá thuê hàng ngày
+                        var dailyPrice = (order.FinalPrice - order.DeliveryFee - orderDetail.Deposit) / 31;
+
+                        // Tính giá điều chỉnh cho việc trả sớm
+                        var adjustedFinalPrice = dailyPrice * daysRemaining * 0.9;
+
+                        // Thêm mô tả giá điều chỉnh
+                        orderDetail.DepositDescription = $"Tổng phí trả cây thuê trước hạn ước tính từ 3 ngày sau: {adjustedFinalPrice:##0} VND";
+                       
+                    }
+                    else
+                    {
+                        // Ngày hiện tại lớn hơn ngày kết thúc thuê (hết hạn)
+                        var overdueDays = (DateTime.UtcNow.Date - orderDetail.RentalEndDate.Value.Date).TotalDays;
+
+                        // Tính phí trễ hạn (ví dụ: 10% giá trị thuê mỗi ngày trễ hạn)
+                        var lateFeePerDay = (order.FinalPrice - order.DeliveryFee - orderDetail.Deposit) * 0.1 / 31;
+                        var totalLateFee = lateFeePerDay * overdueDays;
+
+                        // Thêm mô tả phí trễ hạn
+                        orderDetail.DepositDescription = $"Đã hết hạn thuê. Quá hạn {overdueDays} ngày. Phí trả chậm: {totalLateFee:##0} VND.";
+                    }
+                }
+            }
+
+
+            return order;
+        }
 
         public void CreateNotification(int userId, string title, string description)
         {
