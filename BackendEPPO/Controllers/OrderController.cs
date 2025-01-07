@@ -728,6 +728,7 @@ namespace BackendEPPO.Controllers
         /// <returns> The create order with by more plant and more the owner in the Eppo</returns>
         //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.OrderBy.GetOrderByID)]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         public async Task<IActionResult> GetOrderByID(int OrderId)
         {
             try
