@@ -470,6 +470,8 @@ namespace BusinessObjects.Models
 
                 entity.Property(e => e.RentalStartDate).HasColumnType("datetime");
 
+                entity.Property(e => e.ReturnSoonDescription).HasMaxLength(255);
+
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
