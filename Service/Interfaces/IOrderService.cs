@@ -46,7 +46,7 @@ namespace Service.Interfaces
         //thuandh - Create Order Buy 
         Task CreateOrderBuyAsync(CreateOrderDTO createOrderDTO, int userId);
         //thuandh - Create Order Rental 
-        Task CreateOrderRentalAsync(CreateOrderRentalDTO createOrderDTO, int userId);
+        Task<Order> CreateOrderRentalAsync(CreateOrderRentalDTO createOrderDTO, int userId);
         //thuandh - Get Order By Id
         Task<Order> GetOrderByID(int id);
         //Thuandh - Get order Rental to check return 
