@@ -1093,10 +1093,11 @@ namespace Service.Implements
         }
         
         //thuandh - Create Order Rental 
-        public async Task CreateOrderRentalAsync(CreateOrderRentalDTO createOrderDTO, int userId)
+        public async Task<Order> CreateOrderRentalAsync(CreateOrderRentalDTO createOrderDTO, int userId)
         {
             try
             {
+
                 var unpaidOrdersCount = _unitOfWork.OrderRepository
                     .Get(o => o.UserId == userId && o.PaymentStatus == "Chưa thanh toán" && o.PaymentId == 2 && o.Status == 1)
                     .Count();
@@ -1172,6 +1173,7 @@ namespace Service.Implements
                 }
                 _unitOfWork.OrderRepository.Insert(order);
                 await _unitOfWork.SaveAsync();
+                return order;
             }
             catch (Exception ex)
             {

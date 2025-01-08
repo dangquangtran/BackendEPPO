@@ -46,13 +46,13 @@ namespace BackendEPPO.Controllers
                         Data = (object)null
                     });
                 }
-                await _orderService.CreateOrderRentalAsync(createOrderRental, userId);
+                var order = await _orderService.CreateOrderRentalAsync(createOrderRental, userId);
 
                 return Ok(new
                 {
                     StatusCode = 201,
                     Message = "Đã tạo đơn hàng thành công.",
-                    Data = createOrderRental
+                    Data = order
                 });
             }
             catch (Exception ex)
