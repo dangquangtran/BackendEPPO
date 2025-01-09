@@ -721,6 +721,45 @@ namespace BackendEPPO.Controllers
                 });
             }
         }
+        [HttpGet("GetRentalOrdersNeedReturnByOwner")]
+        [Authorize]
+        public IActionResult GetRentalOrdersNeedReturnByOwner([FromQuery] int pageIndex, int pageSize)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            try
+            {
+                // Gọi đến hàm service để lấy dữ liệu
+                var orders = _orderService.GetOrdersByOwner(userId, pageIndex, pageSize);
+
+                if (!orders.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Không tìm thấy đơn hàng nào.",
+                        Data = (object)null
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và trả về thông báo
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
 
         /// <summary>
         /// Get order by Id
@@ -763,5 +802,6 @@ namespace BackendEPPO.Controllers
             }
 
         }
+
     }
 }

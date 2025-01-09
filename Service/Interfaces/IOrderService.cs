@@ -56,5 +56,6 @@ namespace Service.Interfaces
 
         void CustomerNotReceivedOrder(int orderId, int userId);
 
+        IEnumerable<OrderVM> GetRentalOrdersNeedReturnByOwner(int userId, int pageIndex, int pageSize);
     }
 }
