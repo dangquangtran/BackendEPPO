@@ -1042,7 +1042,12 @@ namespace Service.Implements
                     Order order = new Order
                     {
                         UserId = userId,
+                        PaymentId = createOrderDTO.PaymentId,
+                        DeliveryAddress = createOrderDTO.DeliveryAddress,
+                        DeliveryDescription = "Đang chờ xát nhận đơn hàng",
+                        TotalPrice = createOrderDTO.TotalPrice,
                         CreationDate = DateTime.UtcNow.AddHours(7),
+                        ModificationDate = DateTime.UtcNow.AddHours(7),
                         Status = createOrderDTO.PaymentId == 2 ? 2 : 1,
                         PaymentStatus = createOrderDTO.PaymentId == 2 ? "Đã thanh toán" : "Chưa thanh toán",
                         TypeEcommerceId = 1,
@@ -1071,6 +1076,15 @@ namespace Service.Implements
                             {
                                 OrderId = order.OrderId,
                                 PlantId = plant.PlantId,
+                                RentalStartDate = DateTime.UtcNow.AddHours(7),
+                                RentalEndDate = DateTime.UtcNow.AddHours(7),
+                                NumberMonth = 0,
+                                Deposit = 0,
+                                DepositDescription = "Sản phẩm mua không có quá trình thu hồi cọc",
+                                DepositReturnCustomer = 0,
+                                DepositReturnOwner = 0,
+                                ReturnSoonDescription = "Sản phẩm mua không có quá trình thu hồi cọc",
+                                IsReturnSoon = false,
                             };
 
                             _unitOfWork.OrderDetailRepository.Insert(orderDetail);
@@ -1125,6 +1139,10 @@ namespace Service.Implements
                 order.CreationDate = DateTime.UtcNow.AddHours(7);
                 order.TypeEcommerceId = 2;
                 order.Status = 1;
+                order.DeliveryDescription = "Đang chờ xát nhận đơn hàng";
+                order.NumberOfDeliveries = 0;
+                order.ModificationDate = DateTime.UtcNow.AddHours(7);
+                order.PaymentId = 2;
                 order.UserId = userId;
                 double totalDeposit = 0;
 
@@ -1138,6 +1156,11 @@ namespace Service.Implements
                         {
                             totalDeposit += orderDetail.Deposit ?? 0;
                             orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+                            orderDetail.DepositDescription = "Đã hoàn thành tiền cọc cây với hệ thống";
+                            orderDetail.DepositReturnCustomer = 0;
+                            orderDetail.DepositReturnOwner = 0;
+                            orderDetail.ReturnSoonDescription = "Sản phẩm ước tính thu hồi cây đúng hạn";
+                            orderDetail.IsReturnSoon = false;
                         }
                         else
                         {
