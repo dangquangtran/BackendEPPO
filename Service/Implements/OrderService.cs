@@ -1013,6 +1013,25 @@ namespace Service.Implements
 
             _unitOfWork.Save();
         }
+
+        public IEnumerable<OrderVM> GetRentalOrdersNeedReturnByOwner(int userId, int pageIndex, int pageSize)
+        {
+            var currentTime = DateTime.Now;
+
+            // Lấy danh sách đơn hàng có status = 4 và ngày kết thúc thuê nhỏ hơn thời gian hiện tại
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.Status == 4 &&
+                             o.OrderDetails.Any(od => od.Plant.Code == userId.ToString() && od.RentalEndDate < currentTime),
+                orderBy: o => o.OrderBy(order => order.Status).ThenByDescending(order => order.CreationDate),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
+
     }
 
 }

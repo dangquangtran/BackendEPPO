@@ -42,5 +42,6 @@ namespace Service.Interfaces
         IEnumerable<OrderVM> GetOrdersAuctionByUserId(int userId, int pageIndex, int pageSize, int status);
         void UpdateOrderDetailDeposit(int orderDetailId, string depositDescription, double? depositReturnCustomer, double? depositReturnOwner);
         void CustomerNotReceivedOrder(int orderId, int userId);
+        IEnumerable<OrderVM> GetRentalOrdersNeedReturnByOwner(int userId, int pageIndex, int pageSize);
     }
 }
