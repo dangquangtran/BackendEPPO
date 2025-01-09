@@ -71,7 +71,7 @@ namespace BackendEPPO.Controllers
         /// <returns> The create order with by more plant and more the owner in the Eppo</returns>
         //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.OrderRental.ViewReturnOrderRental)]
-        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
         public async Task<IActionResult> GetOrderByID(int OrderId)
         {
             try
@@ -107,5 +107,47 @@ namespace BackendEPPO.Controllers
 
         }
 
+        /// <summary>
+        /// Customer confirm submit Return order rental soon deadline
+        /// </summary>
+        /// <returns> Customer confirm submit Return order rental soon deadlinereturns>
+        [HttpPut(ApiEndPointConstant.OrderRental.UpdateReturnOrderRental)]
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        public async Task<IActionResult> UpdateOrdersReturnAsync([FromQuery] int orderId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new
+                    {
+                        StatusCode = 401,
+                        Message = "Không có quyền truy cập.",
+                        Data = (object)null
+                    });
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                var updatedOrder = await _orderService.UpdateOrdersReturnAsync(orderId, userId);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Đã xác nhận trả cây thành công",
+                    Data = updatedOrder
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
     }
 }
