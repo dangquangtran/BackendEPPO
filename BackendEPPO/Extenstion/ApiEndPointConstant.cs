@@ -335,6 +335,7 @@ namespace BackendEPPO.Extenstion
         {
             public const string CreateOrderRental = ApiEndpoint + "/GetList/Plants/Create/OrderRental";
             public const string ViewReturnOrderRental = ApiEndpoint + "/GetList/OrderRental/View/Return/Id";
+            public const string UpdateReturnOrderRental = ApiEndpoint + "/GetList/OrderRental/Update/Return/Id";
         }
 
     }

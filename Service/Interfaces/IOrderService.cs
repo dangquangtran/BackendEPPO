@@ -51,6 +51,8 @@ namespace Service.Interfaces
         Task<Order> GetOrderByID(int id);
         //Thuandh - Get order Rental to check return 
         Task<Order> GetOrderRentalByID(int id);
+        //Thuandh - update order Rental to check return soon
+        Task<Order> UpdateOrdersReturnAsync(int orderId, int userId);
 
         void CustomerNotReceivedOrder(int orderId, int userId);
 

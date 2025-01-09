@@ -1076,8 +1076,8 @@ namespace Service.Implements
                             {
                                 OrderId = order.OrderId,
                                 PlantId = plant.PlantId,
-                                RentalStartDate = DateTime.UtcNow.AddHours(7),
-                                RentalEndDate = DateTime.UtcNow.AddHours(7),
+                                //RentalStartDate = DateTime.UtcNow.AddHours(7),
+                                //RentalEndDate = DateTime.UtcNow.AddHours(7),
                                 NumberMonth = 0,
                                 Deposit = 0,
                                 DepositDescription = "Sản phẩm mua không có quá trình thu hồi cọc",
@@ -1206,7 +1206,7 @@ namespace Service.Implements
                 throw;
             }
         }
-        //thuandh - Get Order By Id
+     
         // thuandh - Get Order By Id
         public async Task<Order> GetOrderByID(int id)
         {
@@ -1276,6 +1276,44 @@ namespace Service.Implements
 
             return order;
         }
+
+        // thuandh - Update Order rental 
+        public async Task<Order> UpdateOrdersReturnAsync(int orderId, int userId)
+        {
+            var order = _unitOfWork.OrderRepository.Get(
+                filter: o => o.OrderId == orderId,
+                includeProperties: "OrderDetails" 
+            ).FirstOrDefault();
+
+            if (order == null)
+            {
+                throw new Exception("Không tìm thấy đơn hàng.");
+            }
+
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                orderDetail.IsReturnSoon = true;
+                orderDetail.ReturnSoonDescription = "Sản phẩm đang được yêu cầu trả sớm thời hạn.";
+                _unitOfWork.OrderDetailRepository.Update(orderDetail);
+            }
+
+            order.ModificationDate = DateTime.UtcNow.AddHours(7);
+            order.ModificationBy = userId;
+            _unitOfWork.OrderRepository.Update(order); 
+
+            _unitOfWork.Save();
+
+
+            var updatedOrder = _unitOfWork.OrderRepository.Get(
+                filter: o => o.OrderId == orderId,
+                includeProperties: "OrderDetails.Plant"
+            ).FirstOrDefault();
+
+            return updatedOrder;
+        }
+
+
+
 
         public void CreateNotification(int userId, string title, string description)
         {
