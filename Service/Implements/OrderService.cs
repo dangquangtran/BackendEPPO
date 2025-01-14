@@ -1378,6 +1378,21 @@ namespace Service.Implements
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
+        public IEnumerable<OrderVM> GetRentalOrdersReturnedByOwner(int userId, int pageIndex, int pageSize)
+        {
+
+            var orders = _unitOfWork.OrderRepository.Get(
+        filter: o => o.Status == 6 &&
+                     o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+        orderBy: o => o.OrderBy(order => order.Status).ThenByDescending(order => order.CreationDate),
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        includeProperties: "OrderDetails,OrderDetails.Plant"
+    );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
     }
 
 }
