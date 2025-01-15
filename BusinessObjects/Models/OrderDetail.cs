@@ -17,6 +17,8 @@ namespace BusinessObjects.Models
         public double? DepositReturnOwner { get; set; }
         public bool? IsReturnSoon { get; set; }
         public string ReturnSoonDescription { get; set; }
+        public double? PriceRentalReturnObject { get; set; }
+        public double? FeeRecoveryObject { get; set; }
 
         public virtual Order Order { get; set; }
         public virtual Plant Plant { get; set; }
