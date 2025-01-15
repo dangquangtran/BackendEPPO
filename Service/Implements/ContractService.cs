@@ -71,7 +71,20 @@ namespace Service
         {
             return await Task.FromResult(_unitOfWork.ContractRepository.GetByID(Id, includeProperties: "User,ContractDetails.Plant"));
         }
+        public async Task<Contract> GetContractByOrderId(int orderId)
+        {
+            // Sử dụng filter nếu OrderId không phải là khóa chính của Contract
+            var contract = await _unitOfWork.ContractRepository.GetFirstOrDefaultAsync(
+                filter: c => c.ContractNumber == orderId
+            );
 
+            if (contract == null)
+            {
+                throw new Exception($"Không tìm thấy hợp đồng cho Order ID {orderId}.");
+            }
+
+            return contract;
+        }
         public async Task UpdateContract(UpdateContractDTO contract)
         {
             var entity = await Task.FromResult(_unitOfWork.ContractRepository.GetByID(contract.ContractId)); 
