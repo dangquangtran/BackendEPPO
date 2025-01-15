@@ -1,8 +1,11 @@
 ﻿using BackendEPPO.Extenstion;
 using DTOs.Order;
+using DTOs.Plant;
+using GoogleApi.Entities.Search.Video.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 using Service.Interfaces;
 
 namespace BackendEPPO.Controllers
@@ -12,9 +15,14 @@ namespace BackendEPPO.Controllers
     public class OrdersRentalController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        public OrdersRentalController(IOrderService IService)
+        private readonly IPlantService _plantService;
+
+        private readonly IContractService _contractService;
+        public OrdersRentalController(IOrderService IService, IPlantService plantService, IContractService contractService)
         {
             _orderService = IService;
+            _plantService = plantService;
+            _contractService = contractService;
         }
         /// <summary>
         /// The create order with by more plants and more the owners in the Eppo
@@ -87,12 +95,25 @@ namespace BackendEPPO.Controllers
                         Message = $"Order with ID {OrderId} not found."
                     });
                 }
+                var plantDetails = order.OrderDetails.FirstOrDefault()?.PlantId;
+                PlantVM plant = null;
+                if (plantDetails != null)
+                {
+                    plant =  _plantService.GetPlantById((int)plantDetails);
+                }
+
+                var contract = await _contractService.GetContractByOrderId(OrderId);
 
                 return Ok(new
                 {
                     StatusCode = 200,
                     Message = "Order retrieved successfully.",
-                    Data = order
+                    Data = new
+                    {
+                        Order = order,
+                        Plant = plant ,
+                        Contract = contract
+                    }
                 });
             }
             catch (Exception ex)

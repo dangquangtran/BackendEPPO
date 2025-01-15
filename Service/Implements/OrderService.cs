@@ -656,8 +656,15 @@ namespace Service.Implements
                     throw new Exception($"Số tiền trả lại cho chủ cây không được lớn hơn tiền cọc ({orderDetail.Deposit}).");
                 }
                 orderDetail.DepositDescription = depositDescription;
-                orderDetail.DepositReturnOwner = depositReturnOwner;
-                orderDetail.DepositReturnCustomer = orderDetail.Deposit - depositReturnOwner;
+                orderDetail.DepositReturnOwner = depositReturnOwner; // Hư hao cây
+                if (orderDetail.IsReturnSoon == true)
+                {
+                    orderDetail.DepositReturnCustomer = orderDetail.Deposit - depositReturnOwner + orderDetail.PriceRentalReturnObject; // nếu trả cây trc hạn 
+                }
+                else {
+                    orderDetail.DepositReturnCustomer = orderDetail.Deposit - depositReturnOwner; // check và số tiền nếu hư hao
+                } 
+             
                 depositReturnCustomer = orderDetail.Deposit - depositReturnOwner ?? 0;
             }
             // Kiểm tra danh sách file
@@ -1252,11 +1259,15 @@ namespace Service.Implements
                         var dailyPrice = (order.FinalPrice - order.DeliveryFee - orderDetail.Deposit) / 31;
 
                         // Tính giá điều chỉnh cho việc trả sớm
-                        var adjustedFinalPrice = dailyPrice * daysRemaining * 0.9;
+                        var adjustedFinalPrice = dailyPrice * daysRemaining * 0.9  * orderDetail.NumberMonth;
 
                         // Thêm mô tả giá điều chỉnh
                         orderDetail.DepositDescription = $"Tổng phí trả cây thuê trước hạn ước tính từ 3 ngày sau: {adjustedFinalPrice:##0} VND";
-                       
+                        orderDetail.PriceRentalReturnObject = Math.Round((double)adjustedFinalPrice, 1);
+                        orderDetail.FeeRecoveryObject =  Math.Round((double)(dailyPrice * daysRemaining * orderDetail.NumberMonth - adjustedFinalPrice), 1);
+
+
+
                     }
                     else
                     {
@@ -1269,6 +1280,8 @@ namespace Service.Implements
 
                         // Thêm mô tả phí trễ hạn
                         orderDetail.DepositDescription = $"Đã hết hạn thuê. Quá hạn {overdueDays} ngày. Phí trả chậm: {totalLateFee:##0} VND.";
+                        orderDetail.PriceRentalReturnObject = totalLateFee;
+                        orderDetail.FeeRecoveryObject = order.FinalPrice - orderDetail.PriceRentalReturnObject;
                     }
                 }
             }
@@ -1278,12 +1291,47 @@ namespace Service.Implements
         }
 
         // thuandh - Update Order rental 
+        //public async Task<Order> UpdateOrdersReturnAsync(int orderId, int userId)
+        //{
+        //    var order = _unitOfWork.OrderRepository.Get(
+        //        filter: o => o.OrderId == orderId,
+        //        includeProperties: "OrderDetails" 
+        //    ).FirstOrDefault();
+
+        //    if (order == null)
+        //    {
+        //        throw new Exception("Không tìm thấy đơn hàng.");
+        //    }
+
+        //    foreach (var orderDetail in order.OrderDetails)
+        //    {
+        //        orderDetail.IsReturnSoon = true;
+        //        orderDetail.ReturnSoonDescription = "Sản phẩm đang được yêu cầu trả sớm thời hạn.";
+        //        _unitOfWork.OrderDetailRepository.Update(orderDetail);
+        //    }
+
+        //    order.ModificationDate = DateTime.UtcNow.AddHours(7);
+        //    order.ModificationBy = userId;
+        //    _unitOfWork.OrderRepository.Update(order); 
+
+        //    _unitOfWork.Save();
+
+
+        //    var updatedOrder = _unitOfWork.OrderRepository.Get(
+        //        filter: o => o.OrderId == orderId,
+        //        includeProperties: "OrderDetails.Plant"
+        //    ).FirstOrDefault();
+
+        //    return updatedOrder;
+        //}
+
         public async Task<Order> UpdateOrdersReturnAsync(int orderId, int userId)
         {
-            var order = _unitOfWork.OrderRepository.Get(
-                filter: o => o.OrderId == orderId,
-                includeProperties: "OrderDetails" 
-            ).FirstOrDefault();
+            // Lấy thông tin đơn hàng
+            var order = await _unitOfWork.OrderRepository.GetByIDAsync(
+                orderId,
+                includeProperties: "OrderDetails.Plant"
+            );
 
             if (order == null)
             {
@@ -1292,26 +1340,64 @@ namespace Service.Implements
 
             foreach (var orderDetail in order.OrderDetails)
             {
+                if (orderDetail.RentalEndDate.HasValue)
+                {
+                    if (DateTime.UtcNow < orderDetail.RentalEndDate.Value)
+                    {
+                        var dataTime = DateTime.UtcNow.Date.AddDays(3);
+
+                        // Ngày hiện tại nhỏ hơn ngày kết thúc thuê tính từ 3 ngày sau
+                        var daysRemaining = (orderDetail.RentalEndDate.Value.Date - dataTime).TotalDays;
+
+                        // Tính giá thuê hàng ngày
+                        var dailyPrice = (order.FinalPrice - order.DeliveryFee - orderDetail.Deposit) / 31;
+
+                        // Tính giá điều chỉnh cho việc trả sớm
+                        var adjustedFinalPrice = dailyPrice * daysRemaining * 0.9 * orderDetail.NumberMonth;
+
+                        // Thêm mô tả giá điều chỉnh
+                        orderDetail.DepositDescription = $"Tổng phí trả cây thuê trước hạn ước tính từ 3 ngày sau: {adjustedFinalPrice:##0} VND";
+                        orderDetail.PriceRentalReturnObject = Math.Round((double)adjustedFinalPrice, 1);
+                        orderDetail.FeeRecoveryObject = Math.Round((double)(dailyPrice * daysRemaining * orderDetail.NumberMonth - adjustedFinalPrice), 1);
+                    }
+                    else
+                    {
+                        // Ngày hiện tại lớn hơn ngày kết thúc thuê (hết hạn)
+                        var overdueDays = (DateTime.UtcNow.Date - orderDetail.RentalEndDate.Value.Date).TotalDays;
+
+                        // Tính phí trễ hạn (10% giá trị thuê mỗi ngày trễ hạn)
+                        var lateFeePerDay = (order.FinalPrice - order.DeliveryFee - orderDetail.Deposit) * 0.1 / 31;
+                        var totalLateFee = lateFeePerDay * overdueDays;
+
+                        // Thêm mô tả phí trễ hạn
+                        orderDetail.DepositDescription = $"Đã hết hạn thuê. Quá hạn {overdueDays} ngày. Phí trả chậm: {totalLateFee:##0} VND.";
+                        orderDetail.PriceRentalReturnObject = Math.Round((double)totalLateFee, 1);
+                        orderDetail.FeeRecoveryObject = Math.Round((double)(order.FinalPrice - orderDetail.PriceRentalReturnObject), 1);
+                    }
+                }
+
+                // Đánh dấu trả sớm
                 orderDetail.IsReturnSoon = true;
                 orderDetail.ReturnSoonDescription = "Sản phẩm đang được yêu cầu trả sớm thời hạn.";
                 _unitOfWork.OrderDetailRepository.Update(orderDetail);
             }
 
+            // Cập nhật thông tin đơn hàng
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
             order.ModificationBy = userId;
-            _unitOfWork.OrderRepository.Update(order); 
+            _unitOfWork.OrderRepository.Update(order);
 
-            _unitOfWork.Save();
+            // Lưu thay đổi
+            await _unitOfWork.SaveAsync();
 
-
-            var updatedOrder = _unitOfWork.OrderRepository.Get(
-                filter: o => o.OrderId == orderId,
+            // Lấy lại thông tin đơn hàng sau khi cập nhật
+            var updatedOrder = await _unitOfWork.OrderRepository.GetByIDAsync(
+                orderId,
                 includeProperties: "OrderDetails.Plant"
-            ).FirstOrDefault();
+            );
 
             return updatedOrder;
         }
-
 
 
 

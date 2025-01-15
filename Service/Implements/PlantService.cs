@@ -50,13 +50,11 @@ namespace Service
             var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status != 0, orderBy: query => query.OrderByDescending(c => c.PlantId), pageIndex : pageIndex, pageSize : pageSize, includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-
         public IEnumerable<PlantVM> GetAllPlantsToResgister(int pageIndex, int pageSize, string code)
         {
             var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status == 2 && c.IsActive == false && c.Code == code, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-        
         //Get all plant of owner for customer choose buy 
         public IEnumerable<PlantVM> GetAllPlantsSaleOfOwner(int pageIndex, int pageSize, string code)
         {
@@ -69,7 +67,6 @@ namespace Service
             var plants = _unitOfWork.PlantRepository.Get(filter: c => c.Status == 2 && c.IsActive != false && c.Code == code && c.TypeEcommerceId == 2, pageIndex: pageIndex, pageSize: pageSize, includeProperties: "ImagePlants");
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-
         public PlantVM GetPlantById(int id)
         {
 
@@ -106,8 +103,6 @@ namespace Service
             }
             return plantVM;
         }
-
-      
         public async Task UpdatePlantByManager(UpdatePlantDTO updatePlant, int plantId, IFormFile mainImageFile, List<IFormFile> newImageFiles)
         {
             // Lấy thông tin plant từ DB
@@ -194,7 +189,6 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-
         public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceIdManage(int pageIndex, int pageSize, int typeEcommerceId)
         {
             var plants = _unitOfWork.PlantRepository.Get(
@@ -207,7 +201,6 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-
         public IEnumerable<PlantVM> GetListPlantOfOwnerByTypeEcommerceId(int pageIndex, int pageSize, int? typeEcommerceId, string code)
         {
             var plants = _unitOfWork.PlantRepository.Get(
@@ -223,7 +216,6 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-
         public IEnumerable<PlantVM> GetListPlantsByTypeEcommerceAndCategory(int pageIndex, int pageSize, int typeEcommerceId, int categoryId)
         {
                var plants = _unitOfWork.PlantRepository.Get(
@@ -236,7 +228,6 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants);
         }
-
         public IEnumerable<PlantVM> SearchPlants(string keyword, int typeEcommerceId, int pageIndex, int pageSize)
         {
             // Tìm kiếm cây theo từ khóa (có thể là tên hoặc một thuộc tính khác)
@@ -253,7 +244,6 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(plants); ;
         }
-
         public async Task<IEnumerable<PlantVM>> SearchPlantKeyType(int pageIndex, int pageSize, int typeEcommerceId, string keyword)
         {
             // Loại bỏ dấu khỏi từ khóa
@@ -276,8 +266,6 @@ namespace Service
 
             return _mapper.Map<IEnumerable<PlantVM>>(filteredPlants);
         }
-
-
         public async Task<IEnumerable<PlantVM>> CheckPlantInCart(List<int> plantId)
         {
             var plantsInCart = await _unitOfWork.PlantRepository.GetAsync(
@@ -290,9 +278,6 @@ namespace Service
 
             return plantVMs;
         }
-
-
-
         public async Task CreatePlantByOwner(CreatePlantDTOByOwner plant , string userId)
         {
          
@@ -364,7 +349,6 @@ namespace Service
             _unitOfWork.PlantRepository.Insert(plant);
             _unitOfWork.Save();
         }
-
         public async Task CreatePlantByOwner(CreatePlantDTO createPlant, IFormFile mainImageFile, List<IFormFile> imageFiles, int userId, string code)
         {
             Plant plant = _mapper.Map<Plant>(createPlant);
@@ -408,7 +392,6 @@ namespace Service
             _unitOfWork.PlantRepository.Insert(plant);
             _unitOfWork.Save();
         }
-
         public async Task UpdatePlantStatus(UpdatePlantStatus updatePlant, int plantId)
         {
             var entity = await Task.FromResult(_unitOfWork.PlantRepository.GetByID(plantId));
@@ -452,8 +435,6 @@ namespace Service
 
             return true; // Indicate success
         }
-
-
         public async Task UpdatePlantIdByManager(UpdatePlantIdDTO updatePlant, int plantId, IFormFile mainImageFile)
         {
             var plantEntity = await Task.FromResult(_unitOfWork.PlantRepository.GetByID(plantId));
@@ -534,7 +515,6 @@ namespace Service
             await _unitOfWork.SaveAsync();
 
         }
-
         public async Task<int> CountShipByPlant(int plantId)
         {
             // Lấy thông tin của cây dựa trên PlantId
@@ -674,6 +654,7 @@ namespace Service
             {
                 throw new Exception("Plant not found.");
             }
+   
 
             // Calculate the deposit using the formula: Price + (FinalPrice * Discounts)
             double deposit = plant.Price + (plant.FinalPrice * 50/100);
