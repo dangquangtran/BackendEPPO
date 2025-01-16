@@ -1393,6 +1393,21 @@ namespace Service.Implements
             // Ánh xạ sang OrderVM
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
+
+        public IEnumerable<OrderVM> GetOrdersForOwnerFilterStatus(int userId, int pageIndex, int pageSize, int status)
+        {
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.Status == status && o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+                orderBy: o => o.OrderBy(order => order.Status).ThenByDescending(order => order.CreationDate),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
+
     }
 
 }
