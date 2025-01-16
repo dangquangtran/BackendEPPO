@@ -842,5 +842,44 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        [HttpGet("GetOrdersForOwnerFilterStatus")]
+        [Authorize]
+        public IActionResult GetOrdersForOwnerFilterStatus([FromQuery] int pageIndex, int pageSize, int status)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            try
+            {
+                // Gọi đến hàm service để lấy dữ liệu
+                var orders = _orderService.GetOrdersForOwnerFilterStatus(userId, pageIndex, pageSize, status);
+
+                if (!orders.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Không tìm thấy đơn hàng nào.",
+                        Data = (object)null
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
     }
 }

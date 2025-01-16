@@ -58,6 +58,6 @@ namespace Service.Interfaces
 
         IEnumerable<OrderVM> GetRentalOrdersNeedReturnByOwner(int userId, int pageIndex, int pageSize);
         IEnumerable<OrderVM> GetRentalOrdersReturnedByOwner(int userId, int pageIndex, int pageSize);
-
+        IEnumerable<OrderVM> GetOrdersForOwnerFilterStatus(int userId, int pageIndex, int pageSize, int status);
     }
 }
