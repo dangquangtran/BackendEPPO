@@ -11,9 +11,11 @@ namespace Service.Interfaces
         Task<IEnumerable<Contract>> GetListContract(int page, int size);
         Task<IEnumerable<Contract>> GetContractOfUser(int userID);
         Task<Contract> GetContractByID(int Id);
+        Task<Contract> GetContractByID2(int Id, int code);
         Task<Contract> GetContractByOrderId(int orderId);
         Task UpdateContract(UpdateContractDTO contract);
         Task<int> CreateContract(CreateContractDTO contract, int userID);
+        Task<int> CreateContract2(CreateContractDTO contract, int userID);
         Task<string> GenerateContractPdfAsync(CreateContractDTO contract , int userId);
 
         Task<int> CreatePartnershipContract(CreateContractPartnershipDTO contract, int userID);

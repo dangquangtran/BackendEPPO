@@ -135,6 +135,7 @@ namespace BackendEPPO.Extenstion
             public const string ConfirmContractID = GetListContract_Endpoint + "/IsSigned/Contract/Id"; 
             public const string CreateContractAddendum = GetListContract_Endpoint + "/Create/Contract/Addendum";
             public const string SearchContract = ApiEndpoint + "/Search/Contract";
+            public const string GetContractOwner  = GetListContract_Endpoint + "/Owner-Customer/Id";
         }
         // Do Huu Thuan
         public static class RoomParticipant
