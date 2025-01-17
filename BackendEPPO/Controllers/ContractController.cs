@@ -3,6 +3,7 @@ using BusinessObjects.Models;
 using DTOs.Contracts;
 using DTOs.Error;
 using DTOs.Wallet;
+using GoogleApi.Entities.Search.Video.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,13 +27,15 @@ namespace BackendEPPO.Controllers
         private readonly FirebaseStorageService _firebaseStorageService;
         private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPlantService _plantService;
 
-        public ContractController(IContractService IService, FirebaseStorageService firebaseStorageService, IUserService userService , IUnitOfWork unitOfWork)
+        public ContractController(IContractService IService, FirebaseStorageService firebaseStorageService, IUserService userService , IUnitOfWork unitOfWork, IPlantService plantService)
         {
             _contractService = IService;
             _firebaseStorageService = firebaseStorageService;
             _userService = userService;
             _unitOfWork = unitOfWork;
+            _plantService = plantService;
         }
 
         /// <summary>
@@ -167,6 +170,16 @@ namespace BackendEPPO.Controllers
 
             int contractId =  await _contractService.CreateContract(contract, userId);
             string contractPdfUrl = await _contractService.GenerateContractPdfAsync(contract, userId);
+
+            // Lấy plantId từ contractDetails (nếu có)
+            var plantId = contract.ContractDetails.FirstOrDefault()?.PlantId;
+            var plant =  _plantService.GetPlantById(plantId.Value);
+            if (int.TryParse(plant.Code, out int plantCodeAsInt))
+            {
+                // Sử dụng plantCodeAsInt để tạo hợp đồng thứ hai
+                int contractId2 = await _contractService.CreateContract2(contract, plantCodeAsInt);
+                string contractPdfUrl2 = await _contractService.GenerateContractPdfAsyncv2(contract, plantCodeAsInt);
+            }
 
             return Ok(new
             {
@@ -407,5 +420,27 @@ namespace BackendEPPO.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Get Contracts by ContractID with all role.
+        /// </summary>
+        /// <returns>Get Contracts with ContractID with all role.</returns>
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Contract.GetContractOwner)]
+        public async Task<IActionResult> GetContractByIDCode(int orderId, int code)
+        {
+            var contract = await _contractService.GetContractByID2(orderId, code);
+
+            if (contract == null)
+            {
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = contract
+            });
+        }
     }
 }

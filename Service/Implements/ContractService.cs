@@ -71,6 +71,41 @@ namespace Service
         {
             return await Task.FromResult(_unitOfWork.ContractRepository.GetByID(Id, includeProperties: "User,ContractDetails.Plant"));
         }
+
+        //public async Task<Contract> GetContractByID2(int Id, string code)
+        //{
+        //    var contract =  _unitOfWork.ContractRepository.GetByID(Id, includeProperties: "User,ContractDetails.Plant");
+
+        //    if (contract != null)
+        //    {
+        //        // Lấy tất cả các contractDetails và truy xuất code của từng plant
+        //        foreach (var contractDetail in contract.ContractDetails)
+        //        {
+        //            if (contractDetail.Plant != null)
+        //            {
+        //                // Lấy mã cây (plant.Code) từ contractDetail
+        //                string plantCode = contractDetail.Plant.Code;
+
+        //                // Nếu bạn cần làm gì với mã cây, có thể lưu vào biến hoặc trả về
+        //                Console.WriteLine($"Plant Code: {plantCode}");
+        //            }
+        //        }
+        //    }
+
+        //    return contract;
+        //}
+        public async Task<Contract> GetContractByID2(int Id, int code)
+        {
+  
+            var contract = await _unitOfWork.ContractRepository.GetFirstOrDefaultAsync(
+                filter: c => c.ContractNumber == Id && c.UserId == code
+
+            );
+
+            return contract;
+        }
+
+
         public async Task<Contract> GetContractByOrderId(int orderId)
         {
             // Sử dụng filter nếu OrderId không phải là khóa chính của Contract
@@ -236,6 +271,63 @@ namespace Service
 
             return entity.ContractId;
         }
+        public async Task<int> CreateContract2(CreateContractDTO contract, int userId)
+        {
+
+            var entity = new Contract
+            {
+                UserId = userId,
+                ContractNumber = contract.ContractNumber,
+                Description = "Hợp đồng thuê với nhà vườn",
+                CreationContractDate = contract.CreationContractDate,
+                EndContractDate = contract.EndContractDate,
+                TotalAmount = contract.TotalAmount,
+                CreatedAt = DateTime.UtcNow.AddHours(7),
+                UpdatedAt = DateTime.UtcNow.AddHours(7),
+                TypeContract = "Thuê Cây",
+                ContractUrl = contract.ContractUrl,
+                IsAddendum = false,
+                IsActive = 1,
+                Status = 1,
+            };
+
+            _unitOfWork.ContractRepository.Insert(entity);
+            await _unitOfWork.SaveAsync();
+
+            if (contract.ContractDetails != null && contract.ContractDetails.Any())
+            {
+                foreach (var contractDetail in contract.ContractDetails)
+                {
+                    var contractDetailEntity = new ContractDetail
+                    {
+                        ContractId = entity.ContractId,  // Gán ContractId từ hợp đồng đã tạo
+                        PlantId = contractDetail.PlantId,
+                        Quantity = 1,
+                        TotalPrice = contractDetail.TotalPrice,
+                        IsActive = true,  // Gán giá trị mặc định IsActive nếu null
+                        Status = 1,  // Gán mặc định Status nếu null
+                    };
+
+                    // Lưu mỗi ContractDetail vào cơ sở dữ liệu
+                    _unitOfWork.ContractDetailRepository.Insert(contractDetailEntity);
+                }
+                await _unitOfWork.SaveAsync();
+            }
+
+
+
+            string pdfUrl = await GenerateContractPdfAsyncv2(contract, userId);
+            entity.ContractUrl = pdfUrl;
+            entity.ContractFileName = fileName;
+
+            _unitOfWork.ContractRepository.Update(entity);
+            await _unitOfWork.SaveAsync();
+
+            return entity.ContractId;
+        }
+
+
+
         public  Task<Contract?> GetActiveContractByUserId(int userId)
         {
             return  _unitOfWork.ContractRepository.GetFirstOrDefaultAsync(c => c.UserId == userId  && c.Status == 1); // Kiểm tra hợp đồng đang hoạt động và chưa bị hủy
