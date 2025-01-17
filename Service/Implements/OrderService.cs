@@ -1408,6 +1408,36 @@ namespace Service.Implements
             return _mapper.Map<IEnumerable<OrderVM>>(orders);
         }
 
+        public IEnumerable<OrderVM> GetOrdersForOwnerFilterNotDelivered(int userId, int pageIndex, int pageSize)
+        {
+            var validStatuses = new List<int> { 1, 2, 3 };
+
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => validStatuses.Contains(o.Status ?? 0) && o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+                orderBy: o => o.OrderBy(order => order.Status).ThenByDescending(order => order.CreationDate),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
+
+        public IEnumerable<OrderVM> GetOrdersForOwnerFilterReturnSoon(int userId, int pageIndex, int pageSize)
+        {
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o => o.Status == 4 && o.OrderDetails.Any(od => (od.IsReturnSoon ?? false) && od.Plant.Code == userId.ToString()),
+                orderBy: o => o.OrderBy(order => order.Status).ThenByDescending(order => order.CreationDate),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            // Ánh xạ sang OrderVM
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
+
     }
 
 }

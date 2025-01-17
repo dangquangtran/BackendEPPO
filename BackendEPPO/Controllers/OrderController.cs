@@ -881,5 +881,83 @@ namespace BackendEPPO.Controllers
             }
         }
 
+        [HttpGet("GetOrdersForOwnerFilterReturnSoon")]
+        [Authorize]
+        public IActionResult GetOrdersForOwnerFilterReturnSoon([FromQuery] int pageIndex, int pageSize)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            try
+            {
+                // Gọi đến hàm service để lấy dữ liệu
+                var orders = _orderService.GetOrdersForOwnerFilterReturnSoon(userId, pageIndex, pageSize);
+
+                if (!orders.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Không tìm thấy đơn hàng nào.",
+                        Data = (object)null
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
+        [HttpGet("GetOrdersForOwnerFilterNotDelivered")]
+        [Authorize]
+        public IActionResult GetOrdersForOwnerFilterNotDelivered([FromQuery] int pageIndex, int pageSize)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            int userId = int.Parse(userIdClaim);
+            try
+            {
+                // Gọi đến hàm service để lấy dữ liệu
+                var orders = _orderService.GetOrdersForOwnerFilterNotDelivered(userId, pageIndex, pageSize);
+
+                if (!orders.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        Message = $"Không tìm thấy đơn hàng nào.",
+                        Data = (object)null
+                    });
+                }
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Yêu cầu thành công.",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = "Có lỗi xảy ra: " + ex.Message,
+                    Data = (object)null
+                });
+            }
+        }
+
     }
 }
