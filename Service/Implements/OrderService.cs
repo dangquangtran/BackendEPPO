@@ -640,10 +640,14 @@ namespace Service.Implements
             bool isExpired = order.OrderDetails.Any(orderDetail =>
                              orderDetail.RentalEndDate == null || orderDetail.RentalEndDate > DateTime.UtcNow.AddHours(7));
 
-            if (isExpired)
+            bool isCheck = order.OrderDetails.Any(orderDetail => orderDetail.IsReturnSoon == true);
+
+            // Kiểm tra nếu đơn hàng chưa hết hạn và có orderDetail nào có IsReturnSoon == true
+            if (isExpired && !isCheck)
             {
                 throw new Exception("Đơn hàng chưa hết hạn thuê, không thể thu hồi.");
             }
+
             // Cập nhật mô tả giao hàng
             order.DeliveryDescription = "Thu hồi thành công";
             order.ModificationDate = DateTime.UtcNow.AddHours(7);
