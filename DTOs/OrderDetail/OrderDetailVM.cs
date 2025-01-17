@@ -20,7 +20,7 @@ namespace DTOs.OrderDetail
         public double? DepositReturnCustomer { get; set; }
         public double? DepositReturnOwner { get; set; }
         public PlantVM Plant { get; set; }
-
+        public bool? IsReturnSoon { get; set; }
         public string? ReturnDescription { get; set; }
     }
 }

@@ -53,6 +53,8 @@ namespace Service.Interfaces
         Task<Order> GetOrderRentalByID(int id);
         //Thuandh - update order Rental to check return soon
         Task<Order> UpdateOrdersReturnAsync(int orderId, int userId);
+        //Thuandh - Get order  to check return soon
+        IEnumerable<OrderVM> GetOrdersByOwnerByStatus(int userId, int pageIndex, int pageSize, int? status, bool? isReturnSoon);
 
         void CustomerNotReceivedOrder(int orderId, int userId);
 

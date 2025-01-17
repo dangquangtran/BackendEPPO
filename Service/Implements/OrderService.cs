@@ -1325,6 +1325,7 @@ namespace Service.Implements
         //    return updatedOrder;
         //}
 
+        // thuandh - Updaye Order By Id
         public async Task<Order> UpdateOrdersReturnAsync(int orderId, int userId)
         {
             // Lấy thông tin đơn hàng
@@ -1398,6 +1399,36 @@ namespace Service.Implements
 
             return updatedOrder;
         }
+
+        public IEnumerable<OrderVM> GetOrdersByOwnerByStatus(int userId, int pageIndex, int pageSize, int? status, bool? isReturnSoon)
+        {
+            var orders = _unitOfWork.OrderRepository.Get(
+                filter: o =>
+                (
+                    // Nếu status được truyền và có giá trị
+                    (!status.HasValue ||
+                     (status == 1 && (o.Status == 1 || o.Status == 2 || o.Status == 3)) ||  // Nếu status = 1, lấy cả status 1, 2, 3
+                     (status == 2 && (o.Status == 1 || o.Status == 2 || o.Status == 3)) ||  // Nếu status = 2, lấy cả status 1, 2, 3
+                     (status == 3 && (o.Status == 1 || o.Status == 2 || o.Status == 3)) ||  // Nếu status = 3, lấy cả status 1, 2, 3
+                     (status != 1 && status != 2 && status != 3 && o.Status == status.Value)) // Các status khác thì lọc chính xác
+                )
+                &&
+                // Nếu isReturnSoon được truyền và có giá trị, lọc theo isReturnSoon
+                (!isReturnSoon.HasValue || o.OrderDetails.Any(od => od.IsReturnSoon == isReturnSoon.Value))
+                &&
+                // Lọc theo userId
+                o.OrderDetails.Any(od => od.Plant.Code == userId.ToString()),
+
+                orderBy: o => o.OrderBy(order => order.Status).ThenByDescending(order => order.CreationDate),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includeProperties: "OrderDetails,OrderDetails.Plant"
+            );
+
+            return _mapper.Map<IEnumerable<OrderVM>>(orders);
+        }
+
+
 
 
 
