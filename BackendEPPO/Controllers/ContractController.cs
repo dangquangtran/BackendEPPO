@@ -447,7 +447,7 @@ namespace BackendEPPO.Controllers
         /// Get list all Contracts of order in database with customer for renting.
         /// </summary>
         /// <returns>Get list all Contracts in database with the page and the size.</returns>
-        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        //[Authorize(Roles = "admin, manager, staff, owner, customer")]
         [HttpGet(ApiEndPointConstant.Contract.GetListContractWithOrderID)]
         public async Task<IActionResult> GetListContractWithOrderID(int orderId)
         {
