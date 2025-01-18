@@ -1263,7 +1263,7 @@ namespace Service.Implements
                         var dailyPrice = (order.FinalPrice - order.DeliveryFee - orderDetail.Deposit) / 31;
 
                         // Tính giá điều chỉnh cho việc trả sớm
-                        var adjustedFinalPrice = dailyPrice * daysRemaining * 0.9  * orderDetail.NumberMonth;
+                        var adjustedFinalPrice = dailyPrice * daysRemaining  * orderDetail.NumberMonth;
 
                         // Thêm mô tả giá điều chỉnh
                         orderDetail.DepositDescription = $"Tổng phí trả cây thuê trước hạn ước tính từ 3 ngày sau: {adjustedFinalPrice:##0} VND";
