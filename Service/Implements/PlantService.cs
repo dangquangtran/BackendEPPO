@@ -3,10 +3,13 @@ using BusinessObjects.Models;
 using DTOs.Contracts;
 using DTOs.ImagePlant;
 using DTOs.Plant;
+using DTOs.Settings;
 using DTOs.User;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Repository.Interfaces;
 using Service.Implements;
 using Service.Interfaces;
@@ -25,12 +28,16 @@ namespace Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly FirebaseStorageService _firebaseStorageService;
+        private readonly RentalSettings _rentalSettings;
+        private readonly IConfiguration _configuration;
 
-        public PlantService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService)
+
+        public PlantService(IUnitOfWork unitOfWork, IMapper mapper, FirebaseStorageService firebaseStorageService, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
+            _configuration = configuration;
         }
 
         public async Task<IEnumerable<Plant>> GetListPlants(int page, int size)
@@ -654,10 +661,11 @@ namespace Service
             {
                 throw new Exception("Plant not found.");
             }
-   
+
+            double depositPercent = double.Parse(_configuration["RentalSettings:DepositPercent"]);
 
             // Calculate the deposit using the formula: Price + (FinalPrice * Discounts)
-            double deposit = plant.Price + (plant.FinalPrice * 50/100);
+            double deposit = plant.Price  + (plant.FinalPrice * depositPercent);
 
             // Return the rounded-up deposit value
             return Math.Ceiling(deposit);

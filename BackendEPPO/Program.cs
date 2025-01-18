@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BackendEPPO.Controllers;
 using BusinessObjects.Models;
+using DTOs.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,6 +52,7 @@ builder.Services.AddScoped<IUserRoomService, UserRoomService>();
 builder.Services.AddScoped<IHistoryBidService, HistoryBidService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddHttpClient<DistanceController>();
+builder.Services.Configure<RentalSettings>(builder.Configuration.GetSection("RentalSettings"));
 
 
 // AutoMapper configuration
