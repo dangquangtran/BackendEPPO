@@ -1166,7 +1166,11 @@ namespace Service.Implements
                         if (plant != null)
                         {
                             totalDeposit += orderDetail.Deposit ?? 0;
-                            orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+                            var adjustedStartDate = orderDetail.RentalStartDate.Value.AddHours(7);
+
+                            //orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
+
+                            orderDetail.RentalEndDate = adjustedStartDate.AddMonths((int)orderDetail.NumberMonth.Value);
                             orderDetail.DepositDescription = "Đã hoàn thành tiền cọc cây với hệ thống";
                             orderDetail.DepositReturnCustomer = 0;
                             orderDetail.DepositReturnOwner = 0;
