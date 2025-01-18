@@ -104,6 +104,22 @@ namespace BackendEPPO.Controllers
 
                 var contract = await _contractService.GetContractByOrderId(OrderId);
 
+
+                var deposit = order.OrderDetails.FirstOrDefault()?.Deposit;
+                var numberMonth = order.OrderDetails.FirstOrDefault()?.NumberMonth;
+                //var numberDate = DateTime.Now - order.OrderDetails.FirstOrDefault()?.RentalStartDate;
+
+                var rentalEndDate = order.OrderDetails.FirstOrDefault()?.RentalStartDate;
+
+              
+                    var numberDate = (DateTime.Now - rentalEndDate.Value ).TotalDays;
+
+                    // Làm tròn số ngày
+                    int roundedDays = (int)Math.Round(numberDate) + 1;
+                
+
+
+
                 return Ok(new
                 {
                     StatusCode = 200,
@@ -112,7 +128,11 @@ namespace BackendEPPO.Controllers
                     {
                         Order = order,
                         Plant = plant ,
-                        Contract = contract
+                        Contract = contract,
+                        Deposit = deposit,
+                        NumberMonth = numberMonth,
+                        NumberDateRental = roundedDays,
+
                     }
                 });
             }
