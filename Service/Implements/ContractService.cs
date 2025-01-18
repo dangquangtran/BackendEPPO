@@ -1081,6 +1081,14 @@ namespace Service
             //return $"/contracts/{fileName}";
         }
 
+        public async Task<IEnumerable<Contract>> GetListContractWithOrderID(int orderId)
+        {
+            var contract = _unitOfWork.ContractRepository.Get(
+                orderBy: query => query.OrderByDescending(c => c.ContractId),
+                filter: c => c.ContractNumber == orderId
+            );
+            return _mapper.Map<IEnumerable<Contract>>(contract);
+        }
     }
 
 }

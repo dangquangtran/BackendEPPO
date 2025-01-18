@@ -442,5 +442,28 @@ namespace BackendEPPO.Controllers
                 Data = contract
             });
         }
+
+        /// <summary>
+        /// Get list all Contracts of order in database with customer for renting.
+        /// </summary>
+        /// <returns>Get list all Contracts in database with the page and the size.</returns>
+        [Authorize(Roles = "admin, manager, staff, owner, customer")]
+        [HttpGet(ApiEndPointConstant.Contract.GetListContractWithOrderID)]
+        public async Task<IActionResult> GetListContractWithOrderID(int orderId)
+        {
+
+            var contract = await _contractService.GetListContractWithOrderID(orderId);
+
+            if (contract == null || !contract.Any())
+            {
+                return BadRequest(new { Message = Error.REQUESR_SUCCESFULL });
+            }
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = Error.REQUESR_SUCCESFULL,
+                Data = contract
+            });
+        }
     }
 }

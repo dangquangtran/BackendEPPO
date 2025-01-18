@@ -27,5 +27,7 @@ namespace Service.Interfaces
         Task<int> CreateContractAddendum(CreateContractDTO contract, int userId);
         Task<IEnumerable<Contract>> SearchContract(int pageIndex, int pageSize, string keyword);
         Task<string> GenerateContractPdfAsyncv2(CreateContractDTO contract, int userId);
+
+        Task<IEnumerable<Contract>> GetListContractWithOrderID(int orderId);
     }
 }
