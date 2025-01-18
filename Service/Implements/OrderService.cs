@@ -1159,6 +1159,7 @@ namespace Service.Implements
 
                 foreach (var orderDetail in order.OrderDetails)
                 {
+
                     if (orderDetail.RentalStartDate.HasValue && orderDetail.NumberMonth.HasValue)
                     {
                         // Lấy giá cây từ cơ sở dữ liệu
@@ -1166,11 +1167,13 @@ namespace Service.Implements
                         if (plant != null)
                         {
                             totalDeposit += orderDetail.Deposit ?? 0;
-                            var adjustedStartDate = orderDetail.RentalStartDate.Value.AddHours(7);
+                            var adjustedStartDate = orderDetail.RentalStartDate.Value.AddHours(14);
 
                             //orderDetail.RentalEndDate = orderDetail.RentalStartDate.Value.AddMonths((int)orderDetail.NumberMonth.Value);
 
-                            orderDetail.RentalEndDate = adjustedStartDate.AddMonths((int)orderDetail.NumberMonth.Value);
+                            //orderDetail.RentalEndDate = adjustedStartDate.AddMonths((int)orderDetail.NumberMonth.Value);
+
+                            orderDetail.RentalEndDate = adjustedStartDate.AddMonths((int)orderDetail.NumberMonth.Value).AddHours(-7);
                             orderDetail.DepositDescription = "Đã hoàn thành tiền cọc cây với hệ thống";
                             orderDetail.DepositReturnCustomer = 0;
                             orderDetail.DepositReturnOwner = 0;
