@@ -15,10 +15,12 @@ namespace BackendEPPO.Controllers
     {
         private readonly IPlantService _plantService;
         private readonly IUserService _userService;
-        public PlantController(IPlantService IService, IUserService userService)
+        private readonly IConfiguration _configuration;
+        public PlantController(IPlantService IService, IUserService userService, IConfiguration configuration)
         {
             _plantService = IService;
             _userService = userService;
+            _configuration = configuration;
         }
 
         [HttpGet]
